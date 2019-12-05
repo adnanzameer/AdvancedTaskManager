@@ -1,6 +1,5 @@
 ﻿using AdvancedTask.Business;
 using AdvancedTask.Business.AdvancedTask;
-using AdvancedTask.Business.Interface;
 using AdvancedTask.Models;
 using EPiServer;
 using EPiServer.Approvals;
@@ -40,6 +39,8 @@ namespace AdvancedTask.Controllers
         IContentTypeRepository _contentTypeRepository;
         IUserNotificationRepository _userNotificationRepository;
         IApprovalEngine _approvalEngine;
+        private const string ContentApprovalDeadlinePropertyName = "ATM_ContentApprovalDeadline";
+
         public AdvancedTaskController(IApprovalRepository approvalRepository, IContentRepository contentRepository, IContentTypeRepository contentTypeRepository, IUserNotificationRepository userNotificationRepository, IApprovalEngine approvalEngine)
         {
             _approvalRepository = approvalRepository;
@@ -189,24 +190,28 @@ namespace AdvancedTask.Controllers
                             customTask.NotificationUnread = false;
                         }
 
-                        //Deadline Property of The Content
-                        if (content is IAdvancedTask AdvancedTask)
-                        {
-                            if (content is PageData)
-                            {
-                                customTask.Type = "Page";
-                            }
-                            else if (content is BlockData)
-                            {
-                                customTask.Type = "Block";
-                            }
+                        customTask.Deadline = " - ";
 
-                            if (!string.IsNullOrEmpty(customTask.Type))
+                        //Deadline Property of The Content
+                        PropertyData propertyData = content.Property.Get(ContentApprovalDeadlinePropertyName) ?? content.Property[ContentApprovalDeadlinePropertyName];
+                        if (propertyData != null)
+                        {
+                            DateTime.TryParse(propertyData.ToString(), out DateTime dateValue);
+                            if (dateValue != DateTime.MinValue)
                             {
-                                if (AdvancedTask.ContentApprovalDeadline != null)
+                                if (content is PageData)
                                 {
-                                    customTask.Deadline = AdvancedTask.ContentApprovalDeadline.Value.ToString("dd MMMM HH:mm");
-                                    int days = DateTime.Now.CountDaysInRange(AdvancedTask.ContentApprovalDeadline.Value);
+                                    customTask.Type = "Page";
+                                }
+                                else if (content is BlockData)
+                                {
+                                    customTask.Type = "Block";
+                                }
+
+                                if (!string.IsNullOrEmpty(customTask.Type))
+                                {
+                                    customTask.Deadline = dateValue.ToString("dd MMMM HH:mm");
+                                    int days = DateTime.Now.CountDaysInRange(dateValue);
 
                                     if (days == 0)
                                     {
