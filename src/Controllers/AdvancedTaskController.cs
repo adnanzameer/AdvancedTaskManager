@@ -16,6 +16,7 @@ using EPiServer.ServiceLocation;
 using EPiServer.Shell.Gadgets;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Data.Common;
 using System.Linq;
@@ -192,39 +193,44 @@ namespace AdvancedTask.Controllers
 
                         customTask.Deadline = " - ";
 
-                        //Deadline Property of The Content
-                        PropertyData propertyData = content.Property.Get(ContentApprovalDeadlinePropertyName) ?? content.Property[ContentApprovalDeadlinePropertyName];
-                        if (propertyData != null)
+                        bool enableContentApprovalDeadline = bool.Parse(ConfigurationManager.AppSettings["ATM:EnableContentApprovalDeadline"] ?? "false");
+
+                        if (enableContentApprovalDeadline)
                         {
-                            DateTime.TryParse(propertyData.ToString(), out DateTime dateValue);
-                            if (dateValue != DateTime.MinValue)
+                            //Deadline Property of The Content
+                            PropertyData propertyData = content.Property.Get(ContentApprovalDeadlinePropertyName) ?? content.Property[ContentApprovalDeadlinePropertyName];
+                            if (propertyData != null)
                             {
-                                if (content is PageData)
+                                DateTime.TryParse(propertyData.ToString(), out DateTime dateValue);
+                                if (dateValue != DateTime.MinValue)
                                 {
-                                    customTask.Type = "Page";
-                                }
-                                else if (content is BlockData)
-                                {
-                                    customTask.Type = "Block";
-                                }
-
-                                if (!string.IsNullOrEmpty(customTask.Type))
-                                {
-                                    customTask.Deadline = dateValue.ToString("dd MMMM HH:mm");
-                                    int days = DateTime.Now.CountDaysInRange(dateValue);
-
-                                    if (days == 0)
+                                    if (content is PageData)
                                     {
-                                        customTask.WarningColor = "red";
+                                        customTask.Type = "Page";
                                     }
-                                    else if (days > 0 && days < 4)
+                                    else if (content is BlockData)
                                     {
-                                        customTask.WarningColor = "green";
+                                        customTask.Type = "Block";
                                     }
-                                }
-                                else
-                                {
-                                    customTask.Deadline = " - ";
+
+                                    if (!string.IsNullOrEmpty(customTask.Type))
+                                    {
+                                        customTask.Deadline = dateValue.ToString("dd MMMM HH:mm");
+                                        int days = DateTime.Now.CountDaysInRange(dateValue);
+
+                                        if (days == 0)
+                                        {
+                                            customTask.WarningColor = "red";
+                                        }
+                                        else if (days > 0 && days < 4)
+                                        {
+                                            customTask.WarningColor = "green";
+                                        }
+                                    }
+                                    else
+                                    {
+                                        customTask.Deadline = " - ";
+                                    }
                                 }
                             }
                         }

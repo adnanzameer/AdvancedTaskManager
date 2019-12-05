@@ -44,7 +44,7 @@
         padding-bottom: 15px;
     }
 </style>
-
+<%  bool enableContentApprovalDeadline = bool.Parse(ConfigurationManager.AppSettings["ATM:EnableContentApprovalDeadline"] ?? "false"); %>
 <table class="epi-default">
     <thead>
         <tr>
@@ -105,17 +105,20 @@
                                 new { pageNumber = Model.PageNumber, pageSize = Model.PageSize, sorting = Model.Sorting=="user_desc"?"user_aes":"user_desc"})%>
                 </label>
             </th>
+            <% if (enableContentApprovalDeadline)
+               { %>
             <th>
                 <label>
                     <%= Html.ViewLink(
                             "Deadline",
-                            "Deadline",  // title
+                            "Deadline", // title
                             "Index", // Action name
                             "", // css class
                             "",
-                            new { pageNumber = Model.PageNumber, pageSize = Model.PageSize, sorting = Model.Sorting=="deadline_desc"?"deadline_aes":"deadline_desc"})%>
+                            new {pageNumber = Model.PageNumber, pageSize = Model.PageSize, sorting = Model.Sorting == "deadline_desc" ? "deadline_aes" : "deadline_desc"}) %>
                 </label>
             </th>
+            <% } %>
         </tr>
     </thead>
 
@@ -148,9 +151,12 @@
         <td>
             <%= m.StartedBy%>
         </td>
+        <% if (enableContentApprovalDeadline)
+           { %>
         <td class="<%= m.WarningColor%>">
             <%= m.Deadline%>
         </td>
+        <% } %>
     </tr>
     <%} %>
     <%

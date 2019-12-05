@@ -6,6 +6,7 @@ using EPiServer.Framework.Localization;
 using EPiServer.Security;
 using EPiServer.ServiceLocation;
 using System;
+using System.Configuration;
 using System.Linq;
 
 namespace AdvancedTask.Business
@@ -30,6 +31,13 @@ namespace AdvancedTask.Business
 
         private void SetupInsightFormMappingProperties()
         {
+            bool enableContentApprovalDeadline = bool.Parse(ConfigurationManager.AppSettings["ATM:EnableContentApprovalDeadline"] ?? "false");
+
+            if (!enableContentApprovalDeadline)
+            {
+                return;
+            }
+
             CreateOrDeleteTab("Content Approval", true);
 
             foreach (ContentType contentType in _contentTypeRepository.Service.List().Where(x => x.IsAvailable))
