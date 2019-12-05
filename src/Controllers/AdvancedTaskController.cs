@@ -25,11 +25,11 @@ using Task = System.Threading.Tasks.Task;
 
 namespace AdvancedTask.Controllers
 {
-    [EPiServer.Shell.Web.ScriptResource("Scripts/jquery.blockUI.js")]
+    [EPiServer.Shell.Web.ScriptResource("ClientResources/Scripts/jquery.blockUI.js")]
     [Gadget(ResourceType = typeof(AdvancedTaskController),
            NameResourceKey = "GadgetName", DescriptionResourceKey = "GadgetDescription")]
-    [EPiServer.Shell.Web.CssResource("Content/AdvancedTaskGadget.css")]
-    [EPiServer.Shell.Web.ScriptResource("Scripts/jquery.form.js")]
+    [EPiServer.Shell.Web.CssResource("ClientResources/Content/AdvancedTaskGadget.css")]
+    [EPiServer.Shell.Web.ScriptResource("ClientResources/Scripts/jquery.form.js")]
     [Authorize]
     public class AdvancedTaskController : Controller
     {
