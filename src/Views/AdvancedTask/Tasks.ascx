@@ -159,7 +159,7 @@
 
 <div class="epi-formArea" id="approve" style="display: none;">
     <fieldset>
-        <form action="/modules/App/AdvancedTask/Index" class="epi-gadgetform" method="get">
+        <% Html.BeginGadgetForm("Index"); %>
             <p>Approve Entire Approval Sequence</p>
 
             <textarea autocomplete="off" cols="70" id="approvalComment" name="approvalComment" class="epi-textarea--max-height--500 dijitTextBox dijitTextArea dijitExpandingTextArea dijitTextBoxError dijitTextAreaError dijitExpandingTextAreaError dijitError" tabindex="0" placeholder="Please specify why you are forcing approval of the content…" rows="1" style="overflow: auto hidden; box-sizing: border-box; height: 29px;" spellcheck="false"></textarea>
@@ -188,7 +188,7 @@
                     </li>
                 </ul>
             </div>
-        </form>
+        <% Html.EndForm(); %>
     </fieldset>
 </div>
 <br />

@@ -59,12 +59,12 @@
     </div>
 
     <div class="pagerright">
-        <form action="/modules/App/AdvancedTask/Index" class="epi-gadgetform" method="get">
+        <% Html.BeginGadgetForm("Index"); %>
             <input type="submit" class="refresh" value="" />
             <input type="text" name="pageSize" class="refreshinput" value="<%=Model.PageSize %>" />
             <label class="refreshlabel">
                 Page size:
             </label>
-        </form>
+        <% Html.EndForm(); %>
     </div>
 </div>
