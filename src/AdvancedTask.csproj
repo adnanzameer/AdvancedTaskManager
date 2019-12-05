@@ -92,6 +92,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Business\Helper.cs" />
+    <Compile Include="Business\Interface\IAdvancedTask.cs" />
     <Compile Include="Business\NotificationMessageFromReader.cs" />
     <Compile Include="Controllers\AdvancedTaskController.cs" />
     <Compile Include="Models\AdvancedTaskIndexViewData.cs" />
@@ -129,6 +130,7 @@
       <SubType>Designer</SubType>
     </Content>
     <None Include="module.config" />
+    <None Include="web.config.uninstall.xdt" />
     <None Include="web.config.install.xdt" />
   </ItemGroup>
   <ItemGroup>

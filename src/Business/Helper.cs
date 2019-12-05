@@ -1,4 +1,5 @@
-﻿using EPiServer.Cms.UI.AspNetIdentity;
+﻿using System;
+using EPiServer.Cms.UI.AspNetIdentity;
 using EPiServer.Core;
 using EPiServer.Security;
 using Microsoft.AspNet.Identity;
@@ -42,6 +43,24 @@ namespace AdvancedTask.Business
             {
                 return userRoleStore.GetRolesAsync(user).GetAwaiter().GetResult();
             }
+        }
+
+        public static IEnumerable<DateTime> GetDaysInRange(this DateTime startDate, DateTime endDate)
+        {
+            if (endDate < startDate)
+                return Enumerable.Empty<DateTime>();
+
+            return Enumerable.Range(0, 1 + endDate.Subtract(startDate).Days)
+                .Select(offset => startDate.AddDays(offset))
+                .ToArray();
+        }
+
+
+        public static int CountDaysInRange(this DateTime startDate, DateTime endDate)
+        {
+            var dates = startDate.GetDaysInRange(endDate);
+
+            return dates.Count();
         }
     }
 }

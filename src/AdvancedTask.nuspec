@@ -22,5 +22,6 @@
         <file src="bin\Release\AdvancedTask.dll" target="lib\net45\" />
         <file src="bin\Release\AdvancedTask.zip" target="content\modules\_protected\AdvancedTask\" />
         <file src="web.config.install.xdt" target="content" />
+        <file src="web.config.uninstall.xdt" target="content" />
     </files>
 </package>

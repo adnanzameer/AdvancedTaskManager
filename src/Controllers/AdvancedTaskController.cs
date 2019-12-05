@@ -1,5 +1,6 @@
 ﻿using AdvancedTask.Business;
 using AdvancedTask.Business.AdvancedTask;
+using AdvancedTask.Business.Interface;
 using AdvancedTask.Models;
 using EPiServer;
 using EPiServer.Approvals;
@@ -14,6 +15,7 @@ using EPiServer.Notification.Internal;
 using EPiServer.Security;
 using EPiServer.ServiceLocation;
 using EPiServer.Shell.Gadgets;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -187,52 +189,40 @@ namespace AdvancedTask.Controllers
                             customTask.NotificationUnread = false;
                         }
 
-                        ////Deadline Property of The Content
-                        //if (content is BaseContentData pageData)
-                        //{
-                        //    customTask.Type = "Page";
-                        //    if (pageData.ContentApprovalDeadline != null)
-                        //    {
-                        //        customTask.Deadline = pageData.ContentApprovalDeadline.Value.ToString("dd MMMM HH:mm");
-                        //        int days = DateTime.Now.CountDaysInRange(pageData.ContentApprovalDeadline.Value);
+                        //Deadline Property of The Content
+                        if (content is IAdvancedTask AdvancedTask)
+                        {
+                            if (content is PageData)
+                            {
+                                customTask.Type = "Page";
+                            }
+                            else if (content is BlockData)
+                            {
+                                customTask.Type = "Block";
+                            }
 
-                        //        if (days == 0)
-                        //        {
-                        //            customTask.WarningColor = "red";
-                        //        }
-                        //        else if (days > 0 && days < 4)
-                        //        {
-                        //            customTask.WarningColor = "green";
-                        //        }
-                        //    }
-                        //    else
-                        //    {
-                        //        customTask.Deadline = " - ";
-                        //    }
-                        //}
-                        //else if (content is SiteBlockData blockData)
-                        //{
-                        //    customTask.Type = "Block";
-                        //    if (blockData.ContentApprovalDeadline != null)
-                        //    {
-                        //        customTask.Deadline = blockData.ContentApprovalDeadline.Value.ToString("dd MMMM HH:mm");
-                        //        int days = DateTime.Now.CountDaysInRange(blockData.ContentApprovalDeadline.Value);
+                            if (!string.IsNullOrEmpty(customTask.Type))
+                            {
+                                if (AdvancedTask.ContentApprovalDeadline != null)
+                                {
+                                    customTask.Deadline = AdvancedTask.ContentApprovalDeadline.Value.ToString("dd MMMM HH:mm");
+                                    int days = DateTime.Now.CountDaysInRange(AdvancedTask.ContentApprovalDeadline.Value);
 
-                        //        if (days == 0)
-                        //        {
-                        //            customTask.WarningColor = "red";
-                        //        }
-                        //        else if (days > 0 && days < 4)
-                        //        {
-                        //            customTask.WarningColor = "green";
-                        //        }
-                        //    }
-                        //    else
-                        //    {
-                        //        customTask.Deadline = " - ";
-                        //    }
-                        //}
-
+                                    if (days == 0)
+                                    {
+                                        customTask.WarningColor = "red";
+                                    }
+                                    else if (days > 0 && days < 4)
+                                    {
+                                        customTask.WarningColor = "green";
+                                    }
+                                }
+                                else
+                                {
+                                    customTask.Deadline = " - ";
+                                }
+                            }
+                        }
                         taskList.Add(customTask);
                     }
                 }
