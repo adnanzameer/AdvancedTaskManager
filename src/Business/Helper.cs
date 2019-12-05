@@ -1,0 +1,47 @@
+﻿using EPiServer.Cms.UI.AspNetIdentity;
+using EPiServer.Core;
+using EPiServer.Security;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Principal;
+
+namespace AdvancedTask.Business
+{
+    public static class Helper
+    {
+        public static bool CanUserPublish<T>(this T content) where T : IContent
+        {
+            IList<string> roles;
+            using (UserStore<ApplicationUser> store = new UserStore<ApplicationUser>(new ApplicationDbContext<ApplicationUser>("EPiServerDB")))
+            {
+                ApplicationUser user = store.FindByNameAsync(PrincipalInfo.CurrentPrincipal.Identity.Name).GetAwaiter().GetResult();
+                roles = GetUserToRoles(store, user);
+            }
+            return content.RoleHasAccess(roles.ToArray(), AccessLevel.Publish);
+        }
+
+        private static bool RoleHasAccess<T>(this T content, string[] roles, AccessLevel accessLevel) where T : IContent
+        {
+            ISecurable securedContent = content as ISecurable;
+            if (securedContent != null)
+            {
+                ISecurityDescriptor descriptor = securedContent.GetSecurityDescriptor();
+                GenericIdentity identity = new GenericIdentity("doesn't matter");
+                GenericPrincipal principal = new GenericPrincipal(identity, roles);
+                return descriptor.HasAccess(principal, accessLevel);
+            }
+            return false;
+        }
+
+        private static IList<string> GetUserToRoles(UserStore<ApplicationUser> store, ApplicationUser user)
+        {
+            IUserRoleStore<ApplicationUser, string> userRoleStore = store;
+            using (new RoleStore<IdentityRole>(new ApplicationDbContext<ApplicationUser>("EPiServerDB")))
+            {
+                return userRoleStore.GetRolesAsync(user).GetAwaiter().GetResult();
+            }
+        }
+    }
+}

@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>AdvancedTask</id>
+        <title>Advanced Task Manager</title>
+        <version>1.0.0</version>
+        <authors>Adnan Zameer</authors>
+        <owners>Adnan Zameer</owners>
+        <licenseUrl>https://www.adnanzameer.com</licenseUrl>
+        <projectUrl>https://www.adnanzameer.com</projectUrl>
+        <iconUrl>http://www.coderesort.com/favicon.ico</iconUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Administration of Awaiting Review Tasks</description>
+        <summary></summary>        
+        <language>en-US</language>
+      <dependencies>
+        <dependency id="EPiServer.CMS.UI.Core" version="[11.1.0, 12.0)" />
+        <dependency id="EPiServer.Framework" version="[11.1.0, 12.0)" />
+      </dependencies>
+    </metadata>
+    <files>
+        <file src="bin\Release\AdvancedTask.dll" target="lib\net45\" />
+        <file src="bin\Release\AdvancedTask.zip" target="content\modules\_protected\AdvancedTask\" />
+        <file src="web.config.install.xdt" target="content" />
+    </files>
+</package>

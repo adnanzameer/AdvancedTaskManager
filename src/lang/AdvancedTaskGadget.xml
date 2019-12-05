@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<languages>
+    <language name="English"
+              id="en">
+        <gadget>
+            <tasks>
+                <ignored>Ignored</ignored>
+                <title>Advanced Task</title>
+                <name>Advanced Task Manager</name>
+                <description>Administration of Awaiting Review Tasks</description>
+                <count>Number of tasks:</count>
+                <info>
+                    With the Advanced Task Gadget you can manage existing awaiting review tasks related to Content Approval.
+                </info>
+                <taskcount>Displaying tasks {0}-{1} of {2}</taskcount>
+            </tasks>
+        </gadget>
+    </language>
+</languages>
