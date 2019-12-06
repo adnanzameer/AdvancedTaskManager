@@ -24,18 +24,25 @@ namespace AdvancedTask.Business
 
         public void Initialize(InitializationEngine context)
         {
-            SetupInsightFormMappingProperties();
-        }
-
-        private void SetupInsightFormMappingProperties()
-        {
             bool enableContentApprovalDeadline = bool.Parse(ConfigurationManager.AppSettings["ATM:EnableContentApprovalDeadline"] ?? "false");
 
-            if (!enableContentApprovalDeadline)
+            if (enableContentApprovalDeadline)
             {
-                return;
+                SetupMappingProperties();
+            }
+            else
+            {
+                bool deleteContentApprovalDeadlineProperty = bool.Parse(ConfigurationManager.AppSettings["ATM:DeleteContentApprovalDeadlineProperty"] ?? "false");
+                if (deleteContentApprovalDeadlineProperty)
+                {
+                    DeleteMappingProperties();
+                }
             }
 
+        }
+
+        private void SetupMappingProperties()
+        {
             CreateOrDeleteTab("Content Approval", true);
 
             foreach (ContentType contentType in _contentTypeRepository.Service.List().Where(x => x.IsAvailable))
@@ -46,6 +53,16 @@ namespace AdvancedTask.Business
                     "Content approval deadline",
                     typeof(PropertyDate),
                     "Content Approval", 10);
+            }
+        }
+
+        private void DeleteMappingProperties()
+        {
+            foreach (ContentType contentType in _contentTypeRepository.Service.List().Where(x => x.IsAvailable))
+            {
+                DeletePropertyDefinition(
+                    contentType,
+                    ContentApprovalDeadlinePropertyName);
             }
         }
 
@@ -117,6 +134,17 @@ namespace AdvancedTask.Business
                 propertyDefinition.FieldOrder = propertyOrder.Value;
             }
             _propertyDefinitionRepository.Service.Save(propertyDefinition);
+        }
+
+        private void DeletePropertyDefinition(ContentType contentType, string propertyDefinitionName)
+        {
+            PropertyDefinition propertyDefinition = GetPropertyDefinition(contentType, propertyDefinitionName);
+            //propertyDefinition = propertyDefinition?.CreateWritableClone();
+
+            if (propertyDefinition != null)
+            {
+                _propertyDefinitionRepository.Service.Delete(propertyDefinition);
+            }
         }
 
         private PropertyDefinition GetPropertyDefinition(ContentType contentType, string propertyName, Type propertyDefinitionType = null)
