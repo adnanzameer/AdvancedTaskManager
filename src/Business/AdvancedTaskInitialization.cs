@@ -139,7 +139,6 @@ namespace AdvancedTask.Business
         private void DeletePropertyDefinition(ContentType contentType, string propertyDefinitionName)
         {
             PropertyDefinition propertyDefinition = GetPropertyDefinition(contentType, propertyDefinitionName);
-            //propertyDefinition = propertyDefinition?.CreateWritableClone();
 
             if (propertyDefinition != null)
             {
