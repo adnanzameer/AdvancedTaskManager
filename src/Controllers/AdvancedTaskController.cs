@@ -28,8 +28,7 @@ using Task = System.Threading.Tasks.Task;
 namespace AdvancedTask.Controllers
 {
     [EPiServer.Shell.Web.ScriptResource("ClientResources/Scripts/jquery.blockUI.js")]
-    [Gadget(ResourceType = typeof(AdvancedTaskController),
-           NameResourceKey = "GadgetName", DescriptionResourceKey = "GadgetDescription")]
+    [Gadget(ResourceType = typeof(AdvancedTaskController), NameResourceKey = "GadgetName", DescriptionResourceKey = "GadgetDescription")]
     [EPiServer.Shell.Web.CssResource("ClientResources/Content/AdvancedTaskGadget.css")]
     [EPiServer.Shell.Web.ScriptResource("ClientResources/Scripts/jquery.form.js")]
     [Authorize]
@@ -40,15 +39,18 @@ namespace AdvancedTask.Controllers
         IContentTypeRepository _contentTypeRepository;
         IUserNotificationRepository _userNotificationRepository;
         IApprovalEngine _approvalEngine;
+        LocalizationService _localizationService;
+
         private const string ContentApprovalDeadlinePropertyName = "ATM_ContentApprovalDeadline";
 
-        public AdvancedTaskController(IApprovalRepository approvalRepository, IContentRepository contentRepository, IContentTypeRepository contentTypeRepository, IUserNotificationRepository userNotificationRepository, IApprovalEngine approvalEngine)
+        public AdvancedTaskController(IApprovalRepository approvalRepository, IContentRepository contentRepository, IContentTypeRepository contentTypeRepository, IUserNotificationRepository userNotificationRepository, IApprovalEngine approvalEngine, LocalizationService localizationService)
         {
             _approvalRepository = approvalRepository;
             _contentRepository = contentRepository;
             _contentTypeRepository = contentTypeRepository;
             _userNotificationRepository = userNotificationRepository;
             _approvalEngine = approvalEngine;
+            _localizationService = localizationService;
         }
         private void CheckAccess()
         {
@@ -169,10 +171,26 @@ namespace AdvancedTask.Controllers
                             CanUserPublish = content.CanUserPublish(),
                             ContentReference = approval.ContentLink,
                             ContentName = content.Name,
-                            ContentType = _contentTypeRepository.Load(content.GetType().BaseType).DisplayName,
                             DateTime = approval.ActiveStepStarted.ToString("dd MMMM HH:mm"),
                             StartedBy = approval.StartedBy
                         };
+
+                        string contentName = _contentTypeRepository.Load(content.GetType().BaseType).DisplayName;
+                        if (string.IsNullOrWhiteSpace(contentName))
+                        {
+                            Type memberInfo = content.GetType().BaseType;
+                            if (memberInfo != null)
+                            {
+                                contentName = _localizationService.GetString("/contenttypes/" + memberInfo.Name.ToLower() + "/name", FallbackBehaviors.FallbackCulture);
+                            }
+                        }
+
+                        if (!string.IsNullOrWhiteSpace(contentName) && contentName.Contains("[Missing text"))
+                        {
+                            contentName = "";
+                        }
+
+                        customTask.ContentType = contentName;
 
                         //Get Notifications
                         PagedInternalNotificationMessageResult notifications = await GetNotifications(PrincipalInfo.CurrentPrincipal.Identity.Name, approval.ContentLink.ID.ToString(), "7");
@@ -191,9 +209,17 @@ namespace AdvancedTask.Controllers
                             customTask.NotificationUnread = false;
                         }
 
-                        customTask.Deadline = " - ";
+                        if (content is PageData)
+                        {
+                            customTask.Type = "Page";
+                        }
+                        else if (content is BlockData)
+                        {
+                            customTask.Type = "Block";
+                        }
 
                         bool enableContentApprovalDeadline = bool.Parse(ConfigurationManager.AppSettings["ATM:EnableContentApprovalDeadline"] ?? "false");
+                        int warningDays = int.Parse(ConfigurationManager.AppSettings["ATM:WaringDays"] ?? "4");
 
                         if (enableContentApprovalDeadline)
                         {
@@ -204,15 +230,6 @@ namespace AdvancedTask.Controllers
                                 DateTime.TryParse(propertyData.ToString(), out DateTime dateValue);
                                 if (dateValue != DateTime.MinValue)
                                 {
-                                    if (content is PageData)
-                                    {
-                                        customTask.Type = "Page";
-                                    }
-                                    else if (content is BlockData)
-                                    {
-                                        customTask.Type = "Block";
-                                    }
-
                                     if (!string.IsNullOrEmpty(customTask.Type))
                                     {
                                         customTask.Deadline = dateValue.ToString("dd MMMM HH:mm");
@@ -222,7 +239,7 @@ namespace AdvancedTask.Controllers
                                         {
                                             customTask.WarningColor = "red";
                                         }
-                                        else if (days > 0 && days < 4)
+                                        else if (days > 0 && days < warningDays)
                                         {
                                             customTask.WarningColor = "green";
                                         }
@@ -295,7 +312,7 @@ namespace AdvancedTask.Controllers
                     $"AND Content like '%\"contentLink\":\"{contentId}_%' " +
                     $"AND Content like '%status\":{step}%' " +
                     "AND Channel = 'epi-approval' " +
-                    "AND[Read] is NULL " +
+                    "AND [Read] is NULL " +
                     "order by Saved desc";
 
                 DbCommand command = db.CreateCommand();

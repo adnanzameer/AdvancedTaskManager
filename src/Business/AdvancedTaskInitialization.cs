@@ -2,7 +2,6 @@
 using EPiServer.DataAbstraction;
 using EPiServer.Framework;
 using EPiServer.Framework.Initialization;
-using EPiServer.Framework.Localization;
 using EPiServer.Security;
 using EPiServer.ServiceLocation;
 using System;
@@ -22,7 +21,6 @@ namespace AdvancedTask.Business
         private Injected<ITabDefinitionRepository> _tabDefinitionRepository;
         private Injected<IPropertyDefinitionRepository> _propertyDefinitionRepository;
         private Injected<IPropertyDefinitionTypeRepository> _propertyDefinitionTypeRepository;
-        private Injected<LocalizationService> _localizationService;
 
         public void Initialize(InitializationEngine context)
         {
