@@ -219,7 +219,7 @@ namespace AdvancedTask.Controllers
                         }
 
                         bool enableContentApprovalDeadline = bool.Parse(ConfigurationManager.AppSettings["ATM:EnableContentApprovalDeadline"] ?? "false");
-                        int warningDays = int.Parse(ConfigurationManager.AppSettings["ATM:WaringDays"] ?? "4");
+                        int warningDays = int.Parse(ConfigurationManager.AppSettings["ATM:WarningDays"] ?? "4");
 
                         if (enableContentApprovalDeadline)
                         {
