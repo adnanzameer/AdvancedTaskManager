@@ -132,7 +132,9 @@
         <td>
             <% if (!m.CanUserPublish)
                 { %>
-            <a href="<%= PageEditing.GetEditUrl(m.ContentReference) %>" id="id-<%= m.ApprovalId.ToString() %>" data-value="ID: <%= m.ContentReference.ID %> - <%= m.ContentName %>" target="_blank"><%= Html.Encode(m.ContentName) %> <span style="color: red" class="error-span" id="span-<%= m.ApprovalId.ToString() %>"></span></a>
+            <a href="<%= PageEditing.GetEditUrl(m.ContentReference) %>" id="id-<%= m.ApprovalId.ToString() %>" data-value="ID: <%= m.ContentReference.ID %> - <%= m.ContentName %>" target="_blank"><%= Html.Encode(m.ContentName) %> 
+                <span style="color: red" class="error-span" id="span-<%= m.ApprovalId.ToString() %>"></span>
+            </a>
             <% }
                 else
                 { %>
@@ -202,25 +204,25 @@
     var selectedContent = [];
 
     function selectionChanged(element) {
-        if (element.checked && element.id != 'chk') {
+        if (element.checked && element.id !== 'chk') {
             if (!selectedContent.includes(element.name)) {
-                selectedContent.push(element.name)
+                selectedContent.push(element.name);
             }
         } else {
             var index = selectedContent.indexOf(element.name);
-            if (index > -1 && element.id != 'chk') {
+            if (index > -1 && element.id !== 'chk') {
                 removeA(selectedContent, element.name);
 
-                var checkboxe = document.getElementById('chk');
-                if (selectedContent.length === 0 && checkboxe.checked) {
-                    checkboxe.checked = false;
+                var checkbox = document.getElementById('chk');
+                if (selectedContent.length === 0 && checkbox.checked) {
+                    checkbox.checked = false;
                 }
             }
 
             var name = element.name;
-            var element = document.getElementById('span-' + name);
-            if (element) {
-                element.textContent = "";
+            var element1 = document.getElementById('span-' + name);
+            if (element1) {
+                element1.textContent = "";
             }
         }
         setButtonText();
@@ -241,16 +243,16 @@
         var checkboxes = document.getElementsByClassName('checkbox');
         if (ele.checked) {
             for (var i = 0; i < checkboxes.length; i++) {
-                if (checkboxes[i].type == 'checkbox') {
+                if (checkboxes[i].type === 'checkbox') {
                     checkboxes[i].checked = true;
                     selectionChanged(checkboxes[i]);
                 }
             }
         } else {
-            for (var i = 0; i < checkboxes.length; i++)
-                if (checkboxes[i].type == 'checkbox') {
-                    checkboxes[i].checked = false;
-                    selectionChanged(checkboxes[i]);
+            for (var j = 0; j < checkboxes.length; j++)
+                if (checkboxes[j].type === 'checkbox') {
+                    checkboxes[j].checked = false;
+                    selectionChanged(checkboxes[j]);
                 }
         }
     }
@@ -268,12 +270,12 @@
 
     function Submit() {
         var comment = document.getElementById("approvalComment").value;
-        if (comment == "" || comment.length == 0 || comment == null) {
+        if (comment === "" || comment.length === 0) {
             alert("Add comment.");
             return false;
         } else {
             var message = "Are you sure that you want to approve the entire approval sequence? This will approve all remaining steps. This action cannot be undone.";
-            if (document.getElementById("publishContent").value == "true") {
+            if (document.getElementById("publishContent") && document.getElementById("publishContent").value === "true") {
                 message = "Are you sure that you want to approve the entire approval sequence and publish content? This will approve all remaining steps and publish selected content. This action cannot be undone.";
             }
             if (confirm(message)) {
@@ -285,9 +287,9 @@
     }
 
     function setButtonText() {
-        if (selectedContent.length > 0) {
+        if (selectedContent && selectedContent.length > 0) {
             ShowApproveSection();
-            if (document.getElementById("publishContent").value == "true") {
+            if (document.getElementById("publishContent") && document.getElementById("publishContent").value === "true") {
                 document.getElementById('button').textContent =
                     'Approve & Publish ' + selectedContent.length + ' Selected Content';
             } else {
@@ -317,11 +319,11 @@
 
     function ShowPublishErrorMessage() {
         var txt = "";
-        if (document.getElementById("publishContent").value == "true") {
+        if (document.getElementById("publishContent") && document.getElementById("publishContent").value === "true") {
             var checkboxes = document.getElementsByClassName('checkbox');
             var show = false;
             for (var i = 0; i < checkboxes.length; i++) {
-                if (checkboxes[i].type == 'checkbox' && checkboxes[i].checked) {
+                if (checkboxes[i].type === 'checkbox' && checkboxes[i].checked) {
                     var name = checkboxes[i].name;
                     if (name) {
                         var errorElement = document.getElementById('id-' + name);
@@ -336,12 +338,15 @@
                     }
                 }
             }
-            if (show) {
-                document.getElementById("lblMessage").innerHTML = txt + "<br/>";
-                ShowErrorMessage();
-            } else {
-                document.getElementById("lblMessage").innerHTML = "";
-                HideErrorMessage();
+
+            if (document.getElementById("lblMessage")) {
+                if (show) {
+                    document.getElementById("lblMessage").innerHTML = txt + "<br/>";
+                    ShowErrorMessage();
+                } else {
+                    document.getElementById("lblMessage").innerHTML = "";
+                    HideErrorMessage();
+                }
             }
         }
     }
@@ -349,38 +354,51 @@
     var coll = document.getElementsByClassName("collapsible");
     var i;
 
-    for (i = 0; i < coll.length; i++) {
-        coll[i].addEventListener("click", function () {
-            this.classList.toggle("active");
-            var content = this.nextElementSibling;
-            if (content.style.display === "block") {
-                content.style.display = "none";
-            } else {
-                content.style.display = "block";
-            }
-        });
+    if (coll) {
+        for (i = 0; i < coll.length; i++) {
+            coll[i].addEventListener("click",
+                function () {
+                    this.classList.toggle("active");
+                    var content = this.nextElementSibling;
+                    if (content.style.display === "block") {
+                        content.style.display = "none";
+                    } else {
+                        content.style.display = "block";
+                    }
+                });
+        }
     }
-
 
     function ShowApproveSection() {
         var x = document.getElementById("approve");
-        x.style.display = "block";
+        if (x) {
+            x.style.display = "block";
+        }
     }
 
     function HideApproveSection() {
         var x = document.getElementById("approve");
-        x.style.display = "none";
-        document.getElementById("lblMessage").innerHTML = "";
+        if (x) {
+            x.style.display = "none";
+        }
+        if (document.getElementById("lblMessage")) {
+            document.getElementById("lblMessage").innerHTML = "";
+        }
     }
 
     function ShowErrorMessage() {
         var x = document.getElementById("errorMessage");
-        x.style.display = "block";
+        if (x) {
+            x.style.display = "block";
+        }
     }
 
     function HideErrorMessage() {
         var x = document.getElementById("errorMessage");
-        x.style.display = "none";
+        if (x) {
+            x.style.display = "none";
+        }
     }
 
 </script>
+
