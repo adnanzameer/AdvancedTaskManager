@@ -109,6 +109,8 @@ To turn on or off one or more feature, use the following **<appSettings>** eleme
 
 ![Configuring features](assets/docsimages/image026.png)
 
+## Install 
+
 ```Install-Package AdvancedTaskManager```
 
 https://nuget.episerver.com/package/?id=AdvancedTaskManager
