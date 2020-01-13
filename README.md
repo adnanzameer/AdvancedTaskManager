@@ -19,9 +19,8 @@ The gadget provides the following information about the task to the Editor:
 * Deadline (optional)
 
 The list of current features is:
-
 * [Task ordering](#task-ordering)
-* [Deadline field for the content approval](#deadline-field-for-content-approval)
+* [Deadline field for the content approval](#deadline-field-for-the-content-approval-optional)
 * [User notifications associated with the task](#user-notifications-associated-with-the-task)
 * [Approve entire approval sequence](#approve-entire-approval-sequence)
 * [Publish content after approval](#publish-content-after-approval)
@@ -50,12 +49,14 @@ The deadline property functionality is disabled by default and can be enabled (i
 
 ![Enable deadline](assets/docsimages/image012.png)
 
-By enabling the ```Content approval deadline``` The property ```Content approval deadline```  will be added in all  PageTyes and BlockTypes under ```Content Approval```.
+By enabling the ```Content approval deadline``` The property ```Content approval deadline``` will be added in all  PageTyes and BlockTypes under ```Content Approval``` Tab.
+
 ![Enable Content approval deadline](assets/docsimages/image014.png)
 
 The deadline property has three states in the gadget:
 
 * **Warning**
+
 The ```Warning``` state, highlighted in green informs approvers of the task that needs attention to be approved. The duration of the act state is 4 days by default. It means if the content deadline is within 4 days ```deadline row``` will be highlighted in green.
 
 You can set the duration of the ```Warning``` state by adding the **<appSettings>** element of the **Web.config**.
@@ -63,12 +64,15 @@ You can set the duration of the ```Warning``` state by adding the **<appSettings
 ![Warning notification duration](assets/docsimages/image010.png)
 
 * **Danger**
+
 The ```Danger``` state highlighted in red indicates the deadline date/times has passed.
 
 * **Normal**
+
 The ```Normal``` state is not represent by any colour as it shows there is still time for Approvers to prioritize the task.
 
 Setting the **<appSettings> ATM:EnableContentApprovalDeadline** element of the **Web.config** to **false** will hide the property and Tab from CMS editor UI.
+ 
 If you want to delete the property from the CMS, add the following **<appSettings>** element of the **Web.config**
 
 ![Disable deadline](assets/docsimages/image016.png)
