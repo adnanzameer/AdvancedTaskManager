@@ -2,9 +2,9 @@
  
 Currently the User notification and Tasks (Awaiting Review) are disconnected and provide very basic information to the editors.
 
-![Tasks Pane](assets/docsimages/image001.png)
+![Tasks pane](assets/docsimages/image001.png)
 
-![User Notification](assets/docsimages/image003.png)
+![User notification](assets/docsimages/image003.png)
 
 The idea behind this project is two-fold. The first purpose is to build a more versatile Content Approval Sequence (Awaiting Review) task management gadget to extend the information available to the editors. The second purpose is to combine user notifications with task and empower Content Approvers to act on their tasks within single interface.  
 
@@ -28,7 +28,7 @@ The list of current features is:
 
 Some features are disabled by default, but you can decide which ones are enabled by Configuring features.
 
-##Task ordering
+## Task ordering
 
 The gadget gives editors an option to sort through all the tasks with status Awaiting Review by the following columns:
 * Order tasks by time/date
@@ -38,79 +38,77 @@ The gadget gives editors an option to sort through all the tasks with status Awa
 * Order tasks by user who submitted request
 * Order task by deadline
 
-![Advance Task Manager](assets/docsimages/image007.gif)
+![Advanced Task Manager](assets/docsimages/image007.gif)
 
-##Deadline field for the content approval (Optional)
+## Deadline field for the content approval (Optional)
 
-![User Notification](assets/docsimages/image008.png)
+![Deadline field for the content approval](assets/docsimages/image008.png)
 
 The deadline property is a date/time property that allows editors to set priority against the content (Page or Block) so that the Approvers are aware of the priority ahead of approval of the content.
+
+The deadline property functionality is disabled by default and can be enabled (if required) by adding the following **<appSettings>** element of the **Web.config**.
+
+![Enable deadline](assets/docsimages/image012.png)
+
+By enabling the ```Content approval deadline``` The property ```Content approval deadline```  will be added in all  PageTyes and BlockTypes under ```Content Approval```.
+![Enable Content approval deadline](assets/docsimages/image014.png)
 
 The deadline property has three states in the gadget:
 
 * **Warning**
-The '''Warning''' state, highlighted in green informs approvers of the task that needs attention to be approved. The duration of the act state is 4 days by default. It means if the content deadline is within 4 days '''deadline row''' will be highlighted in green.
+The ```Warning``` state, highlighted in green informs approvers of the task that needs attention to be approved. The duration of the act state is 4 days by default. It means if the content deadline is within 4 days ```deadline row``` will be highlighted in green.
 
-You can set the duration of the '''Warning''' state by adding the **<appSettings>** element of the **Web.config**.
+You can set the duration of the ```Warning``` state by adding the **<appSettings>** element of the **Web.config**.
 
-![User Notification](assets/docsimages/image010.png)
+![Warning notification duration](assets/docsimages/image010.png)
 
 * **Danger**
-The '''Danger''' state highlighted in red indicates the deadline date/times has passed.
+The ```Danger``` state highlighted in red indicates the deadline date/times has passed.
 
 * **Normal**
-The '''Normal''' state is not represent by any colour as it shows there is still time for Approvers to prioritize the task.
-
-The deadline property functionality is disabled by default and can be enabled (if required) by adding the following **<appSettings>** element of the **Web.config**.
-
-![User Notification](assets/docsimages/image012.png)
-
-By enabling the '''Content approval deadline''' The property '''Content approval deadline'''  will be added in all  PageTyes and BlockTypes under '''Content Approval'''.
-![User Notification](assets/docsimages/image014.png)
-
+The ```Normal``` state is not represent by any colour as it shows there is still time for Approvers to prioritize the task.
 
 Setting the **<appSettings> ATM:EnableContentApprovalDeadline** element of the **Web.config** to **false** will hide the property and Tab from CMS editor UI.
 If you want to delete the property from the CMS, add the following **<appSettings>** element of the **Web.config**
 
-![User Notification](assets/docsimages/image016.png)
+![Disable deadline](assets/docsimages/image016.png)
 
 Please note that the **ATM:DeleteContentApprovalDeadlineProperty** will only trigger if **ATM:EnableContentApprovalDeadline** element is set to false.
 
-##User notifications associated with the task
+## User notifications associated with the task
  
-![User Notification](assets/docsimages/image018.png)
+![User notification with task](assets/docsimages/image018.png)
  
 The gadget allows user notifications associated with the task to be ‘read’ and enable the notification icon to be more useful as opposed to accumulating notifications.
 
 When the editors open or refresh the gadget, all user tasks with unread notifications are highlighted and the notifications then are marked as read automatically.  It means in the editor notification section the notifications will be marked as read. 
  
-![User Notification](assets/docsimages/image020.png)
+![User notification](assets/docsimages/image020.png)
  
-##Approve entire approval sequence
+## Approve entire approval sequence
  
 The gadget informs the editor to approve the entire Content Approval Sequence of single or multiple content. Comment field is required.
  
-![User Notification](assets/docsimages/image022.png)
+![Approve entire approval sequence](assets/docsimages/image022.png)
  
-##Publish content after approval
+## Publish content after approval
  
-If the editor has published rights for the content, the option for '''Publish selected content after approval''' will be enabled that allows the editor publish the content after approval.
+If the editor has published rights for the content approval, the option for ```Publish selected content after approval``` will be enabled that allows the editor publish the content after approval.
 
 If the editor has published rights for some of the content after approving all content then only content the editor can publish will be published. The warning messages will appear against the content which the editor cannot publish.
 
-![User Notification](assets/docsimages/image024.png)
+![Publish content after approval](assets/docsimages/image024.png)
 
-##Configuring features
+## Configuring features
 
 To turn on or off one or more feature, use the following **<appSettings>** elements of **Web.config**. By way of example set false on the feature that should not be available.
 
-![User Notification](assets/docsimages/image026.png)
-
+![Configuring features](assets/docsimages/image026.png)
 
 ```Install-Package AdvancedTaskManager```
 
 https://nuget.episerver.com/package/?id=AdvancedTaskManager
 
-Add the '''Advanced Task Manager''' gadget in the dashboard
+Add the ```Advanced Task Manager``` gadget in the dashboard
 
-![User Notification](assets/docsimages/image028.png)
+![Advanced task manager gadet](assets/docsimages/image028.png)
