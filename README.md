@@ -1,18 +1,18 @@
-﻿# Advanced Task Manager
+# Advanced Task Manager
  
-Currently the User notification and Tasks (Awaiting Review) are disconnected and provide very basic information to the editors.
+Currently, the User notification and Tasks (Awaiting Review) are disconnected and provide very basic information to the editors.
 
 ![Tasks pane](assets/docsimages/image001.png)
 
 ![User notification](assets/docsimages/image003.png)
 
-The idea behind this project is two-fold. The first purpose is to build a more versatile Content Approval Sequence (Awaiting Review) task management gadget to extend the information available to the editors. The second purpose is to combine user notifications with task and empower Content Approvers to act on their tasks within single interface.  
+The idea behind this project is two-fold. The first purpose is to build a more versatile Content Approval Sequence (Awaiting Review) task management gadget to extend the information available to the editors. The second purpose is to combine user notifications with tasks and empower Content Approvers to act on their tasks within a single interface.  
 
 ![Advanced Task Manager](assets/docsimages/image005.png)
 
 The gadget provides the following information about the task to the Editor:
 * Content Name
-* Content Type
+* Content-Type
 * Type
 * Submitted Date/Time
 * Started By
@@ -34,8 +34,8 @@ The gadget gives editors an option to sort through all the tasks with status Awa
 * Order tasks by content type
 * Order tasks by type
 * Order tasks by category
-* Order tasks by user who submitted request
-* Order task by deadline
+* Order tasks by a user who submitted the request
+* Order task by the deadline
 
 ![Advanced Task Manager](assets/docsimages/image007.gif)
 
@@ -57,7 +57,7 @@ The deadline property has three states in the gadget:
 
 * **Warning**
 
-The ```Warning``` state, highlighted in green informs approvers of the task that needs attention to be approved. The duration of the act state is 4 days by default. It means if the content deadline is within 4 days ```deadline row``` will be highlighted in green.
+The ```Warning``` state, highlighted in green informs approvers of the task that needs attention to be approved. The duration of the ```Warning``` state is 4 days by default. It means if the content deadline is within 4 days ```deadline row``` will be highlighted in green.
 
 You can set the duration of the ```Warning``` state by adding the **<appSettings>** element of the **Web.config**.
 
@@ -65,11 +65,11 @@ You can set the duration of the ```Warning``` state by adding the **<appSettings
 
 * **Danger**
 
-The ```Danger``` state highlighted in red indicates the deadline date/times has passed.
+The ```Danger``` state highlighted in red indicates the deadline date/time has passed.
 
 * **Normal**
 
-The ```Normal``` state is not represent by any colour as it shows there is still time for Approvers to prioritize the task.
+The ```Normal``` state is not represented by any color as it shows there is still time for Approvers to prioritize the task.
 
 Setting the **<appSettings> ATM:EnableContentApprovalDeadline** element of the **Web.config** to **false** will hide the property and Tab from CMS editor UI.
  
@@ -91,13 +91,13 @@ When the editors open or refresh the gadget, all user tasks with unread notifica
  
 ## Approve entire approval sequence
  
-The gadget informs the editor to approve the entire Content Approval Sequence of single or multiple content. Comment field is required.
+The gadget informs the editor to approve the entire Content Approval Sequence of single or multiple contents. Comment field is required.
  
 ![Approve entire approval sequence](assets/docsimages/image022.png)
  
 ## Publish content after approval
  
-If the editor has published rights for the content approval, the option for ```Publish selected content after approval``` will be enabled that allows the editor publish the content after approval.
+If the editor has published rights for the content approval, the option for ```Publish selected content after approval``` will be enabled that allows the editor to publish the content after approval.
 
 If the editor has published rights for some of the content after approving all content then only content the editor can publish will be published. The warning messages will appear against the content which the editor cannot publish.
 
@@ -105,7 +105,7 @@ If the editor has published rights for some of the content after approving all c
 
 ## Configuring features
 
-To turn on or off one or more feature, use the following **<appSettings>** elements of **Web.config**. By way of example set false on the feature that should not be available.
+To turn on or off one or more features, use the following **<appSettings>** elements of **Web.config**. By way of an example set false on the feature that should not be available.
 
 ![Configuring features](assets/docsimages/image026.png)
 
