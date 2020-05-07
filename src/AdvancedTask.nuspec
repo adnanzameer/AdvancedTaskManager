@@ -3,14 +3,14 @@
     <metadata>
         <id>AdvancedTaskManager</id>
         <title>Advanced Task Manager</title>
-        <version>1.0.0</version>
+        <version>1.2.0</version>
         <authors>Adnan Zameer</authors>
         <owners>Adnan Zameer</owners>
         <licenseUrl>https://www.adnanzameer.com</licenseUrl>
         <projectUrl>https://github.com/adnanzameer/AdvancedTaskManager</projectUrl>
         <iconUrl>https://i.ibb.co/tLVks9K/atm.png</iconUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
-        <description>Administration of Awaiting Review Tasks</description>
+        <description>Administration of Awaiting Review Tasks of Content Approval</description>
         <summary></summary>        
         <language>en-US</language>
       <dependencies>
