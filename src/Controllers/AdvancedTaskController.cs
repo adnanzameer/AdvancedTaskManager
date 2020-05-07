@@ -147,16 +147,18 @@ namespace AdvancedTask.Controllers
             };
 
             var list = await _approvalRepository.ListAsync(query, (pageNumber - 1) * pageSize, pageSize);
-            model.TotalItemsCount = Convert.ToInt32(list.TotalCount);
-            var count = 0;
+
+            var totalItems = _approvalRepository.ListAsync(query, 0, Convert.ToInt32(list.TotalCount)).GetAwaiter().GetResult();
+
+            model.TotalItemsCount = totalItems.PagedResult.Count(x => x is ContentApproval); 
+
             var taskList = new List<ContentTask>();
             foreach (var task in list.PagedResult)
             {
                 if (task is ContentApproval approval)
                 {
-                    count += 1;
                     _contentRepository.TryGet(approval.ContentLink, out IContent content);
-                    
+
                     if (content != null)
                     {
                         //Create Task Object
@@ -282,9 +284,6 @@ namespace AdvancedTask.Controllers
                     }
                 }
             }
-
-            if (model.TotalItemsCount <= pageSize)
-                model.TotalItemsCount = count;
 
             //Sorting of the Columns 
             switch (sorting)
