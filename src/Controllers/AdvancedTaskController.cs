@@ -34,12 +34,12 @@ namespace AdvancedTask.Controllers
     [Authorize]
     public class AdvancedTaskController : Controller
     {
-        IApprovalRepository _approvalRepository;
-        IContentRepository _contentRepository;
-        IContentTypeRepository _contentTypeRepository;
-        IUserNotificationRepository _userNotificationRepository;
-        IApprovalEngine _approvalEngine;
-        LocalizationService _localizationService;
+        private readonly IApprovalRepository _approvalRepository;
+        private readonly IContentRepository _contentRepository;
+        private readonly IContentTypeRepository _contentTypeRepository;
+        private readonly IUserNotificationRepository _userNotificationRepository;
+        private readonly IApprovalEngine _approvalEngine;
+        private readonly LocalizationService _localizationService;
 
         private const string ContentApprovalDeadlinePropertyName = "ATM_ContentApprovalDeadline";
 
@@ -69,10 +69,10 @@ namespace AdvancedTask.Controllers
                 ApproveContent(taskValues, approvalComment, !string.IsNullOrEmpty(publishContent) && publishContent == "true");
             }
 
-            int pageNr = pageNumber ?? 1;
-            int pageSz = pageSize ?? 30;
+            var pageNr = pageNumber ?? 1;
+            var pageSz = pageSize ?? 30;
 
-            AdvancedTaskIndexViewData viewModel = new AdvancedTaskIndexViewData
+            var viewModel = new AdvancedTaskIndexViewData
             {
                 PageNumber = pageNr,
                 PagerSize = 4,
@@ -80,13 +80,12 @@ namespace AdvancedTask.Controllers
                 Sorting = sorting
             };
 
-            Task<List<ContentTask>> task = Task.Run(async () => await GetData(pageNr, pageSz, sorting));
+            var task = Task.Run(async () => await GetData(pageNr, pageSz, sorting, viewModel));
             {
-                List<ContentTask> contentTaskList = task.Result;
-                viewModel.TotalItemsCount = contentTaskList.Count;
+                var contentTaskList = task.Result;
                 viewModel.ContentTaskList = contentTaskList;
 
-                int count = contentTaskList.Count(x => x.CanUserPublish);
+                var count = contentTaskList.Count(x => x.CanUserPublish);
                 if (count != 0)
                 {
                     viewModel.HasPublishAccess = true;
@@ -124,13 +123,10 @@ namespace AdvancedTask.Controllers
                                 else
                                 {
                                     _contentRepository.TryGet(contentApproval.ContentLink, out BlockData block);
-                                    if (block != null)
+                                    if (block != null && (block as IContent).CanUserPublish())
                                     {
-                                        if ((block as IContent).CanUserPublish())
-                                        {
-                                            IContent clone = block.CreateWritableClone() as IContent;
-                                            _contentRepository.Save(clone, SaveAction.Publish, AccessLevel.Publish);
-                                        }
+                                        IContent clone = block.CreateWritableClone() as IContent;
+                                        _contentRepository.Save(clone, SaveAction.Publish, AccessLevel.Publish);
                                     }
 
                                 }
@@ -141,31 +137,32 @@ namespace AdvancedTask.Controllers
             }
         }
 
-        private async Task<List<ContentTask>> GetData(int pageNumber, int pageSize, string sorting)
+        private async Task<List<ContentTask>> GetData(int pageNumber, int pageSize, string sorting, AdvancedTaskIndexViewData model)
         {
             //List of All task for the user 
-            ApprovalQuery query = new ApprovalQuery
+            var query = new ApprovalQuery
             {
                 Status = ApprovalStatus.InReview,
                 Username = PrincipalInfo.CurrentPrincipal.Identity.Name
             };
 
-            PagedApprovalResult list = await _approvalRepository.ListAsync(query, (pageNumber - 1) * pageSize, pageSize);
+            var list = await _approvalRepository.ListAsync(query, (pageNumber - 1) * pageSize, pageSize);
 
-            List<ContentTask> taskList = new List<ContentTask>();
-            foreach (Approval task in list.PagedResult)
+            var totalItems = _approvalRepository.ListAsync(query, 0, Convert.ToInt32(list.TotalCount)).GetAwaiter().GetResult();
+
+            model.TotalItemsCount = totalItems.PagedResult.Count(x => x is ContentApproval); 
+
+            var taskList = new List<ContentTask>();
+            foreach (var task in list.PagedResult)
             {
-                ContentApproval approval = task as ContentApproval;
-
-                if (approval != null)
+                if (task is ContentApproval approval)
                 {
                     _contentRepository.TryGet(approval.ContentLink, out IContent content);
-
 
                     if (content != null)
                     {
                         //Create Task Object
-                        ContentTask customTask = new ContentTask
+                        var customTask = new ContentTask
                         {
                             ApprovalId = approval.ID,
                             CanUserPublish = content.CanUserPublish(),
@@ -175,10 +172,27 @@ namespace AdvancedTask.Controllers
                             StartedBy = approval.StartedBy
                         };
 
-                        string contentName = _contentTypeRepository.Load(content.GetType().BaseType).DisplayName;
+                        var contentName = "";
+
+                        var contentType = _contentTypeRepository.Load(content.GetType().BaseType);
+
+                        if (contentType != null)
+                        {
+                            contentName = contentType.DisplayName;
+                        }
+                        else
+                        {
+                            contentType = _contentTypeRepository.Load(content.GetType());
+
+                            if (contentType != null)
+                            {
+                                contentName = contentType.DisplayName;
+                            }
+                        }
+
                         if (string.IsNullOrWhiteSpace(contentName))
                         {
-                            Type memberInfo = content.GetType().BaseType;
+                            var memberInfo = content.GetType().BaseType;
                             if (memberInfo != null)
                             {
                                 contentName = _localizationService.GetString("/contenttypes/" + memberInfo.Name.ToLower() + "/name", FallbackBehaviors.FallbackCulture);
@@ -193,11 +207,11 @@ namespace AdvancedTask.Controllers
                         customTask.ContentType = contentName;
 
                         //Get Notifications
-                        PagedInternalNotificationMessageResult notifications = await GetNotifications(PrincipalInfo.CurrentPrincipal.Identity.Name, approval.ContentLink.ID.ToString(), "7");
+                        var notifications = await GetNotifications(PrincipalInfo.CurrentPrincipal.Identity.Name, approval.ContentLink.ID.ToString(), "7");
                         if (notifications != null && notifications.PagedResult != null && notifications.PagedResult.Any())
                         {
                             //Mark Notification Read
-                            foreach (InternalNotificationMessage notification in notifications.PagedResult)
+                            foreach (var notification in notifications.PagedResult)
                             {
                                 await _userNotificationRepository.MarkUserNotificationAsReadAsync(new NotificationUser(PrincipalInfo.CurrentPrincipal.Identity.Name), notification.ID);
                             }
@@ -210,21 +224,36 @@ namespace AdvancedTask.Controllers
                         }
 
                         if (content is PageData)
-                        {
                             customTask.Type = "Page";
-                        }
                         else if (content is BlockData)
                         {
                             customTask.Type = "Block";
+
+                            if (!string.IsNullOrWhiteSpace(contentName) && contentName.Equals("Form container"))
+                            {
+                                customTask.Type = "Form";
+                            }
+                        }
+                        else if (content is ImageData)
+                        {
+                            customTask.Type = "Image";
+                        }
+                        else if (content is MediaData)
+                        {
+                            customTask.Type = "Media";
+                            if (!string.IsNullOrWhiteSpace(contentName) && contentName.Equals("Video"))
+                            {
+                                customTask.Type = "Video";
+                            }
                         }
 
-                        bool enableContentApprovalDeadline = bool.Parse(ConfigurationManager.AppSettings["ATM:EnableContentApprovalDeadline"] ?? "false");
-                        int warningDays = int.Parse(ConfigurationManager.AppSettings["ATM:WarningDays"] ?? "4");
+                        var enableContentApprovalDeadline = bool.Parse(ConfigurationManager.AppSettings["ATM:EnableContentApprovalDeadline"] ?? "false");
+                        var warningDays = int.Parse(ConfigurationManager.AppSettings["ATM:WarningDays"] ?? "4");
 
                         if (enableContentApprovalDeadline)
                         {
                             //Deadline Property of The Content
-                            PropertyData propertyData = content.Property.Get(ContentApprovalDeadlinePropertyName) ?? content.Property[ContentApprovalDeadlinePropertyName];
+                            var propertyData = content.Property.Get(ContentApprovalDeadlinePropertyName) ?? content.Property[ContentApprovalDeadlinePropertyName];
                             if (propertyData != null)
                             {
                                 DateTime.TryParse(propertyData.ToString(), out DateTime dateValue);
@@ -233,7 +262,7 @@ namespace AdvancedTask.Controllers
                                     if (!string.IsNullOrEmpty(customTask.Type))
                                     {
                                         customTask.Deadline = dateValue.ToString("dd MMMM HH:mm");
-                                        int days = DateTime.Now.CountDaysInRange(dateValue);
+                                        var days = DateTime.Now.CountDaysInRange(dateValue);
 
                                         if (days == 0)
                                         {
@@ -305,8 +334,8 @@ namespace AdvancedTask.Controllers
             IAsyncDatabaseExecutor db = ServiceLocator.Current.GetInstance<IAsyncDatabaseExecutor>();
             return new PagedInternalNotificationMessageResult(await db.ExecuteAsync(async () =>
             {
-                List<InternalNotificationMessage> entries = new List<InternalNotificationMessage>();
-                string query =
+                var entries = new List<InternalNotificationMessage>();
+                var query =
                     "SELECT pkID AS ID, Recipient, Sender, Channel, [Type], [Subject], Content, Sent, SendAt, Saved, [Read], Category FROM [tblNotificationMessage] " +
                     $"WHERE Recipient = '{user}' " +
                     $"AND Content like '%\"contentLink\":\"{contentId}_%' " +
@@ -315,11 +344,11 @@ namespace AdvancedTask.Controllers
                     "AND [Read] is NULL " +
                     "order by Saved desc";
 
-                DbCommand command = db.CreateCommand();
+                var command = db.CreateCommand();
                 command.CommandText = query;
                 command.CommandType = CommandType.Text;
 
-                using (DbDataReader reader = await command.ExecuteReaderAsync().ConfigureAwait(false))
+                using (var reader = await command.ExecuteReaderAsync().ConfigureAwait(false))
                 {
                     while (reader.Read())
                     {
