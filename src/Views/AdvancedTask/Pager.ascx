@@ -59,12 +59,28 @@
     </div>
 
     <div class="pagerright">
-        <% Html.BeginGadgetForm("Index"); %>
-            <input type="submit" class="refresh" value="" />
-            <input type="text" name="pageSize" class="refreshinput" value="<%=Model.PageSize %>" />
-            <label class="refreshlabel">
-                Page size:
-            </label>
-        <% Html.EndForm(); %>
+        <input type="submit" class="refresh" value="" />
+        <input type="text" name="pageSize" class="refreshinput pageSize" value="<%=Model.PageSize %>" />
+        <label class="refreshlabel">
+            Page size:
+        </label>
     </div>
 </div>
+
+<script type="text/javascript">
+    $('.refresh').click(function () {
+        var results = 30;
+        if ($('.pageSize').val()) {
+            results = $(".pageSize").val();
+        }
+        epi.gadget.loadView(this, { 'pageNumber': '1', 'pageSize': results, 'sorting': '', 'action': 'Index' }); return false;
+    });
+
+
+    $('.pageSize').keypress(function (e) {
+        var code = e.keyCode || e.which;
+        if (code === 13) {
+            $('.refresh').trigger('click');
+        }
+    });
+</script>
