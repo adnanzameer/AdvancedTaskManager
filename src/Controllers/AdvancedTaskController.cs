@@ -23,6 +23,7 @@ using System.Linq;
 using System.Security;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using EPiServer.Approvals.FallbackApprovals.Internal;
 using Task = System.Threading.Tasks.Task;
 
 namespace AdvancedTask.Controllers
@@ -147,142 +148,160 @@ namespace AdvancedTask.Controllers
             };
 
             var list = await _approvalRepository.ListAsync(query, (pageNumber - 1) * pageSize, pageSize);
+            model.TotalItemsCount = Convert.ToInt32(list.TotalCount);
 
-            var totalItems = _approvalRepository.ListAsync(query, 0, Convert.ToInt32(list.TotalCount)).GetAwaiter().GetResult();
-
-            model.TotalItemsCount = totalItems.PagedResult.Count(x => x is ContentApproval); 
-
+            var showApprovalTypeColumn = false;
             var taskList = new List<ContentTask>();
+
             foreach (var task in list.PagedResult)
             {
+                var approvalType = "";
+                IContent content = null;
+                var contentReference = ContentReference.EmptyReference;
                 if (task is ContentApproval approval)
                 {
-                    _contentRepository.TryGet(approval.ContentLink, out IContent content);
+                    approvalType = "Content";
+                    contentReference = approval.ContentLink;
+                    _contentRepository.TryGet(contentReference, out content);
+                }
+                else if (task is FallbackApproval fallBack)
+                {
+                    showApprovalTypeColumn = true;
+                    approvalType = "Change";
+                    var pageId = fallBack.Reference.AbsolutePath.Replace("/", "");
 
-                    if (content != null)
+                    int.TryParse(pageId, out int contentId);
+                    if (contentId != 0)
                     {
-                        //Create Task Object
-                        var customTask = new ContentTask
-                        {
-                            ApprovalId = approval.ID,
-                            CanUserPublish = content.CanUserPublish(),
-                            ContentReference = approval.ContentLink,
-                            ContentName = content.Name,
-                            DateTime = approval.ActiveStepStarted.ToString("dd MMMM HH:mm"),
-                            StartedBy = approval.StartedBy
-                        };
+                        _contentRepository.TryGet(new ContentReference(contentId), out content);
+                    }
+                }
 
-                        var contentName = "";
+                if (content != null)
+                {
+                    //Create Task Object
+                    var customTask = new ContentTask
+                    {
+                        ApprovalId = task.ID,
+                        CanUserPublish = content.CanUserPublish(),
+                        ContentReference = content.ContentLink,
+                        ContentName = content.Name,
+                        DateTime = task.ActiveStepStarted.ToString("dd MMMM HH:mm"),
+                        StartedBy = task.StartedBy,
+                        ApprovalType = approvalType
+                    };
 
-                        var contentType = _contentTypeRepository.Load(content.GetType().BaseType);
+                    var contentName = "";
+
+                    var contentType = _contentTypeRepository.Load(content.GetType().BaseType);
+
+                    if (contentType != null)
+                    {
+                        contentName = contentType.DisplayName;
+                    }
+                    else
+                    {
+                        contentType = _contentTypeRepository.Load(content.GetType());
 
                         if (contentType != null)
                         {
                             contentName = contentType.DisplayName;
                         }
-                        else
-                        {
-                            contentType = _contentTypeRepository.Load(content.GetType());
+                    }
 
-                            if (contentType != null)
+                    if (string.IsNullOrWhiteSpace(contentName))
+                    {
+                        var memberInfo = content.GetType().BaseType;
+                        if (memberInfo != null)
+                        {
+                            contentName = _localizationService.GetString("/contenttypes/" + memberInfo.Name.ToLower() + "/name", FallbackBehaviors.FallbackCulture);
+                        }
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(contentName) && contentName.Contains("[Missing text"))
+                    {
+                        contentName = "";
+                    }
+
+                    customTask.ContentType = contentName;
+
+                    //Get Notifications
+                    var notifications = await GetNotifications(PrincipalInfo.CurrentPrincipal.Identity.Name, content.ContentLink.ID.ToString(), "7");
+                    if (notifications != null && notifications.PagedResult != null && notifications.PagedResult.Any())
+                    {
+                        //Mark Notification Read
+                        foreach (var notification in notifications.PagedResult)
+                        {
+                            await _userNotificationRepository.MarkUserNotificationAsReadAsync(new NotificationUser(PrincipalInfo.CurrentPrincipal.Identity.Name), notification.ID);
+                        }
+
+                        customTask.NotificationUnread = true;
+                    }
+                    else
+                    {
+                        customTask.NotificationUnread = false;
+                    }
+
+                    if (content is PageData)
+                        customTask.Type = "Page";
+                    else if (content is BlockData)
+                    {
+                        customTask.Type = "Block";
+
+                        if (!string.IsNullOrWhiteSpace(contentName) && contentName.Equals("Form container"))
+                        {
+                            customTask.Type = "Form";
+                        }
+                    }
+                    else if (content is ImageData)
+                    {
+                        customTask.Type = "Image";
+                    }
+                    else if (content is MediaData)
+                    {
+                        customTask.Type = "Media";
+                        if (!string.IsNullOrWhiteSpace(contentName) && contentName.Equals("Video"))
+                        {
+                            customTask.Type = "Video";
+                        }
+                    }
+
+                    var enableContentApprovalDeadline = bool.Parse(ConfigurationManager.AppSettings["ATM:EnableContentApprovalDeadline"] ?? "false");
+                    var warningDays = int.Parse(ConfigurationManager.AppSettings["ATM:WarningDays"] ?? "4");
+
+                    if (enableContentApprovalDeadline)
+                    {
+                        //Deadline Property of The Content
+                        var propertyData = content.Property.Get(ContentApprovalDeadlinePropertyName) ?? content.Property[ContentApprovalDeadlinePropertyName];
+                        if (propertyData != null)
+                        {
+                            DateTime.TryParse(propertyData.ToString(), out DateTime dateValue);
+                            if (dateValue != DateTime.MinValue)
                             {
-                                contentName = contentType.DisplayName;
-                            }
-                        }
-
-                        if (string.IsNullOrWhiteSpace(contentName))
-                        {
-                            var memberInfo = content.GetType().BaseType;
-                            if (memberInfo != null)
-                            {
-                                contentName = _localizationService.GetString("/contenttypes/" + memberInfo.Name.ToLower() + "/name", FallbackBehaviors.FallbackCulture);
-                            }
-                        }
-
-                        if (!string.IsNullOrWhiteSpace(contentName) && contentName.Contains("[Missing text"))
-                        {
-                            contentName = "";
-                        }
-
-                        customTask.ContentType = contentName;
-
-                        //Get Notifications
-                        var notifications = await GetNotifications(PrincipalInfo.CurrentPrincipal.Identity.Name, approval.ContentLink.ID.ToString(), "7");
-                        if (notifications != null && notifications.PagedResult != null && notifications.PagedResult.Any())
-                        {
-                            //Mark Notification Read
-                            foreach (var notification in notifications.PagedResult)
-                            {
-                                await _userNotificationRepository.MarkUserNotificationAsReadAsync(new NotificationUser(PrincipalInfo.CurrentPrincipal.Identity.Name), notification.ID);
-                            }
-
-                            customTask.NotificationUnread = true;
-                        }
-                        else
-                        {
-                            customTask.NotificationUnread = false;
-                        }
-
-                        if (content is PageData)
-                            customTask.Type = "Page";
-                        else if (content is BlockData)
-                        {
-                            customTask.Type = "Block";
-
-                            if (!string.IsNullOrWhiteSpace(contentName) && contentName.Equals("Form container"))
-                            {
-                                customTask.Type = "Form";
-                            }
-                        }
-                        else if (content is ImageData)
-                        {
-                            customTask.Type = "Image";
-                        }
-                        else if (content is MediaData)
-                        {
-                            customTask.Type = "Media";
-                            if (!string.IsNullOrWhiteSpace(contentName) && contentName.Equals("Video"))
-                            {
-                                customTask.Type = "Video";
-                            }
-                        }
-
-                        var enableContentApprovalDeadline = bool.Parse(ConfigurationManager.AppSettings["ATM:EnableContentApprovalDeadline"] ?? "false");
-                        var warningDays = int.Parse(ConfigurationManager.AppSettings["ATM:WarningDays"] ?? "4");
-
-                        if (enableContentApprovalDeadline)
-                        {
-                            //Deadline Property of The Content
-                            var propertyData = content.Property.Get(ContentApprovalDeadlinePropertyName) ?? content.Property[ContentApprovalDeadlinePropertyName];
-                            if (propertyData != null)
-                            {
-                                DateTime.TryParse(propertyData.ToString(), out DateTime dateValue);
-                                if (dateValue != DateTime.MinValue)
+                                if (!string.IsNullOrEmpty(customTask.Type))
                                 {
-                                    if (!string.IsNullOrEmpty(customTask.Type))
-                                    {
-                                        customTask.Deadline = dateValue.ToString("dd MMMM HH:mm");
-                                        var days = DateTime.Now.CountDaysInRange(dateValue);
+                                    customTask.Deadline = dateValue.ToString("dd MMMM HH:mm");
+                                    var days = DateTime.Now.CountDaysInRange(dateValue);
 
-                                        if (days == 0)
-                                        {
-                                            customTask.WarningColor = "red";
-                                        }
-                                        else if (days > 0 && days < warningDays)
-                                        {
-                                            customTask.WarningColor = "green";
-                                        }
-                                    }
-                                    else
+                                    if (days == 0)
                                     {
-                                        customTask.Deadline = " - ";
+                                        customTask.WarningColor = "red";
                                     }
+                                    else if (days > 0 && days < warningDays)
+                                    {
+                                        customTask.WarningColor = "green";
+                                    }
+                                }
+                                else
+                                {
+                                    customTask.Deadline = " - ";
                                 }
                             }
                         }
-                        taskList.Add(customTask);
                     }
+                    taskList.Add(customTask);
                 }
+
             }
 
             //Sorting of the Columns 
@@ -322,6 +341,12 @@ namespace AdvancedTask.Controllers
                     taskList = taskList.OrderBy(x => x.Type).ToList();
                     break;
                 case "type_desc":
+                    taskList = taskList.OrderByDescending(x => x.Type).ToList();
+                    break;
+                case "atype_aes":
+                    taskList = taskList.OrderBy(x => x.Type).ToList();
+                    break;
+                case "atype_desc":
                     taskList = taskList.OrderByDescending(x => x.Type).ToList();
                     break;
             }

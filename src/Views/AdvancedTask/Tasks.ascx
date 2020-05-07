@@ -61,6 +61,20 @@
                                 new { pageNumber = Model.PageNumber, pageSize = Model.PageSize, sorting = Model.Sorting=="name_desc"?"name_aes":"name_desc"})%>
                 </label>
             </th>
+            <% if (Model.ShowApprovalTypeColumn)
+               { %>
+                <th>
+                    <label>
+                        <%= Html.ViewLink(
+                                "Approval Type",
+                                "Approval Type",  // title
+                                "Index", // Action name
+                                "", // css class
+                                "",
+                                new { pageNumber = Model.PageNumber, pageSize = Model.PageSize, sorting = Model.Sorting=="atype_desc"?"atype_aes":"atype_desc"})%>
+                    </label>
+                </th>
+            <% } %>
             <th>
                 <label>
                     <%= Html.ViewLink(
@@ -128,7 +142,14 @@
             {
     %>
     <tr <%=m.NotificationUnread?"style=\"background-color: #FFF9C4;\"" :"" %>>
-        <td><%=Html.CheckBox(m.ApprovalId.ToString(), false, new { onchange = "selectionChanged(this)", @class="checkbox" })%></td>
+        <% if (m.ApprovalType.Equals("Content"))
+            { %>
+            <td><%=Html.CheckBox(m.ApprovalId.ToString(), false, new { onchange = "selectionChanged(this)", @class="checkbox" })%></td>
+        <% }
+            else
+            { %>
+            <td></td>
+        <% } %>
         <td>
             <% if (!m.CanUserPublish)
                 { %>
@@ -141,6 +162,12 @@
             <a href="<%= PageEditing.GetEditUrl(m.ContentReference) %>" target="_blank"><%= Html.Encode(m.ContentName) %></a>
             <% } %>
         </td>
+        <% if (Model.ShowApprovalTypeColumn)
+           { %>
+            <td>
+                <%= m.ApprovalType%>
+            </td>
+        <% } %>
         <td>
             <%= m.ContentType%>
         </td>

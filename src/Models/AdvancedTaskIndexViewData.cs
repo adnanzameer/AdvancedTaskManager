@@ -11,6 +11,7 @@ namespace AdvancedTask.Models
             PageSize = 30;
             PageNumber = 1;
             HasPublishAccess = false;
+            ContentTaskList= new List<ContentTask>();
         }
 
         public List<ContentTask> ContentTaskList { get; set; }
@@ -19,6 +20,7 @@ namespace AdvancedTask.Models
         public int PagerSize { get; set; }
         public int TotalItemsCount { get; set; }
         public bool HasPublishAccess { get; set; }
+        public bool ShowApprovalTypeColumn { get; set; }
 
         public IEnumerable<int> Pages
         {
