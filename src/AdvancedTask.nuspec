@@ -3,7 +3,7 @@
     <metadata>
         <id>AdvancedTaskManager</id>
         <title>Advanced Task Manager</title>
-        <version>1.2.0</version>
+        <version>1.5.0</version>
         <authors>Adnan Zameer</authors>
         <owners>Adnan Zameer</owners>
         <licenseUrl>https://www.adnanzameer.com</licenseUrl>
@@ -11,6 +11,7 @@
         <iconUrl>https://i.ibb.co/tLVks9K/atm.png</iconUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>Administration of Awaiting Review Tasks of Content Approval</description>
+        <releaseNotes>In this release the Change Approval tasks will show along with the content approval tasks</releaseNotes>
         <summary></summary>        
         <language>en-US</language>
       <dependencies>
