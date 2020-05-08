@@ -157,16 +157,24 @@ namespace AdvancedTask.Controllers
             {
                 var approvalType = "";
                 IContent content = null;
+                var isContentQuery = true;
+                var id = task.ID.ToString();
+
                 if (task is ContentApproval approval)
                 {
                     approvalType = "Content";
                     _contentRepository.TryGet(approval.ContentLink, out content);
+
+                    if (content != null)
+                    {
+                        id = content.ContentLink.ID.ToString();
+                    }
                 }
                 else if (task is FallbackApproval fallBack)
                 {
                     showApprovalTypeColumn = true;
                     approvalType = "Change";
-
+                    isContentQuery = false;
                     if (fallBack != null && fallBack.Reference != null && !string.IsNullOrEmpty(fallBack.Reference.AbsolutePath))
                     {
                         var pageId = fallBack.Reference.AbsolutePath.Replace("/", "");
@@ -228,23 +236,6 @@ namespace AdvancedTask.Controllers
 
                     customTask.ContentType = contentName;
 
-                    //Get Notifications
-                    var notifications = await GetNotifications(PrincipalInfo.CurrentPrincipal.Identity.Name, content.ContentLink.ID.ToString(), "7");
-                    if (notifications != null && notifications.PagedResult != null && notifications.PagedResult.Any())
-                    {
-                        //Mark Notification Read
-                        foreach (var notification in notifications.PagedResult)
-                        {
-                            await _userNotificationRepository.MarkUserNotificationAsReadAsync(new NotificationUser(PrincipalInfo.CurrentPrincipal.Identity.Name), notification.ID);
-                        }
-
-                        customTask.NotificationUnread = true;
-                    }
-                    else
-                    {
-                        customTask.NotificationUnread = false;
-                    }
-
                     if (content is PageData)
                         customTask.Type = "Page";
                     else if (content is BlockData)
@@ -304,6 +295,25 @@ namespace AdvancedTask.Controllers
                     }
                 }
 
+                //Get Notifications
+                var notifications = await GetNotifications(PrincipalInfo.CurrentPrincipal.Identity.Name, id, isContentQuery);
+
+                if (notifications != null && notifications.PagedResult != null && notifications.PagedResult.Any())
+                {
+                    //Mark Notification Read
+                    foreach (var notification in notifications.PagedResult)
+                    {
+                        await _userNotificationRepository.MarkUserNotificationAsReadAsync(new NotificationUser(PrincipalInfo.CurrentPrincipal.Identity.Name), notification.ID);
+                    }
+
+                    customTask.NotificationUnread = true;
+                }
+                else
+                {
+                    customTask.NotificationUnread = false;
+                }
+
+
                 taskList.Add(customTask);
             }
 
@@ -358,20 +368,29 @@ namespace AdvancedTask.Controllers
             return taskList;
         }
 
-        private async Task<PagedInternalNotificationMessageResult> GetNotifications(string user, string contentId, string step)
+        private async Task<PagedInternalNotificationMessageResult> GetNotifications(string user, string contentId, bool isContentQuery = true)
         {
-            IAsyncDatabaseExecutor db = ServiceLocator.Current.GetInstance<IAsyncDatabaseExecutor>();
+            var db = ServiceLocator.Current.GetInstance<IAsyncDatabaseExecutor>();
             return new PagedInternalNotificationMessageResult(await db.ExecuteAsync(async () =>
             {
                 var entries = new List<InternalNotificationMessage>();
-                var query =
-                    "SELECT pkID AS ID, Recipient, Sender, Channel, [Type], [Subject], Content, Sent, SendAt, Saved, [Read], Category FROM [tblNotificationMessage] " +
-                    $"WHERE Recipient = '{user}' " +
-                    $"AND Content like '%\"contentLink\":\"{contentId}_%' " +
-                    $"AND Content like '%status\":{step}%' " +
-                    "AND Channel = 'epi-approval' " +
-                    "AND [Read] is NULL " +
-                    "order by Saved desc";
+                var query = "SELECT pkID AS ID, Recipient, Sender, Channel, [Type], [Subject], Content, Sent, SendAt, Saved, [Read], Category FROM [tblNotificationMessage] " +
+                                   $"WHERE Recipient = '{user}'";
+
+                if (isContentQuery)
+                {
+                    query = query + $"AND Content like '%\"contentLink\":\"{contentId}_%' " +
+                                    $"AND Content like '%status\":7%' " +
+                                    "AND Channel = 'epi-approval' ";
+                }
+                else
+                {
+                    query = query + $"AND Content like '%\"ApprovalID\": {contentId},%' " +
+                                    "AND Channel = 'epi-changeapproval' ";
+                }
+
+                query = query + "AND [Read] is NULL " +
+                                "order by Saved desc";
 
                 var command = db.CreateCommand();
                 command.CommandText = query;

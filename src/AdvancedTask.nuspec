@@ -10,8 +10,8 @@
         <projectUrl>https://github.com/adnanzameer/AdvancedTaskManager</projectUrl>
         <iconUrl>https://i.ibb.co/tLVks9K/atm.png</iconUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
-        <description>Administration of Awaiting Review Tasks of Content Approval</description>
-        <releaseNotes>In this release the Change Approval tasks will show along with the content approval tasks</releaseNotes>
+        <description>Administration of Awaiting Review Tasks of Content Approval and Change Approval</description>
+        <releaseNotes>Change Approval tasks will show along with the content approval tasks. Support for all content types. Bug fixes for pagination and performance improvements.</releaseNotes>
         <summary></summary>        
         <language>en-US</language>
       <dependencies>
