@@ -157,39 +157,42 @@ namespace AdvancedTask.Controllers
             {
                 var approvalType = "";
                 IContent content = null;
-                var contentReference = ContentReference.EmptyReference;
                 if (task is ContentApproval approval)
                 {
                     approvalType = "Content";
-                    contentReference = approval.ContentLink;
-                    _contentRepository.TryGet(contentReference, out content);
+                    _contentRepository.TryGet(approval.ContentLink, out content);
                 }
                 else if (task is FallbackApproval fallBack)
                 {
                     showApprovalTypeColumn = true;
                     approvalType = "Change";
-                    var pageId = fallBack.Reference.AbsolutePath.Replace("/", "");
 
-                    int.TryParse(pageId, out int contentId);
-                    if (contentId != 0)
+                    if (fallBack != null && fallBack.Reference != null && !string.IsNullOrEmpty(fallBack.Reference.AbsolutePath))
                     {
-                        _contentRepository.TryGet(new ContentReference(contentId), out content);
+                        var pageId = fallBack.Reference.AbsolutePath.Replace("/", "");
+
+                        int.TryParse(pageId, out var contentId);
+                        if (contentId != 0)
+                        {
+                            _contentRepository.TryGet(new ContentReference(contentId), out content);
+                        }
                     }
                 }
 
+                //Create Task Object
+                var customTask = new ContentTask
+                {
+                    ApprovalId = task.ID,
+                    DateTime = task.ActiveStepStarted.ToString("dd MMMM HH:mm"),
+                    StartedBy = task.StartedBy,
+                    ApprovalType = approvalType
+                };
+
                 if (content != null)
                 {
-                    //Create Task Object
-                    var customTask = new ContentTask
-                    {
-                        ApprovalId = task.ID,
-                        CanUserPublish = content.CanUserPublish(),
-                        ContentReference = content.ContentLink,
-                        ContentName = content.Name,
-                        DateTime = task.ActiveStepStarted.ToString("dd MMMM HH:mm"),
-                        StartedBy = task.StartedBy,
-                        ApprovalType = approvalType
-                    };
+                    customTask.CanUserPublish = content.CanUserPublish();
+                    customTask.ContentReference = content.ContentLink;
+                    customTask.ContentName = content.Name;
 
                     var contentName = "";
 
@@ -299,11 +302,12 @@ namespace AdvancedTask.Controllers
                             }
                         }
                     }
-                    taskList.Add(customTask);
                 }
 
+                taskList.Add(customTask);
             }
 
+            model.ShowApprovalTypeColumn = showApprovalTypeColumn;
             //Sorting of the Columns 
             switch (sorting)
             {
@@ -383,8 +387,6 @@ namespace AdvancedTask.Controllers
                 return (IList<InternalNotificationMessage>)entries;
             }).ConfigureAwait(false), 0L);
         }
-
-
 
         public static string GadgetEditMenuName => LocalizationService.Current.GetString("/gadget/tasks/configure");
 

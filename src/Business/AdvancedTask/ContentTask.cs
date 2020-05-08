@@ -4,6 +4,19 @@ namespace AdvancedTask.Business.AdvancedTask
 {
     public class ContentTask
     {
+        public ContentTask()
+        {
+            ContentReference = ContentReference.EmptyReference;
+            ContentName = "";
+            ContentType = "";
+            Type = "";
+            DateTime = "";
+            ApprovalType = "";
+            Deadline = "";
+            StartedBy = "";
+            WarningColor = "";
+        }
+
         public int ApprovalId { get; set; }
         public ContentReference ContentReference { get; set; }
         public string ContentName { get; set; }
