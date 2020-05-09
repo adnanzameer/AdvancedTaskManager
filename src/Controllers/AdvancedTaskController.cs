@@ -65,11 +65,6 @@ namespace AdvancedTask.Controllers
         {
             CheckAccess();
 
-            if (!string.IsNullOrEmpty(taskValues))
-            {
-                ApproveContent(taskValues, approvalComment, !string.IsNullOrEmpty(publishContent) && publishContent == "true");
-            }
-
             var pageNr = pageNumber ?? 1;
             var pageSz = pageSize ?? 30;
 
@@ -81,7 +76,7 @@ namespace AdvancedTask.Controllers
                 Sorting = sorting
             };
 
-            var task = Task.Run(async () => await GetData(pageNr, pageSz, sorting, viewModel));
+            var task = Task.Run(async () => await ProcessData(pageNr, pageSz, sorting, viewModel, taskValues, approvalComment, publishContent));
             {
                 var contentTaskList = task.Result;
                 viewModel.ContentTaskList = contentTaskList;
@@ -95,41 +90,53 @@ namespace AdvancedTask.Controllers
             return View("Index", viewModel);
         }
 
-        private void ApproveContent(string values, string approvalComment, bool publishContent)
+        private async Task ApproveContent(string values, string approvalComment, bool publishContent)
         {
             if (!string.IsNullOrEmpty(values))
             {
-                string[] ids = values.Split(',');
-                foreach (string id in ids)
+                var ids = values.Split(',');
+                foreach (var id in ids)
                 {
-                    int.TryParse(id, out int approvalId);
+                    int.TryParse(id, out var approvalId);
                     if (approvalId != 0)
                     {
-                        Task<Approval> approval = Task.Run(async () => await _approvalRepository.GetAsync(approvalId));
-                        ContentApproval contentApproval = approval.Result as ContentApproval;
-                        if (contentApproval != null)
+                        var approval = await _approvalRepository.GetAsync(approvalId);
+                        if (approval is ContentApproval contentApproval)
                         {
-                            Task.Run(async () => await _approvalEngine.ApproveAsync(approvalId, PrincipalInfo.CurrentPrincipal.Identity.Name, 1, ApprovalDecisionScope.Force, approvalComment));
+                            await _approvalEngine.ApproveAsync(approvalId, PrincipalInfo.CurrentPrincipal.Identity.Name, 1, ApprovalDecisionScope.Force, approvalComment);
                             if (publishContent)
                             {
-                                _contentRepository.TryGet(contentApproval.ContentLink, out PageData content);
-                                if (content != null)
-                                {
-                                    if (content.CanUserPublish())
-                                    {
-                                        IContent clone = content.CreateWritableClone();
-                                        _contentRepository.Save(clone, SaveAction.Publish, AccessLevel.Publish);
-                                    }
-                                }
-                                else
-                                {
-                                    _contentRepository.TryGet(contentApproval.ContentLink, out BlockData block);
-                                    if (block != null && (block as IContent).CanUserPublish())
-                                    {
-                                        IContent clone = block.CreateWritableClone() as IContent;
-                                        _contentRepository.Save(clone, SaveAction.Publish, AccessLevel.Publish);
-                                    }
+                                _contentRepository.TryGet(contentApproval.ContentLink, out IContent content);
 
+                                if (content != null && content.CanUserPublish())
+                                {
+                                    switch (content)
+                                    {
+                                        case PageData page:
+                                        {
+                                            var clone = page.CreateWritableClone();
+                                            _contentRepository.Save(clone, SaveAction.Publish, AccessLevel.Publish);
+                                            break;
+                                        }
+                                        case BlockData block:
+                                        {
+                                            var clone = block.CreateWritableClone() as IContent;
+                                            _contentRepository.Save(clone, SaveAction.Publish, AccessLevel.Publish);
+                                            break;
+                                        }
+                                        case ImageData image:
+                                        {
+                                            var clone = image.CreateWritableClone() as IContent;
+                                            _contentRepository.Save(clone, SaveAction.Publish, AccessLevel.Publish);
+                                            break;
+                                        }
+                                        case MediaData media:
+                                        {
+                                            var clone = media.CreateWritableClone() as IContent;
+                                            _contentRepository.Save(clone, SaveAction.Publish, AccessLevel.Publish);
+                                            break;
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -138,8 +145,13 @@ namespace AdvancedTask.Controllers
             }
         }
 
-        private async Task<List<ContentTask>> GetData(int pageNumber, int pageSize, string sorting, AdvancedTaskIndexViewData model)
+        private async Task<List<ContentTask>> ProcessData(int pageNumber, int pageSize, string sorting, AdvancedTaskIndexViewData model, string taskValues, string approvalComment, string publishContent)
         {
+            if (!string.IsNullOrEmpty(taskValues))
+            {
+                await ApproveContent(taskValues, approvalComment, !string.IsNullOrEmpty(publishContent) && publishContent == "true");
+            }
+
             //List of All task for the user 
             var query = new ApprovalQuery
             {
@@ -153,16 +165,23 @@ namespace AdvancedTask.Controllers
             var showApprovalTypeColumn = false;
             var taskList = new List<ContentTask>();
 
+
             foreach (var task in list.PagedResult)
             {
-                var approvalType = "";
                 IContent content = null;
                 var isContentQuery = true;
                 var id = task.ID.ToString();
 
+                var customTask = new ContentTask
+                {
+                    ApprovalId = task.ID,
+                    DateTime = task.ActiveStepStarted.ToString("dd MMMM HH:mm"),
+                    StartedBy = task.StartedBy
+                };
+
                 if (task is ContentApproval approval)
                 {
-                    approvalType = "Content";
+                    customTask.ApprovalType = "Content";
                     _contentRepository.TryGet(approval.ContentLink, out content);
 
                     if (content != null)
@@ -170,31 +189,28 @@ namespace AdvancedTask.Controllers
                         id = content.ContentLink.ID.ToString();
                     }
                 }
-                else if (task is FallbackApproval fallBack)
+                else
                 {
                     showApprovalTypeColumn = true;
-                    approvalType = "Change";
+                    customTask.ApprovalType = "Change";
                     isContentQuery = false;
-                    if (fallBack != null && fallBack.Reference != null && !string.IsNullOrEmpty(fallBack.Reference.AbsolutePath))
-                    {
-                        var pageId = fallBack.Reference.AbsolutePath.Replace("/", "");
 
-                        int.TryParse(pageId, out var contentId);
-                        if (contentId != 0)
+                    if (task.Reference != null)
+                    {
+                        customTask.ContentName = task.Reference.AbsoluteUri;
+
+                        if (!string.IsNullOrEmpty(task.Reference.AbsolutePath))
                         {
-                            _contentRepository.TryGet(new ContentReference(contentId), out content);
+                            var pageId = task.Reference.AbsolutePath.Replace("/", "");
+
+                            int.TryParse(pageId, out var contentId);
+                            if (contentId != 0)
+                            {
+                                _contentRepository.TryGet(new ContentReference(contentId), out content);
+                            }
                         }
                     }
                 }
-
-                //Create Task Object
-                var customTask = new ContentTask
-                {
-                    ApprovalId = task.ID,
-                    DateTime = task.ActiveStepStarted.ToString("dd MMMM HH:mm"),
-                    StartedBy = task.StartedBy,
-                    ApprovalType = approvalType
-                };
 
                 if (content != null)
                 {
@@ -358,10 +374,10 @@ namespace AdvancedTask.Controllers
                     taskList = taskList.OrderByDescending(x => x.Type).ToList();
                     break;
                 case "atype_aes":
-                    taskList = taskList.OrderBy(x => x.Type).ToList();
+                    taskList = taskList.OrderBy(x => x.ApprovalType).ToList();
                     break;
                 case "atype_desc":
-                    taskList = taskList.OrderByDescending(x => x.Type).ToList();
+                    taskList = taskList.OrderByDescending(x => x.ApprovalType).ToList();
                     break;
             }
 
