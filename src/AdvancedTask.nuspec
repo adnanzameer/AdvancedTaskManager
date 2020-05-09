@@ -3,14 +3,15 @@
     <metadata>
         <id>AdvancedTaskManager</id>
         <title>Advanced Task Manager</title>
-        <version>1.2.0</version>
+        <version>2.0.0</version>
         <authors>Adnan Zameer</authors>
         <owners>Adnan Zameer</owners>
         <licenseUrl>https://www.adnanzameer.com</licenseUrl>
         <projectUrl>https://github.com/adnanzameer/AdvancedTaskManager</projectUrl>
         <iconUrl>https://i.ibb.co/tLVks9K/atm.png</iconUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
-        <description>Administration of Awaiting Review Tasks of Content Approval</description>
+        <description>Administration of Awaiting Review Tasks of Content Approval and Change Approval</description>
+        <releaseNotes>Change Approval tasks will show along with the content approval tasks. Support for all content type changes in CMS. Bug fixes for pagination and performance improvements.</releaseNotes>
         <summary></summary>        
         <language>en-US</language>
       <dependencies>
