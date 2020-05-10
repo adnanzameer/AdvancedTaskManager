@@ -1,3 +1,9 @@
+# Update 2.0.0
+
+* Change Approval tasks will show along with the Content Approval tasks.
+* Support for all content type in CMS. Now editors can view, approve and publish, Episerver Forms, ImageData & MediaData. 
+* Bug fixes for pagination and performance improvements.
+
 # Advanced Task Manager
  
 Currently, the User notification and Tasks (Awaiting Review) are disconnected and provide very basic information to the editors.
@@ -6,13 +12,14 @@ Currently, the User notification and Tasks (Awaiting Review) are disconnected an
 
 ![User notification](assets/docsimages/image003.png)
 
-The idea behind this project is two-fold. The first purpose is to build a more versatile Content Approval Sequence (Awaiting Review) task management gadget to extend the information available to the editors. The second purpose is to combine user notifications with tasks and empower Content Approvers to act on their tasks within a single interface.  
+The idea behind this project is two-fold. The first purpose is to build a more versatile Approval Sequence (Content & Change Awaiting Review tasks) task management gadget to extend the information available to the editors. The second purpose is to combine user notifications with tasks and empower Approvers to act on their tasks within a single interface.  
 
 ![Advanced Task Manager](assets/docsimages/image005.png)
 
 The gadget provides the following information about the task to the Editor:
 * Content Name
-* Content-Type
+* Approval Type (only if Change Approval is installed)
+* Content Type
 * Type
 * Submitted Date/Time
 * Started By
@@ -31,6 +38,7 @@ Some features are disabled by default, but you can decide which ones are enabled
 
 The gadget gives editors an option to sort through all the tasks with status Awaiting Review by the following columns:
 * Order tasks by time/date
+* Order tasks by approval type
 * Order tasks by content type
 * Order tasks by type
 * Order tasks by category
@@ -39,11 +47,11 @@ The gadget gives editors an option to sort through all the tasks with status Awa
 
 ![Advanced Task Manager](assets/docsimages/image007.gif)
 
-## Deadline field for the content approval (Optional)
+## Deadline field for the approval sequence (Optional)
 
-![Deadline field for the content approval](assets/docsimages/image008.png)
+![Deadline field for the approval sequence] (assets/docsimages/image008.png)
 
-The deadline property is a date/time property that allows editors to set priority against the content (Page or Block) so that the Approvers are aware of the priority ahead of approval of the content.
+The deadline property is a date/time property that allows editors to set priority against the content (Page or Block) so that the Approvers are aware of the priority ahead of approval.
 
 The deadline property functionality is disabled by default and can be enabled (if required) by adding the following **<appSettings>** element of the **Web.config**.
 
@@ -51,7 +59,7 @@ The deadline property functionality is disabled by default and can be enabled (i
 
 By enabling the ```Content approval deadline``` The property ```Content approval deadline``` will be added in all  PageTyes and BlockTypes under ```Content Approval``` Tab.
 
-![Enable Content approval deadline](assets/docsimages/image014.png)
+![Enable approval sequence deadline](assets/docsimages/image014.png)
 
 The deadline property has three states in the gadget:
 
@@ -77,7 +85,7 @@ If you want to delete the property from the CMS, add the following **<appSetting
 
 ![Disable deadline](assets/docsimages/image016.png)
 
-Please note that the **ATM:DeleteContentApprovalDeadlineProperty** will only trigger if **ATM:EnableContentApprovalDeadline** element is set to false.
+Please note that the **ATM:DeleteContentApprovalDeadlineProperty** will only trigger if **ATM:EnableContentApprovalDeadline** element is set to **false**.
 
 ## User notifications associated with the task
  
@@ -89,7 +97,7 @@ When the editors open or refresh the gadget, all user tasks with unread notifica
  
 ![User notification](assets/docsimages/image020.png)
  
-## Approve entire approval sequence
+## Approve entire approval sequence (only for Content Approval)
  
 The gadget informs the editor to approve the entire Content Approval Sequence of single or multiple contents. Comment field is required.
  
