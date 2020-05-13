@@ -14,7 +14,7 @@ Currently, the User notification and Tasks (Awaiting Review) are disconnected an
 
 The idea behind this project is two-fold. The first purpose is to build a more versatile Approval Sequence task management gadget (for Content & Change Awaiting Review tasks) to extend the information available to the editors. The second purpose is to combine user notifications with tasks and empower Approvers to act on their tasks within a single interface.  
 
-![Advanced Task Manager](assets/docsimages/image005.png)
+![Advanced Task Manager](assets/docsimages/image0051.png)
 
 The gadget provides the following information about the task to the Editor:
 * Content Name
@@ -49,7 +49,7 @@ The gadget gives editors an option to sort through all the tasks with status Awa
 
 ## Deadline field for the approval sequence (Optional)
 
-![Deadline field for the approval sequence] (assets/docsimages/image008.png)
+![Deadline field for the approval sequence] (assets/docsimages/image0081.png)
 
 The deadline property is a date/time property that allows editors to set priority against the content (Page or Block) so that the Approvers are aware of the priority ahead of approval.
 
