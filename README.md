@@ -49,7 +49,7 @@ The gadget gives editors an option to sort through all the tasks with status Awa
 
 ## Deadline field for the approval sequence (Optional)
 
-![Deadline field for the approval sequence] (assets/docsimages/image0081.png)
+![Deadline field for the approval sequence](assets/docsimages/image0081.png)
 
 The deadline property is a date/time property that allows editors to set priority against the content (Page or Block) so that the Approvers are aware of the priority ahead of approval.
 
