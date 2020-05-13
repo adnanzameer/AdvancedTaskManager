@@ -1,7 +1,7 @@
 # Update 2.0.0
 
 * Change Approval tasks will show along with the Content Approval tasks.
-* Support for all content type in CMS. Now editors can view, approve and publish, Episerver Forms, ImageData & MediaData. 
+* Support for all content type tasks in CMS. Now editors can view, approve and publish, Episerver Forms, ImageData & MediaData. 
 * Bug fixes for pagination and performance improvements.
 
 # Advanced Task Manager
@@ -12,13 +12,13 @@ Currently, the User notification and Tasks (Awaiting Review) are disconnected an
 
 ![User notification](assets/docsimages/image003.png)
 
-The idea behind this project is two-fold. The first purpose is to build a more versatile Approval Sequence (Content & Change Awaiting Review tasks) task management gadget to extend the information available to the editors. The second purpose is to combine user notifications with tasks and empower Approvers to act on their tasks within a single interface.  
+The idea behind this project is two-fold. The first purpose is to build a more versatile Approval Sequence task management gadget (for Content & Change Awaiting Review tasks) to extend the information available to the editors. The second purpose is to combine user notifications with tasks and empower Approvers to act on their tasks within a single interface.  
 
 ![Advanced Task Manager](assets/docsimages/image005.png)
 
 The gadget provides the following information about the task to the Editor:
 * Content Name
-* Approval Type (only if Change Approval is installed)
+* Approval Type (only if Change Approval tasks are available)
 * Content Type
 * Type
 * Submitted Date/Time
@@ -126,3 +126,7 @@ https://nuget.episerver.com/package/?id=AdvancedTaskManager
 Add the ```Advanced Task Manager``` gadget in the dashboard
 
 ![Advanced task manager gadet](assets/docsimages/image028.png)
+
+## Contributing
+
+If you can help please do so by contributing to the package! Reach out package maintainer for additional details if needed.
