@@ -1,6 +1,6 @@
 # Update 2.0.0
 
-* Change Approval tasks will show along with the Content Approval tasks.
+* Support for Change Approval tasks (if NuGet package installed). Change Approval tasks will show along with the Content Approval tasks.
 * Support for all content type tasks in CMS. Now editors can view, approve and publish, Episerver Forms, ImageData & MediaData. 
 * Bug fixes for pagination and performance improvements.
 
@@ -12,13 +12,13 @@ Currently, the User notification and Tasks (Awaiting Review) are disconnected an
 
 ![User notification](assets/docsimages/image003.png)
 
-The idea behind this project is two-fold. The first purpose is to build a more versatile Approval Sequence task management gadget (for Content & Change Awaiting Review tasks) to extend the information available to the editors. The second purpose is to combine user notifications with tasks and empower Approvers to act on their tasks within a single interface.  
+The idea behind this project is two-fold. The first purpose is to build a more versatile Approval Sequence task management gadget (for Content & Change Awaiting Review tasks) to extend the information available to the editors. The second purpose is to combine user notifications with tasks and empower Approvers to act on their tasks within a single interface.
 
 ![Advanced Task Manager](assets/docsimages/image0051.png)
 
 The gadget provides the following information about the task to the Editor:
 * Content Name
-* Approval Type (only if Change Approval tasks are available)
+* Approval Type (only visible if Change Approval NuGet package is installed and tasks are available)
 * Content Type
 * Type
 * Submitted Date/Time
@@ -38,7 +38,7 @@ Some features are disabled by default, but you can decide which ones are enabled
 
 The gadget gives editors an option to sort through all the tasks with status Awaiting Review by the following columns:
 * Order tasks by time/date
-* Order tasks by approval type
+* Order tasks by approval type (only visible if Change Approval NuGet package is installed and tasks are available)
 * Order tasks by content type
 * Order tasks by type
 * Order tasks by category
