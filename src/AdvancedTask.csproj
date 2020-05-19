@@ -100,7 +100,11 @@
     <Content Include="Views\AdvancedTask\Index.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
+    <Content Include="Views\AdvancedTask\Menu.ascx" />
     <Content Include="Views\AdvancedTask\Pager.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
+    <Content Include="Views\AdvancedTask\ChangeApproval.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
     <Content Include="Views\AdvancedTask\Tasks.ascx">
