@@ -21,7 +21,6 @@ namespace AdvancedTask.Models
         public int PagerSize { get; set; }
         public int TotalItemsCount { get; set; }
         public bool HasPublishAccess { get; set; }
-        public bool ShowApprovalTypeColumn { get; set; }
         public bool ChangeApproval { get; set; }
         public IEnumerable<int> Pages
         {

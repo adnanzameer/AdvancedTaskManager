@@ -178,14 +178,12 @@ namespace AdvancedTask.Controllers
             var list = await _approvalRepository.ListAsync(query, (pageNumber - 1) * pageSize, pageSize);
             model.TotalItemsCount = Convert.ToInt32(list.TotalCount);
 
-            var showApprovalTypeColumn = false;
             var taskList = new List<ContentTask>();
 
 
             foreach (var task in list.PagedResult)
             {
                 IContent content = null;
-                var isContentQuery = true;
                 var id = task.ID.ToString();
 
                 var customTask = new ContentTask
@@ -205,28 +203,7 @@ namespace AdvancedTask.Controllers
                         id = content.ContentLink.ID.ToString();
                     }
                 }
-                else
-                {
-                    showApprovalTypeColumn = true;
-                    customTask.ApprovalType = "Change";
-                    isContentQuery = false;
 
-                    if (task.Reference != null)
-                    {
-                        customTask.ContentName = task.Reference.AbsoluteUri;
-
-                        if (!string.IsNullOrEmpty(task.Reference.AbsolutePath))
-                        {
-                            var pageId = task.Reference.AbsolutePath.Replace("/", "");
-
-                            int.TryParse(pageId, out var contentId);
-                            if (contentId != 0)
-                            {
-                                _contentRepository.TryGet(new ContentReference(contentId), out content);
-                            }
-                        }
-                    }
-                }
 
                 if (content != null)
                 {
@@ -328,14 +305,14 @@ namespace AdvancedTask.Controllers
                 }
 
                 //Get Notifications
-                var notifications = await GetNotifications(PrincipalInfo.CurrentPrincipal.Identity.Name, id, isContentQuery);
+                var notifications = await GetNotifications(PrincipalInfo.CurrentPrincipal.Identity.Name, id, false);
 
                 if (notifications != null && notifications.PagedResult != null && notifications.PagedResult.Any())
                 {
                     //Mark Notification Read
                     foreach (var notification in notifications.PagedResult)
                     {
-                        await _userNotificationRepository.MarkUserNotificationAsReadAsync(new NotificationUser(PrincipalInfo.CurrentPrincipal.Identity.Name), notification.ID);
+                        _userNotificationRepository.MarkUserNotificationAsReadAsync(new NotificationUser(PrincipalInfo.CurrentPrincipal.Identity.Name), notification.ID).GetAwaiter().GetResult();
                     }
 
                     customTask.NotificationUnread = true;
@@ -349,7 +326,6 @@ namespace AdvancedTask.Controllers
                 taskList.Add(customTask);
             }
 
-            model.ShowApprovalTypeColumn = showApprovalTypeColumn;
             //Sorting of the Columns 
             switch (sorting)
             {
@@ -388,12 +364,6 @@ namespace AdvancedTask.Controllers
                     break;
                 case "type_desc":
                     taskList = taskList.OrderByDescending(x => x.Type).ToList();
-                    break;
-                case "atype_aes":
-                    taskList = taskList.OrderBy(x => x.ApprovalType).ToList();
-                    break;
-                case "atype_desc":
-                    taskList = taskList.OrderByDescending(x => x.ApprovalType).ToList();
                     break;
             }
 
@@ -417,14 +387,12 @@ namespace AdvancedTask.Controllers
             var list = await _approvalRepository.ListAsync(query, (pageNumber - 1) * pageSize, pageSize);
             model.TotalItemsCount = Convert.ToInt32(list.TotalCount);
 
-            var showApprovalTypeColumn = false;
             var taskList = new List<ContentTask>();
 
 
             foreach (var task in list.PagedResult)
             {
                 IContent content = null;
-                var isContentQuery = true;
                 var id = task.ID.ToString();
 
                 var customTask = new ContentTask
@@ -434,21 +402,9 @@ namespace AdvancedTask.Controllers
                     StartedBy = task.StartedBy
                 };
 
-                if (task is ContentApproval approval)
+                if (!(task is ContentApproval))
                 {
-                    customTask.ApprovalType = "Content";
-                    _contentRepository.TryGet(approval.ContentLink, out content);
-
-                    if (content != null)
-                    {
-                        id = content.ContentLink.ID.ToString();
-                    }
-                }
-                else
-                {
-                    showApprovalTypeColumn = true;
                     customTask.ApprovalType = "Change";
-                    isContentQuery = false;
 
                     if (task.Reference != null)
                     {
@@ -531,50 +487,17 @@ namespace AdvancedTask.Controllers
                         }
                     }
 
-                    var enableContentApprovalDeadline = bool.Parse(ConfigurationManager.AppSettings["ATM:EnableContentApprovalDeadline"] ?? "false");
-                    var warningDays = int.Parse(ConfigurationManager.AppSettings["ATM:WarningDays"] ?? "4");
-
-                    if (enableContentApprovalDeadline)
-                    {
-                        //Deadline Property of The Content
-                        var propertyData = content.Property.Get(ContentApprovalDeadlinePropertyName) ?? content.Property[ContentApprovalDeadlinePropertyName];
-                        if (propertyData != null)
-                        {
-                            DateTime.TryParse(propertyData.ToString(), out DateTime dateValue);
-                            if (dateValue != DateTime.MinValue)
-                            {
-                                if (!string.IsNullOrEmpty(customTask.Type))
-                                {
-                                    customTask.Deadline = dateValue.ToString("dd MMMM HH:mm");
-                                    var days = DateTime.Now.CountDaysInRange(dateValue);
-
-                                    if (days == 0)
-                                    {
-                                        customTask.WarningColor = "red";
-                                    }
-                                    else if (days > 0 && days < warningDays)
-                                    {
-                                        customTask.WarningColor = "green";
-                                    }
-                                }
-                                else
-                                {
-                                    customTask.Deadline = " - ";
-                                }
-                            }
-                        }
-                    }
                 }
 
                 //Get Notifications
-                var notifications = await GetNotifications(PrincipalInfo.CurrentPrincipal.Identity.Name, id, isContentQuery);
+                var notifications = await GetNotifications(PrincipalInfo.CurrentPrincipal.Identity.Name, id, true);
 
                 if (notifications != null && notifications.PagedResult != null && notifications.PagedResult.Any())
                 {
                     //Mark Notification Read
                     foreach (var notification in notifications.PagedResult)
                     {
-                        await _userNotificationRepository.MarkUserNotificationAsReadAsync(new NotificationUser(PrincipalInfo.CurrentPrincipal.Identity.Name), notification.ID);
+                         _userNotificationRepository.MarkUserNotificationAsReadAsync(new NotificationUser(PrincipalInfo.CurrentPrincipal.Identity.Name), notification.ID).GetAwaiter().GetResult();
                     }
 
                     customTask.NotificationUnread = true;
@@ -588,7 +511,6 @@ namespace AdvancedTask.Controllers
                 taskList.Add(customTask);
             }
 
-            model.ShowApprovalTypeColumn = showApprovalTypeColumn;
             //Sorting of the Columns 
             switch (sorting)
             {
@@ -616,23 +538,11 @@ namespace AdvancedTask.Controllers
                 case "user_desc":
                     taskList = taskList.OrderByDescending(x => x.StartedBy).ToList();
                     break;
-                case "deadline_aes":
-                    taskList = taskList.OrderBy(x => x.Deadline).ToList();
-                    break;
-                case "deadline_desc":
-                    taskList = taskList.OrderByDescending(x => x.Deadline).ToList();
-                    break;
                 case "type_aes":
                     taskList = taskList.OrderBy(x => x.Type).ToList();
                     break;
                 case "type_desc":
                     taskList = taskList.OrderByDescending(x => x.Type).ToList();
-                    break;
-                case "atype_aes":
-                    taskList = taskList.OrderBy(x => x.ApprovalType).ToList();
-                    break;
-                case "atype_desc":
-                    taskList = taskList.OrderByDescending(x => x.ApprovalType).ToList();
                     break;
             }
 

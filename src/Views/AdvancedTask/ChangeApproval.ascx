@@ -4,48 +4,6 @@
 <%@ Import Namespace="EPiServer.Editor" %>
 <%@ Import Namespace="EPiServer.Shell.Web.Mvc.Html" %>
 
-<style>
-    .red {
-        background-color: orangered;
-        color: white;
-    }
-
-    .green {
-        background-color: yellowgreen;
-        color: white;
-    }
-
-    .approvalComment {
-        font-size: 12px !important;
-    }
-
-    .collapsible {
-        color: Red;
-        cursor: pointer;
-        padding: 10px !important;
-        width: 520px;
-        border: none;
-        text-align: left;
-        outline: none !important;
-    }
-
-    .active, .collapsible:hover {
-        background-color: #ededed;
-    }
-
-    .content {
-        color: Red;
-        width: 520px;
-        border: none;
-        padding: 10px 0 0 10px;
-        display: none;
-        overflow: hidden;
-    }
-    .errorMessage {
-        padding-bottom: 15px;
-    }
-</style>
-<%  bool enableContentApprovalDeadline = bool.Parse(ConfigurationManager.AppSettings["ATM:EnableContentApprovalDeadline"] ?? "false"); %>
 <% Html.RenderPartial("Menu", "Index"); %>
 <table class="epi-default">
     <thead>
@@ -107,20 +65,6 @@
                                 new { pageNumber = Model.PageNumber, pageSize = Model.PageSize, sorting = Model.Sorting=="user_desc"?"user_aes":"user_desc"})%>
                 </label>
             </th>
-            <% if (enableContentApprovalDeadline)
-               { %>
-            <th>
-                <label>
-                    <%= Html.ViewLink(
-                            "Deadline",
-                            "Deadline", // title
-                            "Index", // Action name
-                            "", // css class
-                            "",
-                            new {pageNumber = Model.PageNumber, pageSize = Model.PageSize, sorting = Model.Sorting == "deadline_desc" ? "deadline_aes" : "deadline_desc"}) %>
-                </label>
-            </th>
-            <% } %>
         </tr>
     </thead>
 
@@ -130,7 +74,7 @@
             {
     %>
     <tr <%=m.NotificationUnread?"style=\"background-color: #FFF9C4;\"" :"" %>>
-         <% if (!string.IsNullOrEmpty(m.ApprovalType) && m.ApprovalType.Equals("Content"))
+        <% if (!string.IsNullOrEmpty(m.ApprovalType) && m.ApprovalType.Equals("Content"))
             { %>
         <td><%=Html.CheckBox(m.ApprovalId.ToString(), false, new { onchange = "selectionChanged(this)", @class="checkbox" })%></td>
         <% }
@@ -151,9 +95,9 @@
                 { %>
             <a href="<%= PageEditing.GetEditUrl(m.ContentReference) %>" target="_blank"><%= Html.Encode(m.ContentName) %></a>
             <% }
-            }
-            else
-            { %>
+                }
+                else
+                { %>
             <%= m.ContentName%>
             <% } %>
         </td>
@@ -197,20 +141,6 @@
             <a href="<%= PageEditing.GetEditUrl(m.ContentReference) %>" target="_blank"><%= Html.Encode(m.StartedBy) %></a>
             <% } %>
         </td>
-
-        <% if (enableContentApprovalDeadline)
-           { %>
-            <td class="<%= m.WarningColor%>">
-                <% if (ContentReference.IsNullOrEmpty(m.ContentReference))
-                   { %>
-                    <%= m.Deadline%>
-                <% }
-                   else
-                   { %>
-                    <a href="<%= PageEditing.GetEditUrl(m.ContentReference) %>" target="_blank"><%= Html.Encode(m.Deadline) %></a>
-                <% } %>
-            </td>
-        <% } %>
     </tr>
     <%} %>
     <%
@@ -220,34 +150,18 @@
 <div class="epi-formArea" id="approve" style="display: none;">
     <fieldset>
         <% Html.BeginGadgetForm("Index"); %>
-            <p>Approve Entire Approval Sequence</p>
+        <p>Approve Entire Approval Sequence</p>
 
-            <textarea autocomplete="off" cols="70" id="approvalComment" name="approvalComment" class="epi-textarea--max-height--500 dijitTextBox dijitTextArea dijitExpandingTextArea dijitTextBoxError dijitTextAreaError dijitExpandingTextAreaError dijitError" tabindex="0" placeholder="Please specify why you are forcing approval of the content…" rows="1" style="overflow: auto hidden; box-sizing: border-box; height: 29px;" spellcheck="false"></textarea>
-            <input type="hidden" name="pageSize" value="<%=Model.PageSize %>" />
-            <input id="taskValues" type="hidden" name="taskValues" value="<%=Model.TaskValues%>" />
-            <% if (Model.HasPublishAccess)
-                { %>
-            <br />
-            <br />
-            <input id="publishContent" type="checkbox" name="publishContent" value="false" onchange="checkboxChecked(this)">
-            Publish selected content after approval
-                    <br />
-            <br />
-
-            <div id ="errorMessage" class="errorMessage" style="display: none">
-                <button type="button" class="collapsible">* You dont have permission to publish following content.</button>
-                <div class="content">
-                    <label id="lblMessage"></label>
-                </div>
-            </div>                
-            <% } %>
-            <div>
-                <ul>
-                    <li>
-                        <button type="submit" class="taskbutton search" id="button" onclick="return Submit();">Submit</button>
-                    </li>
-                </ul>
-            </div>
+        <textarea autocomplete="off" cols="70" id="approvalComment" name="approvalComment" class="epi-textarea--max-height--500 dijitTextBox dijitTextArea dijitExpandingTextArea dijitTextBoxError dijitTextAreaError dijitExpandingTextAreaError dijitError" tabindex="0" placeholder="Please specify why you are forcing approval of the content…" rows="1" style="overflow: auto hidden; box-sizing: border-box; height: 29px;" spellcheck="false"></textarea>
+        <input type="hidden" name="pageSize" value="<%=Model.PageSize %>" />
+        <input id="taskValues" type="hidden" name="taskValues" value="<%=Model.TaskValues%>" />
+        <div>
+            <ul>
+                <li>
+                    <button type="submit" class="taskbutton search" id="button" onclick="return Submit();">Submit</button>
+                </li>
+            </ul>
+        </div>
         <% Html.EndForm(); %>
     </fieldset>
 </div>
@@ -279,7 +193,6 @@
         }
         setButtonText();
         setCheckboxSelectedValues();
-        ShowPublishErrorMessage();
     }
 
     function setCheckboxSelectedValues() {
@@ -327,9 +240,6 @@
             return false;
         } else {
             var message = "Are you sure that you want to approve the entire approval sequence? This will approve all remaining steps. This action cannot be undone.";
-            if (document.getElementById("publishContent") && document.getElementById("publishContent").value === "true") {
-                message = "Are you sure that you want to approve the entire approval sequence and publish content? This will approve all remaining steps and publish selected content. This action cannot be undone.";
-            }
             if (confirm(message)) {
                 return true;
             } else {
@@ -341,13 +251,9 @@
     function setButtonText() {
         if (selectedContent && selectedContent.length > 0) {
             ShowApproveSection();
-            if (document.getElementById("publishContent") && document.getElementById("publishContent").value === "true") {
+
                 document.getElementById('button').textContent =
-                    'Approve & Publish ' + selectedContent.length + ' Selected Content';
-            } else {
-                document.getElementById('button').textContent =
-                    'Approve ' + selectedContent.length + ' Selected Content';
-            }
+                    'Approve ' + selectedContent.length + ' Selected Content Changes';
         } else {
             HideApproveSection();
             document.getElementById('button').textContent = 'Submit';
@@ -357,50 +263,14 @@
     function checkboxChecked(checkboxElem) {
         if (checkboxElem.checked) {
             checkboxElem.value = "true";
-            ShowPublishErrorMessage();
         } else {
             checkboxElem.value = "false";
-            HideErrorMessage();
             var elements = document.getElementsByClassName('error-span');
             for (var i = 0; i < elements.length; i++) {
                 elements[i].innerHTML = "";
             }
         }
         setButtonText();
-    }
-
-    function ShowPublishErrorMessage() {
-        var txt = "";
-        if (document.getElementById("publishContent") && document.getElementById("publishContent").value === "true") {
-            var checkboxes = document.getElementsByClassName('checkbox');
-            var show = false;
-            for (var i = 0; i < checkboxes.length; i++) {
-                if (checkboxes[i].type === 'checkbox' && checkboxes[i].checked) {
-                    var name = checkboxes[i].name;
-                    if (name) {
-                        var errorElement = document.getElementById('id-' + name);
-                        if (errorElement) {
-                            var value = errorElement.getAttribute('data-value');
-                            if (value) {
-                                txt = txt + value + "<br/>";
-                                document.getElementById('span-' + name).textContent = "*";
-                                show = true;
-                            }
-                        }
-                    }
-                }
-            }
-
-            if (document.getElementById("lblMessage")) {
-                if (show) {
-                    document.getElementById("lblMessage").innerHTML = txt + "<br/>";
-                    ShowErrorMessage();
-                } else {
-                    document.getElementById("lblMessage").innerHTML = "";
-                    HideErrorMessage();
-                }
-            }
-        }
     }
 
     var coll = document.getElementsByClassName("collapsible");
@@ -438,19 +308,6 @@
         }
     }
 
-    function ShowErrorMessage() {
-        var x = document.getElementById("errorMessage");
-        if (x) {
-            x.style.display = "block";
-        }
-    }
-
-    function HideErrorMessage() {
-        var x = document.getElementById("errorMessage");
-        if (x) {
-            x.style.display = "none";
-        }
-    }
 
 </script>
 
