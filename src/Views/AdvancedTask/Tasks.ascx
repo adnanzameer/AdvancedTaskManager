@@ -46,7 +46,10 @@
     }
 </style>
 <%  bool enableContentApprovalDeadline = bool.Parse(ConfigurationManager.AppSettings["ATM:EnableContentApprovalDeadline"] ?? "false"); %>
-<% Html.RenderPartial("Menu", "Index"); %>
+<% if (Model.ShowChangeApprovalTab)
+   { %>
+    <% Html.RenderPartial("Menu", "Index"); %>
+<% } %>
 <table class="epi-default">
     <thead>
         <tr>

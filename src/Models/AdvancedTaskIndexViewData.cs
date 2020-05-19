@@ -13,6 +13,7 @@ namespace AdvancedTask.Models
             HasPublishAccess = false;
             ContentTaskList= new List<ContentTask>();
             ChangeApproval = false;
+            ShowChangeApprovalTab = false;
         }
 
         public List<ContentTask> ContentTaskList { get; set; }
@@ -22,6 +23,8 @@ namespace AdvancedTask.Models
         public int TotalItemsCount { get; set; }
         public bool HasPublishAccess { get; set; }
         public bool ChangeApproval { get; set; }
+        public bool ShowChangeApprovalTab{ get; set; }
+
         public IEnumerable<int> Pages
         {
             get

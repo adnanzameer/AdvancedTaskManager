@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Linq;
+using System.Reflection;
 using System.Security;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -74,20 +75,35 @@ namespace AdvancedTask.Controllers
                 Sorting = sorting
             };
 
-            if (isChange.HasValue && isChange.Value)
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => a.FullName.Contains("EPiServer.ChangeApproval"));
+
+            if (assemblies.Any())
             {
-                viewModel.ChangeApproval = true;
+                viewModel.ShowChangeApprovalTab = true;
 
-                var changeTask = Task.Run(async () => await ProcessChangeData(pageNr, pageSz, sorting, viewModel, taskValues, approvalComment, publishContent));
+                if (isChange.HasValue && isChange.Value)
                 {
-                    var contentTaskList = changeTask.Result;
-                    viewModel.ContentTaskList = contentTaskList;
+                    viewModel.ChangeApproval = true;
 
-                    var count = contentTaskList.Count(x => x.CanUserPublish);
-                    if (count != 0) viewModel.HasPublishAccess = true;
+                    var changeTasks = Task.Run(async () => await ProcessChangeData(pageNr, pageSz, sorting, viewModel, taskValues, approvalComment, publishContent));
+                    {
+                        var changeTaskList = changeTasks.Result;
+                        viewModel.ContentTaskList = changeTaskList;
+                    }
+
+                    return View("Index", viewModel);
                 }
+            }
+            else
+            {
+                //delete all change approval tasks
+                var changeTasks = Task.Run(async () => await ProcessChangeData(pageNr, pageSz, sorting, viewModel, taskValues, approvalComment, publishContent));
+                {
+                    var changeTaskList = changeTasks.Result;
 
-                return View("Index", viewModel);
+                    var ids = changeTaskList.Select(contentTask => contentTask.ApprovalId).ToList();
+                    AbortTasks(ids).GetAwaiter().GetResult();
+                }
             }
 
             var task = Task.Run(async () => await ProcessContentData(pageNr, pageSz, sorting, viewModel, taskValues, approvalComment, publishContent));
@@ -115,42 +131,40 @@ namespace AdvancedTask.Controllers
                     if (approvalId != 0)
                     {
                         var approval = await _approvalRepository.GetAsync(approvalId);
-                        if (approval is ContentApproval contentApproval)
-                        {
-                            await _approvalEngine.ApproveAsync(approvalId, PrincipalInfo.CurrentPrincipal.Identity.Name, 1, ApprovalDecisionScope.Force, approvalComment);
-                            if (publishContent)
-                            {
-                                _contentRepository.TryGet(contentApproval.ContentLink, out IContent content);
+                        await _approvalEngine.ApproveAsync(approvalId, PrincipalInfo.CurrentPrincipal.Identity.Name, 1, ApprovalDecisionScope.Force, approvalComment);
 
-                                if (content != null && content.CanUserPublish())
+                        if (publishContent && approval is ContentApproval contentApproval)
+                        {
+                            _contentRepository.TryGet(contentApproval.ContentLink, out IContent content);
+
+                            if (content != null && content.CanUserPublish())
+                            {
+                                switch (content)
                                 {
-                                    switch (content)
-                                    {
-                                        case PageData page:
-                                            {
-                                                var clone = page.CreateWritableClone();
-                                                _contentRepository.Save(clone, SaveAction.Publish, AccessLevel.Publish);
-                                                break;
-                                            }
-                                        case BlockData block:
-                                            {
-                                                var clone = block.CreateWritableClone() as IContent;
-                                                _contentRepository.Save(clone, SaveAction.Publish, AccessLevel.Publish);
-                                                break;
-                                            }
-                                        case ImageData image:
-                                            {
-                                                var clone = image.CreateWritableClone() as IContent;
-                                                _contentRepository.Save(clone, SaveAction.Publish, AccessLevel.Publish);
-                                                break;
-                                            }
-                                        case MediaData media:
-                                            {
-                                                var clone = media.CreateWritableClone() as IContent;
-                                                _contentRepository.Save(clone, SaveAction.Publish, AccessLevel.Publish);
-                                                break;
-                                            }
-                                    }
+                                    case PageData page:
+                                        {
+                                            var clone = page.CreateWritableClone();
+                                            _contentRepository.Save(clone, SaveAction.Publish, AccessLevel.Publish);
+                                            break;
+                                        }
+                                    case BlockData block:
+                                        {
+                                            var clone = block.CreateWritableClone() as IContent;
+                                            _contentRepository.Save(clone, SaveAction.Publish, AccessLevel.Publish);
+                                            break;
+                                        }
+                                    case ImageData image:
+                                        {
+                                            var clone = image.CreateWritableClone() as IContent;
+                                            _contentRepository.Save(clone, SaveAction.Publish, AccessLevel.Publish);
+                                            break;
+                                        }
+                                    case MediaData media:
+                                        {
+                                            var clone = media.CreateWritableClone() as IContent;
+                                            _contentRepository.Save(clone, SaveAction.Publish, AccessLevel.Publish);
+                                            break;
+                                        }
                                 }
                             }
                         }
@@ -158,6 +172,12 @@ namespace AdvancedTask.Controllers
                 }
             }
         }
+
+        private async Task AbortTasks(List<int> ids)
+        {
+            await _approvalEngine.AbortAsync(ids, PrincipalInfo.CurrentPrincipal.Identity.Name);
+        }
+
 
         private async Task<List<ContentTask>> ProcessContentData(int pageNumber, int pageSize, string sorting, AdvancedTaskIndexViewData model, string taskValues, string approvalComment, string publishContent)
         {
@@ -370,7 +390,7 @@ namespace AdvancedTask.Controllers
         {
             if (!string.IsNullOrEmpty(taskValues))
             {
-                await ApproveContent(taskValues, approvalComment, !string.IsNullOrEmpty(publishContent) && publishContent == "true");
+                await ApproveContent(taskValues, approvalComment, !string.IsNullOrEmpty(publishContent) && publishContent == "false");
             }
 
             //List of All task for the user 
