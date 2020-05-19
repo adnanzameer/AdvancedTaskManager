@@ -18,12 +18,10 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
-using System.Data.Common;
 using System.Linq;
 using System.Security;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using EPiServer.Approvals.FallbackApprovals.Internal;
 using Task = System.Threading.Tasks.Task;
 
 namespace AdvancedTask.Controllers
@@ -129,29 +127,29 @@ namespace AdvancedTask.Controllers
                                     switch (content)
                                     {
                                         case PageData page:
-                                        {
-                                            var clone = page.CreateWritableClone();
-                                            _contentRepository.Save(clone, SaveAction.Publish, AccessLevel.Publish);
-                                            break;
-                                        }
+                                            {
+                                                var clone = page.CreateWritableClone();
+                                                _contentRepository.Save(clone, SaveAction.Publish, AccessLevel.Publish);
+                                                break;
+                                            }
                                         case BlockData block:
-                                        {
-                                            var clone = block.CreateWritableClone() as IContent;
-                                            _contentRepository.Save(clone, SaveAction.Publish, AccessLevel.Publish);
-                                            break;
-                                        }
+                                            {
+                                                var clone = block.CreateWritableClone() as IContent;
+                                                _contentRepository.Save(clone, SaveAction.Publish, AccessLevel.Publish);
+                                                break;
+                                            }
                                         case ImageData image:
-                                        {
-                                            var clone = image.CreateWritableClone() as IContent;
-                                            _contentRepository.Save(clone, SaveAction.Publish, AccessLevel.Publish);
-                                            break;
-                                        }
+                                            {
+                                                var clone = image.CreateWritableClone() as IContent;
+                                                _contentRepository.Save(clone, SaveAction.Publish, AccessLevel.Publish);
+                                                break;
+                                            }
                                         case MediaData media:
-                                        {
-                                            var clone = media.CreateWritableClone() as IContent;
-                                            _contentRepository.Save(clone, SaveAction.Publish, AccessLevel.Publish);
-                                            break;
-                                        }
+                                            {
+                                                var clone = media.CreateWritableClone() as IContent;
+                                                _contentRepository.Save(clone, SaveAction.Publish, AccessLevel.Publish);
+                                                break;
+                                            }
                                     }
                                 }
                             }
@@ -172,7 +170,8 @@ namespace AdvancedTask.Controllers
             var query = new ApprovalQuery
             {
                 Status = ApprovalStatus.InReview,
-                Username = PrincipalInfo.CurrentPrincipal.Identity.Name
+                Username = PrincipalInfo.CurrentPrincipal.Identity.Name,
+                Reference = new Uri("content:")
             };
 
             var list = await _approvalRepository.ListAsync(query, (pageNumber - 1) * pageSize, pageSize);
@@ -183,7 +182,6 @@ namespace AdvancedTask.Controllers
 
             foreach (var task in list.PagedResult)
             {
-                IContent content = null;
                 var id = task.ID.ToString();
 
                 var customTask = new ContentTask
@@ -195,135 +193,133 @@ namespace AdvancedTask.Controllers
 
                 if (task is ContentApproval approval)
                 {
-                    customTask.ApprovalType = "Content";
-                    _contentRepository.TryGet(approval.ContentLink, out content);
+                    _contentRepository.TryGet(approval.ContentLink, out IContent content);
 
                     if (content != null)
                     {
                         id = content.ContentLink.ID.ToString();
                     }
-                }
 
-
-                if (content != null)
-                {
-                    customTask.CanUserPublish = content.CanUserPublish();
-                    customTask.ContentReference = content.ContentLink;
-                    customTask.ContentName = content.Name;
-
-                    var contentName = "";
-
-                    var contentType = _contentTypeRepository.Load(content.GetType().BaseType);
-
-                    if (contentType != null)
+                    if (content != null)
                     {
-                        contentName = contentType.DisplayName;
-                    }
-                    else
-                    {
-                        contentType = _contentTypeRepository.Load(content.GetType());
+                        customTask.CanUserPublish = content.CanUserPublish();
+                        customTask.ContentReference = content.ContentLink;
+                        customTask.ContentName = content.Name;
+
+                        var contentName = "";
+
+                        var contentType = _contentTypeRepository.Load(content.GetType().BaseType);
 
                         if (contentType != null)
                         {
                             contentName = contentType.DisplayName;
                         }
-                    }
-
-                    if (string.IsNullOrWhiteSpace(contentName))
-                    {
-                        var memberInfo = content.GetType().BaseType;
-                        if (memberInfo != null)
+                        else
                         {
-                            contentName = _localizationService.GetString("/contenttypes/" + memberInfo.Name.ToLower() + "/name", FallbackBehaviors.FallbackCulture);
-                        }
-                    }
+                            contentType = _contentTypeRepository.Load(content.GetType());
 
-                    if (!string.IsNullOrWhiteSpace(contentName) && contentName.Contains("[Missing text"))
-                    {
-                        contentName = "";
-                    }
-
-                    customTask.ContentType = contentName;
-
-                    if (content is PageData)
-                        customTask.Type = "Page";
-                    else if (content is BlockData)
-                    {
-                        customTask.Type = "Block";
-
-                        if (!string.IsNullOrWhiteSpace(contentName) && contentName.Equals("Form container"))
-                        {
-                            customTask.Type = "Form";
-                        }
-                    }
-                    else if (content is ImageData)
-                    {
-                        customTask.Type = "Image";
-                    }
-                    else if (content is MediaData)
-                    {
-                        customTask.Type = "Media";
-                        if (!string.IsNullOrWhiteSpace(contentName) && contentName.Equals("Video"))
-                        {
-                            customTask.Type = "Video";
-                        }
-                    }
-
-                    var enableContentApprovalDeadline = bool.Parse(ConfigurationManager.AppSettings["ATM:EnableContentApprovalDeadline"] ?? "false");
-                    var warningDays = int.Parse(ConfigurationManager.AppSettings["ATM:WarningDays"] ?? "4");
-
-                    if (enableContentApprovalDeadline)
-                    {
-                        //Deadline Property of The Content
-                        var propertyData = content.Property.Get(ContentApprovalDeadlinePropertyName) ?? content.Property[ContentApprovalDeadlinePropertyName];
-                        if (propertyData != null)
-                        {
-                            DateTime.TryParse(propertyData.ToString(), out DateTime dateValue);
-                            if (dateValue != DateTime.MinValue)
+                            if (contentType != null)
                             {
-                                if (!string.IsNullOrEmpty(customTask.Type))
-                                {
-                                    customTask.Deadline = dateValue.ToString("dd MMMM HH:mm");
-                                    var days = DateTime.Now.CountDaysInRange(dateValue);
+                                contentName = contentType.DisplayName;
+                            }
+                        }
 
-                                    if (days == 0)
-                                    {
-                                        customTask.WarningColor = "red";
-                                    }
-                                    else if (days > 0 && days < warningDays)
-                                    {
-                                        customTask.WarningColor = "green";
-                                    }
-                                }
-                                else
+                        if (string.IsNullOrWhiteSpace(contentName))
+                        {
+                            var memberInfo = content.GetType().BaseType;
+                            if (memberInfo != null)
+                            {
+                                contentName = _localizationService.GetString("/contenttypes/" + memberInfo.Name.ToLower() + "/name", FallbackBehaviors.FallbackCulture);
+                            }
+                        }
+
+                        if (!string.IsNullOrWhiteSpace(contentName) && contentName.Contains("[Missing text"))
+                        {
+                            contentName = "";
+                        }
+
+                        customTask.ContentType = contentName;
+
+                        if (content is PageData)
+                            customTask.Type = "Page";
+                        else if (content is BlockData)
+                        {
+                            customTask.Type = "Block";
+
+                            if (!string.IsNullOrWhiteSpace(contentName) && contentName.Equals("Form container"))
+                            {
+                                customTask.Type = "Form";
+                            }
+                        }
+                        else if (content is ImageData)
+                        {
+                            customTask.Type = "Image";
+                        }
+                        else if (content is MediaData)
+                        {
+                            customTask.Type = "Media";
+                            if (!string.IsNullOrWhiteSpace(contentName) && contentName.Equals("Video"))
+                            {
+                                customTask.Type = "Video";
+                            }
+                        }
+
+                        var enableContentApprovalDeadline = bool.Parse(ConfigurationManager.AppSettings["ATM:EnableContentApprovalDeadline"] ?? "false");
+                        var warningDays = int.Parse(ConfigurationManager.AppSettings["ATM:WarningDays"] ?? "4");
+
+                        if (enableContentApprovalDeadline)
+                        {
+                            //Deadline Property of The Content
+                            var propertyData = content.Property.Get(ContentApprovalDeadlinePropertyName) ?? content.Property[ContentApprovalDeadlinePropertyName];
+                            if (propertyData != null)
+                            {
+                                DateTime.TryParse(propertyData.ToString(), out DateTime dateValue);
+                                if (dateValue != DateTime.MinValue)
                                 {
-                                    customTask.Deadline = " - ";
+                                    if (!string.IsNullOrEmpty(customTask.Type))
+                                    {
+                                        customTask.Deadline = dateValue.ToString("dd MMMM HH:mm");
+                                        var days = DateTime.Now.CountDaysInRange(dateValue);
+
+                                        if (days == 0)
+                                        {
+                                            customTask.WarningColor = "red";
+                                        }
+                                        else if (days > 0 && days < warningDays)
+                                        {
+                                            customTask.WarningColor = "green";
+                                        }
+                                    }
+                                    else
+                                    {
+                                        customTask.Deadline = " - ";
+                                    }
                                 }
                             }
                         }
                     }
-                }
 
-                //Get Notifications
-                var notifications = await GetNotifications(PrincipalInfo.CurrentPrincipal.Identity.Name, id, false);
+                    //Get Notifications
+                    var notifications = await GetNotifications(PrincipalInfo.CurrentPrincipal.Identity.Name, id, false);
 
-                if (notifications != null && notifications.PagedResult != null && notifications.PagedResult.Any())
-                {
-                    //Mark Notification Read
-                    foreach (var notification in notifications.PagedResult)
+                    if (notifications != null && notifications.PagedResult != null && notifications.PagedResult.Any())
                     {
-                        _userNotificationRepository.MarkUserNotificationAsReadAsync(new NotificationUser(PrincipalInfo.CurrentPrincipal.Identity.Name), notification.ID).GetAwaiter().GetResult();
+                        //Mark Notification Read
+                        foreach (var notification in notifications.PagedResult)
+                        {
+                            _userNotificationRepository.MarkUserNotificationAsReadAsync(new NotificationUser(PrincipalInfo.CurrentPrincipal.Identity.Name), notification.ID).GetAwaiter().GetResult();
+                        }
+
+                        customTask.NotificationUnread = true;
+                    }
+                    else
+                    {
+                        customTask.NotificationUnread = false;
                     }
 
-                    customTask.NotificationUnread = true;
-                }
-                else
-                {
-                    customTask.NotificationUnread = false;
-                }
 
-
-                taskList.Add(customTask);
+                    taskList.Add(customTask);
+                }
             }
 
             //Sorting of the Columns 
@@ -381,7 +377,8 @@ namespace AdvancedTask.Controllers
             var query = new ApprovalQuery
             {
                 Status = ApprovalStatus.InReview,
-                Username = PrincipalInfo.CurrentPrincipal.Identity.Name
+                Username = PrincipalInfo.CurrentPrincipal.Identity.Name,
+                Reference = new Uri("changeapproval:")
             };
 
             var list = await _approvalRepository.ListAsync(query, (pageNumber - 1) * pageSize, pageSize);
@@ -404,7 +401,6 @@ namespace AdvancedTask.Controllers
 
                 if (!(task is ContentApproval))
                 {
-                    customTask.ApprovalType = "Change";
 
                     if (task.Reference != null)
                     {
@@ -421,96 +417,96 @@ namespace AdvancedTask.Controllers
                             }
                         }
                     }
-                }
 
-                if (content != null)
-                {
-                    customTask.CanUserPublish = content.CanUserPublish();
-                    customTask.ContentReference = content.ContentLink;
-                    customTask.ContentName = content.Name;
 
-                    var contentName = "";
-
-                    var contentType = _contentTypeRepository.Load(content.GetType().BaseType);
-
-                    if (contentType != null)
+                    if (content != null)
                     {
-                        contentName = contentType.DisplayName;
-                    }
-                    else
-                    {
-                        contentType = _contentTypeRepository.Load(content.GetType());
+                        customTask.CanUserPublish = content.CanUserPublish();
+                        customTask.ContentReference = content.ContentLink;
+                        customTask.ContentName = content.Name;
+
+                        var contentName = "";
+
+                        var contentType = _contentTypeRepository.Load(content.GetType().BaseType);
 
                         if (contentType != null)
                         {
                             contentName = contentType.DisplayName;
                         }
-                    }
-
-                    if (string.IsNullOrWhiteSpace(contentName))
-                    {
-                        var memberInfo = content.GetType().BaseType;
-                        if (memberInfo != null)
+                        else
                         {
-                            contentName = _localizationService.GetString("/contenttypes/" + memberInfo.Name.ToLower() + "/name", FallbackBehaviors.FallbackCulture);
+                            contentType = _contentTypeRepository.Load(content.GetType());
+
+                            if (contentType != null)
+                            {
+                                contentName = contentType.DisplayName;
+                            }
                         }
-                    }
 
-                    if (!string.IsNullOrWhiteSpace(contentName) && contentName.Contains("[Missing text"))
-                    {
-                        contentName = "";
-                    }
-
-                    customTask.ContentType = contentName;
-
-                    if (content is PageData)
-                        customTask.Type = "Page";
-                    else if (content is BlockData)
-                    {
-                        customTask.Type = "Block";
-
-                        if (!string.IsNullOrWhiteSpace(contentName) && contentName.Equals("Form container"))
+                        if (string.IsNullOrWhiteSpace(contentName))
                         {
-                            customTask.Type = "Form";
+                            var memberInfo = content.GetType().BaseType;
+                            if (memberInfo != null)
+                            {
+                                contentName = _localizationService.GetString("/contenttypes/" + memberInfo.Name.ToLower() + "/name", FallbackBehaviors.FallbackCulture);
+                            }
                         }
-                    }
-                    else if (content is ImageData)
-                    {
-                        customTask.Type = "Image";
-                    }
-                    else if (content is MediaData)
-                    {
-                        customTask.Type = "Media";
-                        if (!string.IsNullOrWhiteSpace(contentName) && contentName.Equals("Video"))
+
+                        if (!string.IsNullOrWhiteSpace(contentName) && contentName.Contains("[Missing text"))
                         {
-                            customTask.Type = "Video";
+                            contentName = "";
                         }
+
+                        customTask.ContentType = contentName;
+
+                        if (content is PageData)
+                            customTask.Type = "Page";
+                        else if (content is BlockData)
+                        {
+                            customTask.Type = "Block";
+
+                            if (!string.IsNullOrWhiteSpace(contentName) && contentName.Equals("Form container"))
+                            {
+                                customTask.Type = "Form";
+                            }
+                        }
+                        else if (content is ImageData)
+                        {
+                            customTask.Type = "Image";
+                        }
+                        else if (content is MediaData)
+                        {
+                            customTask.Type = "Media";
+                            if (!string.IsNullOrWhiteSpace(contentName) && contentName.Equals("Video"))
+                            {
+                                customTask.Type = "Video";
+                            }
+                        }
+
                     }
 
-                }
+                    //Get Notifications
+                    var notifications = await GetNotifications(PrincipalInfo.CurrentPrincipal.Identity.Name, id, true);
 
-                //Get Notifications
-                var notifications = await GetNotifications(PrincipalInfo.CurrentPrincipal.Identity.Name, id, true);
-
-                if (notifications != null && notifications.PagedResult != null && notifications.PagedResult.Any())
-                {
-                    //Mark Notification Read
-                    foreach (var notification in notifications.PagedResult)
+                    if (notifications != null && notifications.PagedResult != null && notifications.PagedResult.Any())
                     {
-                         _userNotificationRepository.MarkUserNotificationAsReadAsync(new NotificationUser(PrincipalInfo.CurrentPrincipal.Identity.Name), notification.ID).GetAwaiter().GetResult();
+                        //Mark Notification Read
+                        foreach (var notification in notifications.PagedResult)
+                        {
+                            _userNotificationRepository.MarkUserNotificationAsReadAsync(new NotificationUser(PrincipalInfo.CurrentPrincipal.Identity.Name), notification.ID).GetAwaiter().GetResult();
+                        }
+
+                        customTask.NotificationUnread = true;
+                    }
+                    else
+                    {
+                        customTask.NotificationUnread = false;
                     }
 
-                    customTask.NotificationUnread = true;
-                }
-                else
-                {
-                    customTask.NotificationUnread = false;
-                }
 
-
-                taskList.Add(customTask);
+                    taskList.Add(customTask);
+                }
             }
-
             //Sorting of the Columns 
             switch (sorting)
             {

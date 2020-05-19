@@ -11,7 +11,6 @@ namespace AdvancedTask.Business.AdvancedTask
             ContentType = "";
             Type = "";
             DateTime = "";
-            ApprovalType = "";
             Deadline = "";
             StartedBy = "";
             WarningColor = "";
@@ -23,7 +22,6 @@ namespace AdvancedTask.Business.AdvancedTask
         public string ContentType { get; set; }
         public string Type { get; set; }
         public string DateTime { get; set; }
-        public string ApprovalType { get; set; }
         public string Deadline { get; set; }
         public string StartedBy { get; set; }
         public string WarningColor { get; set; }

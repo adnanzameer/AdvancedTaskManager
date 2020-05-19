@@ -130,14 +130,9 @@
             {
     %>
     <tr <%=m.NotificationUnread?"style=\"background-color: #FFF9C4;\"" :"" %>>
-         <% if (!string.IsNullOrEmpty(m.ApprovalType) && m.ApprovalType.Equals("Content"))
-            { %>
+         
         <td><%=Html.CheckBox(m.ApprovalId.ToString(), false, new { onchange = "selectionChanged(this)", @class="checkbox" })%></td>
-        <% }
-            else
-            { %>
-        <td></td>
-        <% } %>
+        
         <td>
             <% if (!ContentReference.IsNullOrEmpty(m.ContentReference))
                 {
