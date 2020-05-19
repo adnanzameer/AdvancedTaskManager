@@ -9,6 +9,7 @@
                 <name>Advanced Task Manager</name>
                 <description>Administration of Awaiting Review Tasks</description>
                 <count>Number of tasks:</count>
+                <split>...</split>
                 <info>
                     With the Advanced Task Gadget you can manage existing awaiting review tasks related to Content Approval.
                 </info>
