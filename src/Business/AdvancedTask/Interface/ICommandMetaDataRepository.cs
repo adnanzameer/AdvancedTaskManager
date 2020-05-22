@@ -1,8 +1,6 @@
-﻿using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AdvancedTask.Business.AdvancedTask.Command;
 
-namespace AdvancedTask.Business.AdvancedTask
+namespace AdvancedTask.Business.AdvancedTask.Interface
 {
     public interface ICommandMetaDataRepository
     {

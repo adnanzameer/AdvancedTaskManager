@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using EPiServer.Core;
 
-namespace AdvancedTask.Business.AdvancedTask
+namespace AdvancedTask.Business.AdvancedTask.Helper
 {
     public static class ChangeApprovalReferenceHelper
     {

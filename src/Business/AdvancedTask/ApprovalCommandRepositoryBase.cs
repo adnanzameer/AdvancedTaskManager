@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Linq;
+using AdvancedTask.Business.AdvancedTask.Command;
 using EPiServer.Data;
 using EPiServer.Data.Dynamic;
 using EPiServer.ServiceLocation;
 
 namespace AdvancedTask.Business.AdvancedTask
 {
-    public static class ApprovalCommandRepositoryBaseTest<T> where T : ChangeApprovalCommandBase
+    public static class ApprovalCommandRepositoryBase<T> where T : ChangeApprovalCommandBase
     {
         public static  ChangeApprovalCommandBase GetByCommandId(Guid id, string type)
         {

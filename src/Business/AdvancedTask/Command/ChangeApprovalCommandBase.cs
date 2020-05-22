@@ -4,7 +4,7 @@ using EPiServer.Data;
 using EPiServer.Data.Dynamic;
 using EPiServer.DataAnnotations;
 
-namespace AdvancedTask.Business.AdvancedTask
+namespace AdvancedTask.Business.AdvancedTask.Command
 {
     public abstract class ChangeApprovalCommandBase : IDynamicData
     {

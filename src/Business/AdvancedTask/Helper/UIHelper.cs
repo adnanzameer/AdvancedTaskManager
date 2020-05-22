@@ -5,7 +5,7 @@ using EPiServer.Notification;
 using EPiServer.Security;
 using EPiServer.Shell.Profile.Internal;
 
-namespace AdvancedTask.Business.AdvancedTask
+namespace AdvancedTask.Business.AdvancedTask.Helper
 {
     public class UIHelper
     {

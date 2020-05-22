@@ -23,6 +23,7 @@ using System.Reflection;
 using System.Security;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using AdvancedTask.Business.AdvancedTask.Helper;
 using Task = System.Threading.Tasks.Task;
 
 namespace AdvancedTask.Controllers
@@ -65,7 +66,7 @@ namespace AdvancedTask.Controllers
             CheckAccess();
 
 
-            var test = new ChangeTask();
+            var test = new ChangeTaskHelper();
             var datav= test.GetData(20);
 
             var pageNr = pageNumber ?? 1;

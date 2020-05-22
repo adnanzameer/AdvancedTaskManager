@@ -6,9 +6,9 @@ using EPiServer.Logging;
 using EPiServer.ServiceLocation;
 using Newtonsoft.Json;
 
-namespace AdvancedTask.Business.AdvancedTask
+namespace AdvancedTask.Business.AdvancedTask.Command
 {
-    [EPiServerDataStore(AutomaticallyCreateStore = true, AutomaticallyRemapStore = true)]
+    [EPiServerDataStore(AutomaticallyRemapStore = true)]
     public class MovingContentCommand : ChangeApprovalCommandBase
     {
         private static readonly ILogger _logger = LogManager.GetLogger(typeof(MovingContentCommand));

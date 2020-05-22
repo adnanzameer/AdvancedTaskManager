@@ -1,24 +1,26 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using System.Security.Principal;
+using AdvancedTask.Business.AdvancedTask.Command;
+using AdvancedTask.Business.AdvancedTask.Helper;
+using AdvancedTask.Business.AdvancedTask.Interface;
 using EPiServer;
 using EPiServer.Core;
 using EPiServer.ServiceLocation;
 
-namespace AdvancedTask.Business.AdvancedTask
+namespace AdvancedTask.Business.AdvancedTask.Mapper
 {
     [ServiceConfiguration(typeof(ApprovalCommandMapper), Lifecycle = ServiceInstanceScope.Singleton)]
     public class ApprovalCommandMapper
     {
         private readonly ViewModelMapper _mapper = new ViewModelMapper();
-        private IContentRepository _contentRepository;
-        private UIHelper _uiHelper;
-        private ChangeApprovalHelper _changeApprovalHelper;
+        private readonly IContentRepository _contentRepository;
+        private readonly UIHelper _uiHelper;
 
-        public ApprovalCommandMapper(IContentRepository contentRepository, UIHelper uiHelper, ChangeApprovalHelper changeApprovalHelper)
+        public ApprovalCommandMapper(IContentRepository contentRepository, UIHelper uiHelper)
         {
             _contentRepository = contentRepository;
             _uiHelper = uiHelper;
-            _changeApprovalHelper = changeApprovalHelper;
             _mapper.Add<SecuritySettingCommand, ChangeTaskViewModel>();
             _mapper.Add<LanguageSettingCommand, ChangeTaskViewModel>();
             _mapper.Add<ExpirationDateSettingCommand, ChangeTaskViewModel>();
@@ -27,8 +29,6 @@ namespace AdvancedTask.Business.AdvancedTask
 
         public virtual ChangeTaskViewModel Map(ChangeApprovalCommandBase approvalCommand, IPrincipal principal)
         {
-            //var result = _changeApprovalHelper.GetChangeApprovalAsync(approvalCommand.ApprovalID).GetAwaiter().GetResult();
-            //var approvalDefinition = result == null ? null : _changeApprovalHelper.GetApprovalDefinitionVersionAsync(result.DefinitionVersionID).GetAwaiter().GetResult();
             var commandViewModel1 = _mapper.Map(approvalCommand) as ChangeTaskViewModel;
             var name1 = approvalCommand is ICultureSpecificApprovalCommand specificApprovalCommand ? specificApprovalCommand.AppliedOnLanguageBranch : null;
             var cultureInfo = string.IsNullOrEmpty(name1) ? null : new CultureInfo(name1);
@@ -60,7 +60,7 @@ namespace AdvancedTask.Business.AdvancedTask
                 commandViewModel1.IsCommandDataValid = approvalCommand.IsValid();
                 commandViewModel1.CreatedBy = _uiHelper.GetDisplayNameForUser(commandViewModel1.CreatedBy);
                 commandViewModel1.ChangedBy = _uiHelper.GetDisplayNameForUser(commandViewModel1.ChangedBy);
-                //commandViewModel1.CanUserActOnHisOwnChanges = !string.Equals(approvalCommand.CreatedBy, principal.Identity.Name, StringComparison.OrdinalIgnoreCase) || approvalDefinition != null && approvalDefinition.SelfApprove;
+                commandViewModel1.CanUserActOnHisOwnChanges = !string.Equals(approvalCommand.CreatedBy, principal.Identity.Name, StringComparison.OrdinalIgnoreCase);
                 return commandViewModel1;
             }
 

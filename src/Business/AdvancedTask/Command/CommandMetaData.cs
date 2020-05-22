@@ -3,9 +3,9 @@ using EPiServer.Core;
 using EPiServer.Data;
 using EPiServer.Data.Dynamic;
 
-namespace AdvancedTask.Business.AdvancedTask
+namespace AdvancedTask.Business.AdvancedTask.Command
 {
-    [EPiServerDataStore(AutomaticallyCreateStore = true, AutomaticallyRemapStore = true)]
+    [EPiServerDataStore(AutomaticallyRemapStore = true)]
     public class CommandMetaData : IDynamicData
     {
         public Identity Id { get; set; }

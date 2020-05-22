@@ -1,9 +1,10 @@
-﻿using EPiServer.Security;
+﻿using AdvancedTask.Business.AdvancedTask.Mapper;
+using EPiServer.Security;
 using EPiServer.ServiceLocation;
 
-namespace AdvancedTask.Business.AdvancedTask
+namespace AdvancedTask.Business.AdvancedTask.Helper
 {
-    class ChangeTask
+    public class ChangeTaskHelper
     {
         private Injected<ApprovalCommandService> _generalCommandService;
         private Injected<ApprovalCommandMapper> _approvalCommandMapper;
@@ -11,10 +12,7 @@ namespace AdvancedTask.Business.AdvancedTask
         public ChangeTaskViewModel GetData(int id)
         {
             var commandByApprovalId = _generalCommandService.Service.GetCommandByApprovalId(id);
-            if (commandByApprovalId != null)
-                return _approvalCommandMapper.Service.Map(commandByApprovalId, PrincipalInfo.CurrentPrincipal);
-
-            return null;
+            return commandByApprovalId != null ? _approvalCommandMapper.Service.Map(commandByApprovalId, PrincipalInfo.CurrentPrincipal) : null;
         }
     }
 }

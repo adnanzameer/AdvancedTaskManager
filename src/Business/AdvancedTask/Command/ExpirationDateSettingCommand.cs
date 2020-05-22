@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using AdvancedTask.Business.AdvancedTask.Interface;
 using EPiServer;
 using EPiServer.Core;
 using EPiServer.Data.Dynamic;
 using EPiServer.ServiceLocation;
 using Newtonsoft.Json;
 
-namespace AdvancedTask.Business.AdvancedTask
+namespace AdvancedTask.Business.AdvancedTask.Command
 {
-    [EPiServerDataStore(AutomaticallyCreateStore = true, AutomaticallyRemapStore = true)]
+    [EPiServerDataStore(AutomaticallyRemapStore = true)]
     public class ExpirationDateSettingCommand : ChangeApprovalCommandBase, ICultureSpecificApprovalCommand
     {
         public virtual string AppliedOnLanguageBranch { get; set; }

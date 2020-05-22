@@ -6,7 +6,7 @@ using EPiServer.Approvals;
 using EPiServer.Core;
 using EPiServer.Framework;
 
-namespace AdvancedTask.Business.AdvancedTask
+namespace AdvancedTask.Business.AdvancedTask.Helper
 {
     public static class ChangeApprovalExtensions
     {

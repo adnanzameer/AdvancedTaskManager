@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using EPiServer.Data.Dynamic;
+﻿using EPiServer.Data.Dynamic;
 using EPiServer.ServiceLocation;
 
-namespace AdvancedTask.Business.AdvancedTask
+namespace AdvancedTask.Business.AdvancedTask.Command
 {
     [ServiceConfiguration(Lifecycle = ServiceInstanceScope.Hybrid)]
     public class ChangeApprovalDynamicDataStoreFactory

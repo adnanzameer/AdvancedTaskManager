@@ -1,5 +1,5 @@
-﻿// Decompiled with JetBrains decompiler
-namespace AdvancedTask.Business.AdvancedTask
+﻿
+namespace AdvancedTask.Business.AdvancedTask.Interface
 {
     public interface ICultureSpecificApprovalCommand
     {
