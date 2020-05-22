@@ -92,6 +92,28 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Business\AdvancedTaskInitialization.cs" />
+    <Compile Include="Business\AdvancedTask\ApprovalCommandRepositoryBase.cs" />
+    <Compile Include="Business\AdvancedTask\DefaultCommandMetaDataRepository.cs" />
+    <Compile Include="Business\AdvancedTask\ExpirationDateSettingCommand.cs" />
+    <Compile Include="Business\AdvancedTask\ChangeApproval.cs" />
+    <Compile Include="Business\AdvancedTask\ChangeApprovalDynamicDataStoreFactory.cs" />
+    <Compile Include="Business\AdvancedTask\ChangeApprovalExtensions.cs" />
+    <Compile Include="Business\AdvancedTask\ChangeApprovalReferenceHelper.cs" />
+    <Compile Include="Business\AdvancedTask\ChangeApprovalTypeFactory.cs" />
+    <Compile Include="Business\AdvancedTask\ChangeTask.cs" />
+    <Compile Include="Business\AdvancedTask\CommandMetaData.cs" />
+    <Compile Include="Business\AdvancedTask\ApprovalCommandService.cs" />
+    <Compile Include="Business\AdvancedTask\ChangeApprovalCommandBase.cs" />
+    <Compile Include="Business\AdvancedTask\ChangeTaskViewModel.cs" />
+    <Compile Include="Business\AdvancedTask\ICommandMetaDataRepository.cs" />
+    <Compile Include="Business\AdvancedTask\ICultureSpecificApprovalCommand.cs" />
+    <Compile Include="Business\AdvancedTask\LanguageSettingCommand.cs" />
+    <Compile Include="Business\AdvancedTask\MovingContentCommand.cs" />
+    <Compile Include="Business\AdvancedTask\MovingPayLoad.cs" />
+    <Compile Include="Business\AdvancedTask\SecuritySettingCommand.cs" />
+    <Compile Include="Business\AdvancedTask\ViewModelMapper.cs" />
+    <Compile Include="Business\AdvancedTask\Mapper.cs" />
+    <Compile Include="Business\AdvancedTask\UIHelper.cs" />
     <Compile Include="Business\Helper.cs" />
     <Compile Include="Business\HideContentApprovalTabDescriptor.cs" />
     <Compile Include="Business\NotificationMessageFromReader.cs" />

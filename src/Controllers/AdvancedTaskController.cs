@@ -64,6 +64,10 @@ namespace AdvancedTask.Controllers
         {
             CheckAccess();
 
+
+            var test = new ChangeTask();
+            var datav= test.GetData(20);
+
             var pageNr = pageNumber ?? 1;
             var pageSz = pageSize ?? 30;
 
@@ -97,12 +101,16 @@ namespace AdvancedTask.Controllers
             else
             {
                 //delete all change approval tasks
-                var changeTasks = Task.Run(async () => await ProcessChangeData(pageNr, pageSz, sorting, viewModel, taskValues, approvalComment, publishContent));
+                var deleteChangeApprovalTasks = bool.Parse(ConfigurationManager.AppSettings["ATM:DeleteChangeApprovalTasks"] ?? "false");
+                if (deleteChangeApprovalTasks)
                 {
-                    var changeTaskList = changeTasks.Result;
+                    var changeTasks = Task.Run(async () => await ProcessChangeData(pageNr, pageSz, sorting, viewModel, taskValues, approvalComment, publishContent));
+                    {
+                        var changeTaskList = changeTasks.Result;
 
-                    var ids = changeTaskList.Select(contentTask => contentTask.ApprovalId).ToList();
-                    AbortTasks(ids).GetAwaiter().GetResult();
+                        var ids = changeTaskList.Select(contentTask => contentTask.ApprovalId).ToList();
+                        AbortTasks(ids).GetAwaiter().GetResult();
+                    }
                 }
             }
 
@@ -142,29 +150,29 @@ namespace AdvancedTask.Controllers
                                 switch (content)
                                 {
                                     case PageData page:
-                                        {
-                                            var clone = page.CreateWritableClone();
-                                            _contentRepository.Save(clone, SaveAction.Publish, AccessLevel.Publish);
-                                            break;
-                                        }
+                                    {
+                                        var clone = page.CreateWritableClone();
+                                        _contentRepository.Save(clone, SaveAction.Publish, AccessLevel.Publish);
+                                        break;
+                                    }
                                     case BlockData block:
-                                        {
-                                            var clone = block.CreateWritableClone() as IContent;
-                                            _contentRepository.Save(clone, SaveAction.Publish, AccessLevel.Publish);
-                                            break;
-                                        }
+                                    {
+                                        var clone = block.CreateWritableClone() as IContent;
+                                        _contentRepository.Save(clone, SaveAction.Publish, AccessLevel.Publish);
+                                        break;
+                                    }
                                     case ImageData image:
-                                        {
-                                            var clone = image.CreateWritableClone() as IContent;
-                                            _contentRepository.Save(clone, SaveAction.Publish, AccessLevel.Publish);
-                                            break;
-                                        }
+                                    {
+                                        var clone = image.CreateWritableClone() as IContent;
+                                        _contentRepository.Save(clone, SaveAction.Publish, AccessLevel.Publish);
+                                        break;
+                                    }
                                     case MediaData media:
-                                        {
-                                            var clone = media.CreateWritableClone() as IContent;
-                                            _contentRepository.Save(clone, SaveAction.Publish, AccessLevel.Publish);
-                                            break;
-                                        }
+                                    {
+                                        var clone = media.CreateWritableClone() as IContent;
+                                        _contentRepository.Save(clone, SaveAction.Publish, AccessLevel.Publish);
+                                        break;
+                                    }
                                 }
                             }
                         }
