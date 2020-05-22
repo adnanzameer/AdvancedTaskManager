@@ -27,11 +27,11 @@ namespace AdvancedTask.Business.AdvancedTask.Helper
         {
             if (string.IsNullOrEmpty(senderUsername))
                 return (string)null;
-            INotificationUser result = this._queryableNotificationUserService.GetAsync(senderUsername).ConfigureAwait(false).GetAwaiter().GetResult();
+            var result = this._queryableNotificationUserService.GetAsync(senderUsername).ConfigureAwait(false).GetAwaiter().GetResult();
             if (result == null)
                 return (string)null;
-            string name = PrincipalInfo.CurrentPrincipal.Identity.Name;
-            CultureInfo culture = this._currentUiCulture.Get(name);
+            var name = PrincipalInfo.CurrentPrincipal.Identity.Name;
+            var culture = this._currentUiCulture.Get(name);
             if (result.UserName.Equals(name, StringComparison.OrdinalIgnoreCase))
                 return this._localizationService.GetStringByCulture("/episerver/shared/text/yousubject", culture);
             return !string.IsNullOrEmpty(result.DisplayName) ? result.DisplayName : result.UserName;

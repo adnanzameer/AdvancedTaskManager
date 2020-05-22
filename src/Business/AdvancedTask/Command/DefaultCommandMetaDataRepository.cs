@@ -9,7 +9,7 @@ namespace AdvancedTask.Business.AdvancedTask.Command
     [ServiceConfiguration(ServiceType = typeof(ICommandMetaDataRepository))]
     public class DefaultCommandMetaDataRepository : ICommandMetaDataRepository
     {
-        private static object _lock = new object();
+        private static readonly object _lock = new object();
         private readonly ChangeApprovalDynamicDataStoreFactory _changeApprovalDynamicDataStoreFactory;
 
         public DefaultCommandMetaDataRepository(
@@ -25,7 +25,9 @@ namespace AdvancedTask.Business.AdvancedTask.Command
             if (store == null)
                 return (CommandMetaData)null;
             lock (DefaultCommandMetaDataRepository._lock)
+            {
                 return store.Items<CommandMetaData>().SingleOrDefault<CommandMetaData>((Expression<Func<CommandMetaData, bool>>)(command => command.ApprovalId == approvalId));
+            }
         }
     }
 }

@@ -37,10 +37,8 @@ namespace AdvancedTask.Business.AdvancedTask.Mapper
             var instance = mapping.CreateInstance();
             var dictionary = instance.GetType().GetProperties().ToDictionary(p => p.Name, (IEqualityComparer<string>)StringComparer.OrdinalIgnoreCase);
             foreach (var property in type.GetProperties())
-            {
                 if (dictionary.TryGetValue(property.Name, out var propertyInfo) && propertyInfo.CanWrite && property.PropertyType == propertyInfo.PropertyType)
                     propertyInfo.SetValue(instance, property.GetValue((object)source));
-            }
             mapping.ExecuteAfterMappingAction((object)source, instance);
             return instance;
         }

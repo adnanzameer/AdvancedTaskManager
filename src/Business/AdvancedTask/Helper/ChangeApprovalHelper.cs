@@ -70,8 +70,8 @@ namespace AdvancedTask.Business.AdvancedTask.Helper
         public virtual IEnumerable<string> GetUsersFromApprovalDefinitionReviewers(
           IEnumerable<ApprovalDefinitionReviewer> reviewers)
         {
-            List<string> source = new List<string>();
-            foreach (ApprovalDefinitionReviewer reviewer in reviewers)
+            var source = new List<string>();
+            foreach (var reviewer in reviewers)
             {
                 IEnumerable<string> strings;
                 if (reviewer.ReviewerType != ApprovalDefinitionReviewerType.User)
@@ -81,7 +81,7 @@ namespace AdvancedTask.Business.AdvancedTask.Helper
                     {
             reviewer.Name
                     }).AsEnumerable<string>();
-                IEnumerable<string> collection = strings;
+                var collection = strings;
                 source.AddRange(collection);
             }
             return source.Distinct<string>();

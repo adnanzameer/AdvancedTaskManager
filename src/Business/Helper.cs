@@ -15,9 +15,9 @@ namespace AdvancedTask.Business
         public static bool CanUserPublish<T>(this T content) where T : IContent
         {
             IList<string> roles;
-            using (UserStore<ApplicationUser> store = new UserStore<ApplicationUser>(new ApplicationDbContext<ApplicationUser>("EPiServerDB")))
+            using (var store = new UserStore<ApplicationUser>(new ApplicationDbContext<ApplicationUser>("EPiServerDB")))
             {
-                ApplicationUser user = store.FindByNameAsync(PrincipalInfo.CurrentPrincipal.Identity.Name).GetAwaiter().GetResult();
+                var user = store.FindByNameAsync(PrincipalInfo.CurrentPrincipal.Identity.Name).GetAwaiter().GetResult();
                 roles = GetUserToRoles(store, user);
             }
             return content.RoleHasAccess(roles.ToArray(), AccessLevel.Publish);
@@ -25,12 +25,12 @@ namespace AdvancedTask.Business
 
         private static bool RoleHasAccess<T>(this T content, string[] roles, AccessLevel accessLevel) where T : IContent
         {
-            ISecurable securedContent = content as ISecurable;
+            var securedContent = content as ISecurable;
             if (securedContent != null)
             {
-                ISecurityDescriptor descriptor = securedContent.GetSecurityDescriptor();
-                GenericIdentity identity = new GenericIdentity("doesn't matter");
-                GenericPrincipal principal = new GenericPrincipal(identity, roles);
+                var descriptor = securedContent.GetSecurityDescriptor();
+                var identity = new GenericIdentity("doesn't matter");
+                var principal = new GenericPrincipal(identity, roles);
                 return descriptor.HasAccess(principal, accessLevel);
             }
             return false;

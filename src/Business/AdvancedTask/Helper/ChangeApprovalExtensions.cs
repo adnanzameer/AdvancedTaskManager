@@ -15,7 +15,7 @@ namespace AdvancedTask.Business.AdvancedTask.Helper
           IEnumerable<ContentReference> contentLinks)
         {
             Validator.ThrowIfNull("references", (object)contentLinks);
-            IEnumerable<Approval> source = await repository.GetItemsAsync(contentLinks.Select<ContentReference, Uri>((Func<ContentReference, Uri>)(cr => ChangeApprovalReferenceHelper.GetUri(cr, false)))).ConfigureAwait(false);
+            var source = await repository.GetItemsAsync(contentLinks.Select<ContentReference, Uri>((Func<ContentReference, Uri>)(cr => ChangeApprovalReferenceHelper.GetUri(cr, false)))).ConfigureAwait(false);
             return source == null ? (IEnumerable<ChangeApproval>)null : source.OfType<ChangeApproval>();
         }
 
@@ -40,7 +40,7 @@ namespace AdvancedTask.Business.AdvancedTask.Helper
           this IApprovalRepository repository,
           ContentReference contentLink)
         {
-            IEnumerable<ChangeApproval> source = await repository.GetChangeApprovalItemsAsync((IEnumerable<ContentReference>)new ContentReference[1]
+            var source = await repository.GetChangeApprovalItemsAsync((IEnumerable<ContentReference>)new ContentReference[1]
             {
         contentLink
             }).ConfigureAwait(false);

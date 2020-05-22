@@ -25,24 +25,15 @@ namespace AdvancedTask.Business.AdvancedTask.Helper
             ChangeApprovalCommandBase byCommandId = null;
 
             if (commandTypeName.EndsWith("MovingContentCommand"))
-            {
                 byCommandId = ApprovalCommandRepositoryBase<MovingContentCommand>.GetByCommandId(commandId, commandTypeName);
-            }
             else
             if (commandTypeName.EndsWith("ExpirationDateSettingCommand"))
-            {
                 byCommandId = ApprovalCommandRepositoryBase<ExpirationDateSettingCommand>.GetByCommandId(commandId, commandTypeName);
-            }
             else
             if (commandTypeName.EndsWith("LanguageSettingCommand"))
-            {
                 byCommandId = ApprovalCommandRepositoryBase<LanguageSettingCommand>.GetByCommandId(commandId, commandTypeName);
-            }
             else
-            if (commandTypeName.EndsWith("SecuritySettingCommand"))
-            {
-                byCommandId = ApprovalCommandRepositoryBase<SecuritySettingCommand>.GetByCommandId(commandId, commandTypeName);
-            }
+            if (commandTypeName.EndsWith("SecuritySettingCommand")) byCommandId = ApprovalCommandRepositoryBase<SecuritySettingCommand>.GetByCommandId(commandId, commandTypeName);
             return byCommandId;
         }
     }

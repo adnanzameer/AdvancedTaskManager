@@ -19,10 +19,7 @@ namespace AdvancedTask.Business.AdvancedTask
                 ContentReference result;
                 return ContentReference.TryParse(this.AppliedOnContent, out result) ? result : ContentReference.EmptyReference;
             }
-            set
-            {
-                this.AppliedOnContent = ContentReference.IsNullOrEmpty(value) ? string.Empty : value.ToReferenceWithoutVersion().ToString();
-            }
+            set => this.AppliedOnContent = ContentReference.IsNullOrEmpty(value) ? string.Empty : value.ToReferenceWithoutVersion().ToString();
         }
 
         public string AppliedOnContent { get; set; }

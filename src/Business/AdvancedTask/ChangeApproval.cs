@@ -32,8 +32,8 @@ namespace AdvancedTask.Business.AdvancedTask
 
         public override Approval CreateWritableClone()
         {
-            ChangeApproval writableClone = base.CreateWritableClone() as ChangeApproval;
-            ContentReference contentLink = _contentLink;
+            var writableClone = base.CreateWritableClone() as ChangeApproval;
+            var contentLink = _contentLink;
             // ISSUE: explicit non-virtual call
             if (writableClone != null)
             {
