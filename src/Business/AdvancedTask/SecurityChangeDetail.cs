@@ -35,11 +35,12 @@ namespace AdvancedTask.Business.AdvancedTask
             AccessLevel.Administer
         };
 
-        public SecurityChangeDetail(ApprovalCommandService generalCommandService, ApprovalCommandMapper approvalCommandMapper, LocalizationService localizationService, ILanguageBranchRepository languageBranchRepository, ContentLanguageSettingRepository contentLanguageSettingRepository, IContentLanguageSettingsHandler contentLanguageSettingsHandler, IContentRepository contentRepository, ContentLoaderService contentLoaderService)
+        public SecurityChangeDetail(LocalizationService localizationService, ApprovalCommandService generalCommandService)
         {
-            _generalCommandService = generalCommandService;
             _localizationService = localizationService;
+            _generalCommandService = generalCommandService;
         }
+
 
         #region security
 

@@ -113,6 +113,7 @@
     <Compile Include="Helper\ApprovalCommandService.cs" />
     <Compile Include="Business\AdvancedTask\Command\ApprovalCommandBase.cs" />
     <Compile Include="Helper\SettingCommandHelper.cs" />
+    <Compile Include="Models\ChangeTaskDetail.cs" />
     <Compile Include="Models\ChangeTaskViewModel.cs" />
     <Compile Include="Business\AdvancedTask\Interface\ICommandMetaDataRepository.cs" />
     <Compile Include="Business\AdvancedTask\Interface\ICultureSpecificApprovalCommand.cs" />

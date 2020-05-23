@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using AdvancedTask.Business.AdvancedTask.Interface;
 using EPiServer.Core;
 
 namespace AdvancedTask.Models
@@ -14,6 +16,7 @@ namespace AdvancedTask.Models
             Deadline = "";
             StartedBy = "";
             WarningColor = "";
+            Details= new List<IContentChangeDetails>();
         }
 
         public int ApprovalId { get; set; }
@@ -27,6 +30,7 @@ namespace AdvancedTask.Models
         public string WarningColor { get; set; }
         public bool NotificationUnread { get; set; }
         public bool CanUserPublish { get; set; }
+        public IEnumerable<IContentChangeDetails> Details { get; set; }
     }
 }
 

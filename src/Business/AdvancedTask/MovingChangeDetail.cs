@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using AdvancedTask.Business.AdvancedTask.Interface;
 using AdvancedTask.Business.AdvancedTask.Mapper;
-using AdvancedTask.Helper;
 using AdvancedTask.Models;
 using EPiServer;
 using EPiServer.Cms.Shell.Service.Internal;
@@ -22,11 +21,12 @@ namespace AdvancedTask.Business.AdvancedTask
 
         private readonly ContentLoaderService _contentLoaderService;
 
-        public MovingChangeDetail(ApprovalCommandService generalCommandService, ApprovalCommandMapper approvalCommandMapper, LocalizationService localizationService, ILanguageBranchRepository languageBranchRepository, ContentLanguageSettingRepository contentLanguageSettingRepository, IContentLanguageSettingsHandler contentLanguageSettingsHandler, IContentRepository contentRepository, ContentLoaderService contentLoaderService)
+        public MovingChangeDetail(ContentLoaderService contentLoaderService, LocalizationService localizationService)
         {
-            _localizationService = localizationService;
             _contentLoaderService = contentLoaderService;
+            _localizationService = localizationService;
         }
+
 
         #region moving
 

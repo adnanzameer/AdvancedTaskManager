@@ -25,13 +25,14 @@ namespace AdvancedTask.Business.AdvancedTask
         private readonly IContentLanguageSettingsHandler _contentLanguageSettingsHandler;
         private readonly IContentRepository _contentRepository;
 
-        public LanguageChangeDetails(ApprovalCommandService generalCommandService, ApprovalCommandMapper approvalCommandMapper, LocalizationService localizationService, ILanguageBranchRepository languageBranchRepository, ContentLanguageSettingRepository contentLanguageSettingRepository, IContentLanguageSettingsHandler contentLanguageSettingsHandler, IContentRepository contentRepository, ContentLoaderService contentLoaderService)
+        public LanguageChangeDetails(ILanguageBranchRepository languageBranchRepository, LocalizationService localizationService, IContentLanguageSettingsHandler contentLanguageSettingsHandler, IContentRepository contentRepository)
         {
-            _localizationService = localizationService;
             _languageBranchRepository = languageBranchRepository;
+            _localizationService = localizationService;
             _contentLanguageSettingsHandler = contentLanguageSettingsHandler;
             _contentRepository = contentRepository;
         }
+
 
         #region Language
 

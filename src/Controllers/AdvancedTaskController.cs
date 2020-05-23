@@ -438,16 +438,9 @@ namespace AdvancedTask.Controllers
 
                     if (taskDetails != null)
                     {
-                        if (taskDetails.TypeIdentifier.ToLower().EndsWith("movingcontentcommand"))
-                            customTask.Type = "Moving Content";
-                        else if (taskDetails.TypeIdentifier.ToLower().EndsWith("expirationdatesettingcommand"))
-                            customTask.Type = "Expiration Date Setting";
-                        else if (taskDetails.TypeIdentifier.ToLower().EndsWith("languagesettingcommand"))
-                            customTask.Type = "Language Setting";
-                        else if (taskDetails.TypeIdentifier.ToLower().EndsWith("securitysettingcommand"))
-                            customTask.Type = "Security Setting";
-
+                        customTask.Type = taskDetails.Type;
                         customTask.ContentName = taskDetails.Name;
+                        customTask.Details = taskDetails.Details;
                     }
 
                     if (task.Reference != null)
