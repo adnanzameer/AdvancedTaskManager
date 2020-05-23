@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AdvancedTask.Business.AdvancedTask;
 using EPiServer.Approvals;
 using EPiServer.Core;
 using EPiServer.Framework;
 
-namespace AdvancedTask.Business.AdvancedTask.Helper
+namespace AdvancedTask.Helper
 {
     public static class ChangeApprovalExtensions
     {

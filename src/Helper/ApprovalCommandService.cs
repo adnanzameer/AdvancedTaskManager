@@ -1,17 +1,20 @@
 ﻿using System;
+using AdvancedTask.Business.AdvancedTask;
 using AdvancedTask.Business.AdvancedTask.Command;
 using AdvancedTask.Business.AdvancedTask.Interface;
 
-namespace AdvancedTask.Business.AdvancedTask.Helper
+namespace AdvancedTask.Helper
 {
     public class ApprovalCommandService
     {
         private readonly ICommandMetaDataRepository _commandMetaDataRepository;
+        private readonly ApprovalCommandRepositoryBase _approvalCommandRepositoryBase;
 
         public ApprovalCommandService(
-            ICommandMetaDataRepository cmdRepository)
+            ICommandMetaDataRepository cmdRepository, ApprovalCommandRepositoryBase approvalCommandRepositoryBase)
         {
             _commandMetaDataRepository = cmdRepository;
+            _approvalCommandRepositoryBase = approvalCommandRepositoryBase;
         }
 
         public virtual ChangeApprovalCommandBase GetCommandByApprovalId(int approvalId)
@@ -25,15 +28,15 @@ namespace AdvancedTask.Business.AdvancedTask.Helper
             ChangeApprovalCommandBase byCommandId = null;
 
             if (commandTypeName.EndsWith("MovingContentCommand"))
-                byCommandId = ApprovalCommandRepositoryBase<MovingContentCommand>.GetByCommandId(commandId, commandTypeName);
+                byCommandId = _approvalCommandRepositoryBase.GetByCommandId<MovingContentCommand>(commandId, commandTypeName);
             else
             if (commandTypeName.EndsWith("ExpirationDateSettingCommand"))
-                byCommandId = ApprovalCommandRepositoryBase<ExpirationDateSettingCommand>.GetByCommandId(commandId, commandTypeName);
+                byCommandId = _approvalCommandRepositoryBase.GetByCommandId<ExpirationDateSettingCommand>(commandId, commandTypeName);
             else
             if (commandTypeName.EndsWith("LanguageSettingCommand"))
-                byCommandId = ApprovalCommandRepositoryBase<LanguageSettingCommand>.GetByCommandId(commandId, commandTypeName);
+                byCommandId = _approvalCommandRepositoryBase.GetByCommandId<LanguageSettingCommand>(commandId, commandTypeName);
             else
-            if (commandTypeName.EndsWith("SecuritySettingCommand")) byCommandId = ApprovalCommandRepositoryBase<SecuritySettingCommand>.GetByCommandId(commandId, commandTypeName);
+            if (commandTypeName.EndsWith("SecuritySettingCommand")) byCommandId = _approvalCommandRepositoryBase.GetByCommandId<SecuritySettingCommand>(commandId, commandTypeName);
             return byCommandId;
         }
     }

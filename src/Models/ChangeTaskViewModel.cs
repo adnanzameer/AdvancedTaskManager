@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using EPiServer.Core;
 
-namespace AdvancedTask.Business.AdvancedTask
+namespace AdvancedTask.Models
 {
     public class ChangeTaskViewModel
     {

@@ -1,6 +1,6 @@
 ﻿
 using System;
-using AdvancedTask.Business.AdvancedTask.Helper;
+using AdvancedTask.Helper;
 using EPiServer.Approvals;
 
 namespace AdvancedTask.Business.AdvancedTask
@@ -35,13 +35,13 @@ namespace AdvancedTask.Business.AdvancedTask
         {
             get
             {
-                return (IApprovalLanguageResolver)null;
+                return null;
             }
         }
 
         public Approval CreateApproval(Uri reference)
         {
-            return (Approval)new ChangeApproval()
+            return new ChangeApproval()
             {
                 ContentLink = ChangeApprovalReferenceHelper.GetContentReference(reference)
             };

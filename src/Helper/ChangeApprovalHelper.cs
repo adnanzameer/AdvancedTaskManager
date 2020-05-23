@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AdvancedTask.Business.AdvancedTask;
 using EPiServer.Approvals;
 using EPiServer.Approvals.ContentApprovals;
 using EPiServer.Cms.Shell.Service.Internal;
@@ -8,7 +9,7 @@ using EPiServer.Core;
 using EPiServer.Security;
 using EPiServer.ServiceLocation;
 
-namespace AdvancedTask.Business.AdvancedTask.Helper
+namespace AdvancedTask.Helper
 {
     [ServiceConfiguration(typeof(ChangeApprovalHelper))]
     public class ChangeApprovalHelper

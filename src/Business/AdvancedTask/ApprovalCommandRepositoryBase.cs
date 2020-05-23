@@ -1,17 +1,21 @@
 ﻿using System;
 using System.Linq;
 using AdvancedTask.Business.AdvancedTask.Command;
-using EPiServer.Data;
-using EPiServer.Data.Dynamic;
-using EPiServer.ServiceLocation;
 
 namespace AdvancedTask.Business.AdvancedTask
 {
-    public static class ApprovalCommandRepositoryBase<T> where T : ChangeApprovalCommandBase
+    public class ApprovalCommandRepositoryBase
     {
-        public static  ChangeApprovalCommandBase GetByCommandId(Guid id, string type)
+        private readonly ChangeApprovalDynamicDataStoreFactory _changeApprovalDynamicDataStoreFactory;
+
+        public ApprovalCommandRepositoryBase(ChangeApprovalDynamicDataStoreFactory changeApprovalDynamicDataStoreFactory)
         {
-            var store = ServiceLocator.Current.GetInstance<ChangeApprovalDynamicDataStoreFactory>().GetStore(type);
+            _changeApprovalDynamicDataStoreFactory = changeApprovalDynamicDataStoreFactory;
+        }
+
+        public ChangeApprovalCommandBase GetByCommandId<T>(Guid id, string type) where T : ChangeApprovalCommandBase
+        {
+            var store = _changeApprovalDynamicDataStoreFactory.GetStore(type);
 
             var obj = store?.Items<T>().FirstOrDefault(x => x.Id.ExternalId == id);
 

@@ -1,5 +1,6 @@
 ﻿<%@ Control Language="C#" Inherits="System.Web.Mvc.ViewUserControl<AdvancedTask.Models.AdvancedTaskIndexViewData>" %>
 <%@ Import Namespace="AdvancedTask.Business.AdvancedTask" %>
+<%@ Import Namespace="AdvancedTask.Models" %>
 <%@ Import Namespace="EPiServer.Core" %>
 <%@ Import Namespace="EPiServer.Editor" %>
 <%@ Import Namespace="EPiServer.Shell.Web.Mvc.Html" %>

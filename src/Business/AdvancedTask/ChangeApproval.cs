@@ -1,5 +1,5 @@
 ﻿using System;
-using AdvancedTask.Business.AdvancedTask.Helper;
+using AdvancedTask.Helper;
 using EPiServer.Approvals;
 using EPiServer.Core;
 

@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Globalization;
 using EPiServer.Framework.Localization;
 using EPiServer.Notification;
 using EPiServer.Security;
 using EPiServer.Shell.Profile.Internal;
 
-namespace AdvancedTask.Business.AdvancedTask.Helper
+namespace AdvancedTask.Helper
 {
     public class UIHelper
     {

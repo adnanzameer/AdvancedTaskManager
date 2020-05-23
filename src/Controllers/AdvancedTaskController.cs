@@ -23,7 +23,7 @@ using System.Reflection;
 using System.Security;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using AdvancedTask.Business.AdvancedTask.Helper;
+using AdvancedTask.Helper;
 using Task = System.Threading.Tasks.Task;
 
 namespace AdvancedTask.Controllers
@@ -41,10 +41,12 @@ namespace AdvancedTask.Controllers
         private readonly IUserNotificationRepository _userNotificationRepository;
         private readonly IApprovalEngine _approvalEngine;
         private readonly LocalizationService _localizationService;
+        //private readonly IAsyncDatabaseExecutor _asyncDatabaseExecutor;
+        private readonly ChangeTaskHelper _changeTaskHelper;
 
         private const string ContentApprovalDeadlinePropertyName = "ATM_ContentApprovalDeadline";
 
-        public AdvancedTaskController(IApprovalRepository approvalRepository, IContentRepository contentRepository, IContentTypeRepository contentTypeRepository, IUserNotificationRepository userNotificationRepository, IApprovalEngine approvalEngine, LocalizationService localizationService)
+        public AdvancedTaskController(IApprovalRepository approvalRepository, IContentRepository contentRepository, IContentTypeRepository contentTypeRepository, IUserNotificationRepository userNotificationRepository, IApprovalEngine approvalEngine, LocalizationService localizationService, IAsyncDatabaseExecutor asyncDatabaseExecutor, ChangeTaskHelper changeTaskHelper)
         {
             _approvalRepository = approvalRepository;
             _contentRepository = contentRepository;
@@ -52,6 +54,8 @@ namespace AdvancedTask.Controllers
             _userNotificationRepository = userNotificationRepository;
             _approvalEngine = approvalEngine;
             _localizationService = localizationService;
+            //_asyncDatabaseExecutor = asyncDatabaseExecutor;
+            _changeTaskHelper = changeTaskHelper;
         }
         private void CheckAccess()
         {
@@ -64,10 +68,6 @@ namespace AdvancedTask.Controllers
         public ActionResult Index(int? pageNumber, int? pageSize, string sorting, string taskValues, string approvalComment, string publishContent, bool? isChange)
         {
             CheckAccess();
-
-
-            var test = new ChangeTaskHelper();
-            var datav= test.GetData(20);
 
             var pageNr = pageNumber ?? 1;
             var pageSz = pageSize ?? 30;
@@ -151,29 +151,29 @@ namespace AdvancedTask.Controllers
                                 switch (content)
                                 {
                                     case PageData page:
-                                    {
-                                        var clone = page.CreateWritableClone();
-                                        _contentRepository.Save(clone, SaveAction.Publish, AccessLevel.Publish);
-                                        break;
-                                    }
+                                        {
+                                            var clone = page.CreateWritableClone();
+                                            _contentRepository.Save(clone, SaveAction.Publish, AccessLevel.Publish);
+                                            break;
+                                        }
                                     case BlockData block:
-                                    {
-                                        var clone = block.CreateWritableClone() as IContent;
-                                        _contentRepository.Save(clone, SaveAction.Publish, AccessLevel.Publish);
-                                        break;
-                                    }
+                                        {
+                                            var clone = block.CreateWritableClone() as IContent;
+                                            _contentRepository.Save(clone, SaveAction.Publish, AccessLevel.Publish);
+                                            break;
+                                        }
                                     case ImageData image:
-                                    {
-                                        var clone = image.CreateWritableClone() as IContent;
-                                        _contentRepository.Save(clone, SaveAction.Publish, AccessLevel.Publish);
-                                        break;
-                                    }
+                                        {
+                                            var clone = image.CreateWritableClone() as IContent;
+                                            _contentRepository.Save(clone, SaveAction.Publish, AccessLevel.Publish);
+                                            break;
+                                        }
                                     case MediaData media:
-                                    {
-                                        var clone = media.CreateWritableClone() as IContent;
-                                        _contentRepository.Save(clone, SaveAction.Publish, AccessLevel.Publish);
-                                        break;
-                                    }
+                                        {
+                                            var clone = media.CreateWritableClone() as IContent;
+                                            _contentRepository.Save(clone, SaveAction.Publish, AccessLevel.Publish);
+                                            break;
+                                        }
                                 }
                             }
                         }
@@ -249,7 +249,10 @@ namespace AdvancedTask.Controllers
 
                             if (contentType != null)
                             {
-                                contentName = contentType.DisplayName;
+                                if (!string.IsNullOrEmpty(contentType.DisplayName))
+                                    contentName = contentType.DisplayName;
+                                else if (!string.IsNullOrEmpty(contentType.Name))
+                                    contentName = contentType.Name;
                             }
                         }
 
@@ -431,10 +434,24 @@ namespace AdvancedTask.Controllers
                 if (!(task is ContentApproval))
                 {
 
+                    var taskDetails = _changeTaskHelper.GetData(task.ID);
+
+                    if (taskDetails != null)
+                    {
+                        if (taskDetails.TypeIdentifier.ToLower().EndsWith("movingcontentcommand"))
+                            customTask.Type = "Moving Content";
+                        else if (taskDetails.TypeIdentifier.ToLower().EndsWith("expirationdatesettingcommand"))
+                            customTask.Type = "Expiration Date Setting";
+                        else if (taskDetails.TypeIdentifier.ToLower().EndsWith("languagesettingcommand"))
+                            customTask.Type = "Language Setting";
+                        else if (taskDetails.TypeIdentifier.ToLower().EndsWith("securitysettingcommand"))
+                            customTask.Type = "Security Setting";
+
+                        customTask.ContentName = taskDetails.Name;
+                    }
+
                     if (task.Reference != null)
                     {
-                        customTask.ContentName = task.Reference.AbsoluteUri;
-
                         if (!string.IsNullOrEmpty(task.Reference.AbsolutePath))
                         {
                             var pageId = task.Reference.AbsolutePath.Replace("/", "");
@@ -446,13 +463,10 @@ namespace AdvancedTask.Controllers
                             }
                         }
                     }
-
-
+                    
                     if (content != null)
                     {
-                        customTask.CanUserPublish = content.CanUserPublish();
                         customTask.ContentReference = content.ContentLink;
-                        customTask.ContentName = content.Name;
 
                         var contentName = "";
 
@@ -468,7 +482,10 @@ namespace AdvancedTask.Controllers
 
                             if (contentType != null)
                             {
-                                contentName = contentType.DisplayName;
+                                if (!string.IsNullOrEmpty(contentType.DisplayName))
+                                    contentName = contentType.DisplayName;
+                                else if (!string.IsNullOrEmpty(contentType.Name))
+                                    contentName = contentType.Name;
                             }
                         }
 
@@ -487,30 +504,6 @@ namespace AdvancedTask.Controllers
                         }
 
                         customTask.ContentType = contentName;
-
-                        if (content is PageData)
-                            customTask.Type = "Page";
-                        else if (content is BlockData)
-                        {
-                            customTask.Type = "Block";
-
-                            if (!string.IsNullOrWhiteSpace(contentName) && contentName.Equals("Form container"))
-                            {
-                                customTask.Type = "Form";
-                            }
-                        }
-                        else if (content is ImageData)
-                        {
-                            customTask.Type = "Image";
-                        }
-                        else if (content is MediaData)
-                        {
-                            customTask.Type = "Media";
-                            if (!string.IsNullOrWhiteSpace(contentName) && contentName.Equals("Video"))
-                            {
-                                customTask.Type = "Video";
-                            }
-                        }
 
                     }
 

@@ -93,29 +93,29 @@
   <ItemGroup>
     <Compile Include="Business\AdvancedTaskInitialization.cs" />
     <Compile Include="Business\AdvancedTask\ApprovalCommandRepositoryBase.cs" />
-    <Compile Include="Business\AdvancedTask\Helper\ChangeApprovalHelper.cs" />
+    <Compile Include="Helper\ChangeApprovalHelper.cs" />
     <Compile Include="Business\AdvancedTask\Command\DefaultCommandMetaDataRepository.cs" />
     <Compile Include="Business\AdvancedTask\Command\ExpirationDateSettingCommand.cs" />
     <Compile Include="Business\AdvancedTask\ChangeApproval.cs" />
     <Compile Include="Business\AdvancedTask\Command\ChangeApprovalDynamicDataStoreFactory.cs" />
-    <Compile Include="Business\AdvancedTask\Helper\ChangeApprovalExtensions.cs" />
-    <Compile Include="Business\AdvancedTask\Helper\ChangeApprovalReferenceHelper.cs" />
+    <Compile Include="Helper\ChangeApprovalExtensions.cs" />
+    <Compile Include="Helper\ChangeApprovalReferenceHelper.cs" />
     <Compile Include="Business\AdvancedTask\ChangeApprovalTypeFactory.cs" />
-    <Compile Include="Business\AdvancedTask\Helper\ChangeTaskHelper.cs" />
+    <Compile Include="Helper\ChangeTaskHelper.cs" />
     <Compile Include="Business\AdvancedTask\Command\CommandMetaData.cs" />
-    <Compile Include="Business\AdvancedTask\Helper\ApprovalCommandService.cs" />
+    <Compile Include="Helper\ApprovalCommandService.cs" />
     <Compile Include="Business\AdvancedTask\Command\ChangeApprovalCommandBase.cs" />
-    <Compile Include="Business\AdvancedTask\ChangeTaskViewModel.cs" />
+    <Compile Include="Models\ChangeTaskViewModel.cs" />
     <Compile Include="Business\AdvancedTask\Interface\ICommandMetaDataRepository.cs" />
     <Compile Include="Business\AdvancedTask\Interface\ICultureSpecificApprovalCommand.cs" />
     <Compile Include="Business\AdvancedTask\Command\LanguageSettingCommand.cs" />
     <Compile Include="Business\AdvancedTask\Command\MovingContentCommand.cs" />
-    <Compile Include="Business\AdvancedTask\MovingPayLoad.cs" />
+    <Compile Include="Models\MovingPayLoad.cs" />
     <Compile Include="Business\AdvancedTask\Command\SecuritySettingCommand.cs" />
     <Compile Include="Business\AdvancedTask\Mapper\ViewModelMapper.cs" />
     <Compile Include="Business\AdvancedTask\Mapper\ApprovalCommandMapper.cs" />
-    <Compile Include="Business\AdvancedTask\Helper\UIHelper.cs" />
-    <Compile Include="Business\Helper.cs" />
+    <Compile Include="Helper\UIHelper.cs" />
+    <Compile Include="Helper\Helper.cs" />
     <Compile Include="Business\HideContentApprovalTabDescriptor.cs" />
     <Compile Include="Business\NotificationMessageFromReader.cs" />
     <Compile Include="Controllers\AdvancedTaskController.cs" />
@@ -153,7 +153,7 @@
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Business\AdvancedTask\ContentTask.cs">
+    <Compile Include="Models\ContentTask.cs">
       <SubType>Code</SubType>
     </Compile>
     <Content Include="AdvancedTask.nuspec">

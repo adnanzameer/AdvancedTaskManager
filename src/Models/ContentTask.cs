@@ -1,6 +1,6 @@
 using EPiServer.Core;
 
-namespace AdvancedTask.Business.AdvancedTask
+namespace AdvancedTask.Models
 {
     public class ContentTask
     {

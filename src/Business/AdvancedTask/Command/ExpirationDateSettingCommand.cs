@@ -13,6 +13,7 @@ namespace AdvancedTask.Business.AdvancedTask.Command
     [EPiServerDataStore(AutomaticallyRemapStore = true)]
     public class ExpirationDateSettingCommand : ChangeApprovalCommandBase, ICultureSpecificApprovalCommand
     {
+        private Injected<IContentLoader> _contentLoader;
         public virtual string AppliedOnLanguageBranch { get; set; }
 
         public virtual List<int> AffectedVersions { get; set; }
@@ -22,7 +23,7 @@ namespace AdvancedTask.Business.AdvancedTask.Command
             try
             {
                 var dictionary = JsonConvert.DeserializeObject<IDictionary<string, object>>(this.NewSettingsJson);
-                var versionable = (string.IsNullOrEmpty(this.AppliedOnLanguageBranch) ? ServiceLocator.Current.GetInstance<IContentLoader>().Get<IContent>(this.AppliedOnContentLink) : ServiceLocator.Current.GetInstance<IContentLoader>().Get<IContent>(this.AppliedOnContentLink, new CultureInfo(this.AppliedOnLanguageBranch))) as IVersionable;
+                var versionable = (string.IsNullOrEmpty(this.AppliedOnLanguageBranch) ? _contentLoader.Service.Get<IContent>(this.AppliedOnContentLink) : _contentLoader.Service.Get<IContent>(this.AppliedOnContentLink, new CultureInfo(this.AppliedOnLanguageBranch))) as IVersionable;
                 object obj;
                 if (dictionary.TryGetValue("PageStopPublish", out obj))
                 {

@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AdvancedTask.Business.AdvancedTask;
 using EPiServer.Core;
 
-namespace AdvancedTask.Business.AdvancedTask.Helper
+namespace AdvancedTask.Helper
 {
     public static class ChangeApprovalReferenceHelper
     {

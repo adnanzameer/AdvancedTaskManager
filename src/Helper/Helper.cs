@@ -1,14 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Principal;
 using EPiServer.Cms.UI.AspNetIdentity;
 using EPiServer.Core;
 using EPiServer.Security;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Principal;
 
-namespace AdvancedTask.Business
+namespace AdvancedTask.Helper
 {
     public static class Helper
     {
