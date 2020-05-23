@@ -28,7 +28,7 @@ namespace AdvancedTask.Business.AdvancedTask.Mapper
             _mapper.Add<MovingContentCommand, ChangeTaskViewModel>();
         }
 
-        public virtual ChangeTaskViewModel Map(ChangeApprovalCommandBase approvalCommand, IPrincipal principal)
+        public virtual ChangeTaskViewModel Map(ApprovalCommandBase approvalCommand, IPrincipal principal)
         {
             var commandViewModel1 = _mapper.Map(approvalCommand) as ChangeTaskViewModel;
             var name1 = approvalCommand is ICultureSpecificApprovalCommand specificApprovalCommand ? specificApprovalCommand.AppliedOnLanguageBranch : null;

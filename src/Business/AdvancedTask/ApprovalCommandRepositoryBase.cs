@@ -13,7 +13,7 @@ namespace AdvancedTask.Business.AdvancedTask
             _changeApprovalDynamicDataStoreFactory = changeApprovalDynamicDataStoreFactory;
         }
 
-        public ChangeApprovalCommandBase GetByCommandId<T>(Guid id, string type) where T : ChangeApprovalCommandBase
+        public ApprovalCommandBase GetByCommandId<T>(Guid id, string type) where T : ApprovalCommandBase
         {
             var store = _changeApprovalDynamicDataStoreFactory.GetStore(type);
 

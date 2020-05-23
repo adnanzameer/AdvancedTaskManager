@@ -29,5 +29,17 @@ namespace AdvancedTask.Business.AdvancedTask.Command
                 return store.Items<CommandMetaData>().SingleOrDefault<CommandMetaData>((Expression<Func<CommandMetaData, bool>>)(command => command.ApprovalId == approvalId));
             }
         }
+
+        public CommandMetaData GetByCommandId(Guid commandId)
+        {
+            var store = this._changeApprovalDynamicDataStoreFactory.GetStore("EPiServer.ChangeApproval.Core.Internal.CommandMetaData");
+            if (store == null)
+                return (CommandMetaData)null;
+            lock (DefaultCommandMetaDataRepository._lock)
+            {
+                CommandMetaData commandMetaData = store.Items<CommandMetaData>().SingleOrDefault<CommandMetaData>((Expression<Func<CommandMetaData, bool>>)(command => command.CommandId == commandId));
+                return commandMetaData;
+            }
+        }
     }
 }

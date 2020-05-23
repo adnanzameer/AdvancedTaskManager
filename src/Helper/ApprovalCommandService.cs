@@ -17,15 +17,22 @@ namespace AdvancedTask.Helper
             _approvalCommandRepositoryBase = approvalCommandRepositoryBase;
         }
 
-        public virtual ChangeApprovalCommandBase GetCommandByApprovalId(int approvalId)
+        public virtual ApprovalCommandBase GetCommandById(Guid commandId)
+        {
+            CommandMetaData byCommandId = _commandMetaDataRepository.GetByCommandId(commandId);
+            return byCommandId == null ? (ApprovalCommandBase)null : this.GetApprovalCommand(byCommandId.Type, byCommandId.CommandId);
+        }
+
+
+        public virtual ApprovalCommandBase GetCommandByApprovalId(int approvalId)
         {
             var byApprovalId = _commandMetaDataRepository.GetByApprovalId(approvalId);
             return byApprovalId == null ? null : GetApprovalCommand(byApprovalId.Type, byApprovalId.CommandId);
         }
 
-        private ChangeApprovalCommandBase GetApprovalCommand(string commandTypeName, Guid commandId)
+        private ApprovalCommandBase GetApprovalCommand(string commandTypeName, Guid commandId)
         {
-            ChangeApprovalCommandBase byCommandId = null;
+            ApprovalCommandBase byCommandId = null;
 
             if (commandTypeName.EndsWith("MovingContentCommand"))
                 byCommandId = _approvalCommandRepositoryBase.GetByCommandId<MovingContentCommand>(commandId, commandTypeName);

@@ -7,6 +7,7 @@ using EPiServer.Core;
 using EPiServer.Security;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using Newtonsoft.Json;
 
 namespace AdvancedTask.Helper
 {
@@ -61,6 +62,16 @@ namespace AdvancedTask.Helper
             var dates = startDate.GetDaysInRange(endDate);
 
             return dates.Count();
+        }
+
+        public static T ToObject<T>(this string value) where T : class
+        {
+            if (string.IsNullOrEmpty(value))
+                return default(T);
+            return JsonConvert.DeserializeObject<T>(value, new JsonSerializerSettings()
+            {
+                TypeNameHandling = TypeNameHandling.Objects
+            });
         }
     }
 }

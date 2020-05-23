@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 namespace AdvancedTask.Business.AdvancedTask.Command
 {
     [EPiServerDataStore(AutomaticallyRemapStore = true)]
-    public class MovingContentCommand : ChangeApprovalCommandBase
+    public class MovingContentCommand : ApprovalCommandBase
     {
         private static readonly ILogger _logger = LogManager.GetLogger(typeof(MovingContentCommand));
         private Injected<IContentLoader> _contentLoader;

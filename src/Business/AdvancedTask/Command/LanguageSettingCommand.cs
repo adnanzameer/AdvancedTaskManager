@@ -3,7 +3,7 @@
 namespace AdvancedTask.Business.AdvancedTask.Command
 {
     [EPiServerDataStore(AutomaticallyRemapStore = true)]
-    public class LanguageSettingCommand : ChangeApprovalCommandBase
+    public class LanguageSettingCommand : ApprovalCommandBase
     {
     }
 }
