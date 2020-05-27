@@ -63,7 +63,7 @@ namespace AdvancedTask.Controllers
             }
         }
 
-        public async Task<ActionResult> Index(int? pageNumber, int? pageSize, string sorting, string taskValues, string approvalComment, string publishContent, bool? isChange)
+        public ActionResult Index(int? pageNumber, int? pageSize, string sorting, string taskValues, string approvalComment, string publishContent, bool? isChange)
         {
             CheckAccess();
 
@@ -88,8 +88,11 @@ namespace AdvancedTask.Controllers
                 {
                     viewModel.ChangeApproval = true;
 
-                    var changeTaskList = await ProcessChangeData(pageNr, pageSz, sorting, viewModel, taskValues, approvalComment, publishContent);
-                    viewModel.ContentTaskList = changeTaskList;
+                    var changeTasks = Task.Run(async () => await ProcessChangeData(pageNr, pageSz, sorting, viewModel, taskValues, approvalComment, publishContent));
+                    {
+                        var changeTaskList = changeTasks.Result;
+                        viewModel.ContentTaskList = changeTaskList;
+                    }
 
                     return View("Index", viewModel);
                 }
@@ -100,20 +103,27 @@ namespace AdvancedTask.Controllers
                 var deleteChangeApprovalTasks = bool.Parse(ConfigurationManager.AppSettings["ATM:DeleteChangeApprovalTasks"] ?? "false");
                 if (deleteChangeApprovalTasks)
                 {
-                    var changeTaskList = await ProcessChangeData(pageNr, pageSz, sorting, viewModel, taskValues, approvalComment, publishContent);
-                    var ids = changeTaskList.Select(contentTask => contentTask.ApprovalId).ToList();
-                    await AbortTasks(ids);
+                    var changeTasks = Task.Run(async () => await ProcessChangeData(pageNr, pageSz, sorting, viewModel, taskValues, approvalComment, publishContent));
+                    {
+                        var changeTaskList = changeTasks.Result;
+
+                        var ids = changeTaskList.Select(contentTask => contentTask.ApprovalId).ToList();
+                        AbortTasks(ids).GetAwaiter().GetResult();
+                    }
 
                 }
             }
 
-            var contentTaskList = await ProcessContentData(pageNr, pageSz, sorting, viewModel, taskValues, approvalComment, publishContent);
-            viewModel.ContentTaskList = contentTaskList;
-
-            var count = contentTaskList.Count(x => x.CanUserPublish);
-            if (count != 0)
+            var task = Task.Run(async () => await ProcessContentData(pageNr, pageSz, sorting, viewModel, taskValues, approvalComment, publishContent));
             {
-                viewModel.HasPublishAccess = true;
+                var contentTaskList = task.Result;
+                viewModel.ContentTaskList = contentTaskList;
+
+                var count = contentTaskList.Count(x => x.CanUserPublish);
+                if (count != 0)
+                {
+                    viewModel.HasPublishAccess = true;
+                }
             }
 
             return View("Index", viewModel);
@@ -285,13 +295,13 @@ namespace AdvancedTask.Controllers
                     }
 
                     //Get Notifications
-                    await GetNotifications(id, customTask, true);
+                    customTask = await GetNotifications(id, customTask, true);
 
                     taskList.Add(customTask);
                 }
             }
 
-            SortColumns(sorting, taskList);
+            taskList = SortColumns(sorting, taskList);
 
             return taskList;
         }
@@ -361,18 +371,18 @@ namespace AdvancedTask.Controllers
                         customTask.ContentType = GetTypeContent(content);
                     }
 
-                    await GetNotifications(id, customTask, false);
+                    customTask = await GetNotifications(id, customTask, false);
 
                     taskList.Add(customTask);
                 }
             }
 
-            SortColumns(sorting, taskList);
+            taskList = SortColumns(sorting, taskList);
 
             return taskList;
         }
 
-        private async Task GetNotifications(string id, ContentTask customTask, bool isContentQuery)
+        private async Task<ContentTask> GetNotifications(string id, ContentTask customTask, bool isContentQuery)
         {
             var notifications = await GetNotifications(PrincipalInfo.CurrentPrincipal.Identity.Name, id, isContentQuery);
 
@@ -390,8 +400,10 @@ namespace AdvancedTask.Controllers
             {
                 customTask.NotificationUnread = false;
             }
+
+            return customTask;
         }
-        private void SortColumns(string sorting, List<ContentTask> taskList)
+        private List<ContentTask> SortColumns(string sorting, List<ContentTask> taskList)
         {
             //Sorting of the Columns 
             switch (sorting)
@@ -434,7 +446,7 @@ namespace AdvancedTask.Controllers
                     break;
             }
 
-            //return taskList;
+            return taskList;
         }
 
         private string GetTypeContent(IContent content)
