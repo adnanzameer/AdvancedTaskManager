@@ -22,13 +22,13 @@ namespace AdvancedTask.Business.AdvancedTask.Command
         {
             try
             {
-                var dictionary = JsonConvert.DeserializeObject<IDictionary<string, object>>(this.NewSettingsJson);
-                var versionable = (string.IsNullOrEmpty(this.AppliedOnLanguageBranch) ? _contentLoader.Service.Get<IContent>(this.AppliedOnContentLink) : _contentLoader.Service.Get<IContent>(this.AppliedOnContentLink, new CultureInfo(this.AppliedOnLanguageBranch))) as IVersionable;
+                var dictionary = JsonConvert.DeserializeObject<IDictionary<string, object>>(NewSettingsJson);
+                var versionable = (string.IsNullOrEmpty(this.AppliedOnLanguageBranch) ? _contentLoader.Service.Get<IContent>(AppliedOnContentLink) : _contentLoader.Service.Get<IContent>(AppliedOnContentLink, new CultureInfo(AppliedOnLanguageBranch))) as IVersionable;
                 object obj;
                 if (dictionary.TryGetValue("PageStopPublish", out obj))
                 {
                     var nullable = obj as DateTime?;
-                    if (nullable.HasValue)
+                    if (nullable.HasValue && versionable != null)
                     {
                         var startPublish = versionable.StartPublish;
                         if (startPublish.HasValue)

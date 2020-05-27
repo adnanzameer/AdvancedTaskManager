@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <languages>
-    <language name="English"
-              id="en">
+    <language name="English" id="en">
         <gadget>
             <tasks>
                 <ignored>Ignored</ignored>
@@ -14,7 +13,74 @@
                     With the Advanced Task Gadget you can manage existing awaiting review tasks related to Content Approval.
                 </info>
                 <taskcount>Displaying tasks {0}-{1} of {2}</taskcount>
+                <yousubject>You</yousubject>
             </tasks>
+            <changeapproval>
+                <languagesettingcommand>
+                    <yes>Yes</yes>
+                    <no>No</no>
+                    <none>None</none>
+                    <inheritsettingsfromtheparentpage>Inherit settings from the parent page</inheritsettingsfromtheparentpage>
+                    <availablelanguages>Available Languages</availablelanguages>
+                    <fallbacklanguages>Fallback Languages</fallbacklanguages>
+                    <replacementlanguages>Replacement Languages</replacementlanguages>
+                    <notificationmessage>
+                        <started>Changes to language settings are awaiting your review</started>
+                        <approved>Your request to change language settings has been approved</approved>
+                        <rejected>The request to change language settings has been declined by {0}</rejected>
+                        <canceled>The review request was canceled by {0}</canceled>
+                        <forced>The entire approval sequence has been approved by {0}</forced>
+                        <aborted see="/gadget/changeapproval/languagesettingcommand/notificationmessage/canceled"></aborted>
+                    </notificationmessage>
+                </languagesettingcommand>
+                <securitysettingcommand>
+                    <yes>Yes</yes>
+                    <no>No</no>
+                    <inheritsettingsfromtheparentpage>Inherit settings</inheritsettingsfromtheparentpage>
+                    <accessrolecontrol>Access Control List</accessrolecontrol>
+                    <applytosubitems>Applied to all sub-items</applytosubitems>
+                    <notificationmessage>
+                        <started>Changes to security settings are awaiting your review</started>
+                        <approved>Your request to change security settings has been approved</approved>
+                        <rejected>The request to change security settings has been declined by {0}</rejected>
+                        <canceled>The review request was canceled by {0}</canceled>
+                        <forced>The entire approval sequence has been approved by {0}</forced>
+                        <aborted see="/gadget/changeapproval/securitysettingcommand/notificationmessage/canceled"></aborted>
+                    </notificationmessage>
+                </securitysettingcommand>
+                <expirationdatesettingcommand>
+                    <pagearchivelink>Archive to</pagearchivelink>
+                    <pagestoppublish>Expiration date</pagestoppublish>
+                    <notificationmessage>
+                        <started>Changes to expiration settings are awaiting your review</started>
+                        <approved>Your request to change expiration settings has been approved</approved>
+                        <rejected>The request to change expiration settings has been declined by {0}</rejected>
+                        <canceled>The review request was canceled by {0}</canceled>
+                        <forced>The entire approval sequence has been approved by {0}</forced>
+                        <aborted see="/gadget/changeapproval/expirationdatesettingcommand/notificationmessage/canceled"></aborted>
+                    </notificationmessage>
+                    <contentnotavailable>[Location is no longer available]</contentnotavailable>
+                </expirationdatesettingcommand>
+                <movingcontentcommand>
+                    <path>Path</path>
+                    <notificationmessage>
+                        <started>A hierarchical change is awaiting your review</started>
+                        <approved>Your request to move this item has been approved</approved>
+                        <rejected>The request to move this item has been declined by {0}</rejected>
+                        <canceled>The review request was canceled by {0}</canceled>
+                        <forced>The entire approval sequence has been approved by {0}</forced>
+                        <aborted see="/gadget/changeapproval/movingcontentcommand/notificationmessage/canceled"></aborted>
+                    </notificationmessage>
+                    <contentnotavailable>[Location is no longer available]</contentnotavailable>
+                </movingcontentcommand>
+                <gridcommanddetail>
+                    <column>
+                        <name>Name</name>
+                        <currentversion>Current version</currentversion>
+                        <suggestedversion>Suggested version</suggestedversion>
+                    </column>
+                </gridcommanddetail>
+            </changeapproval>
         </gadget>
     </language>
 </languages>

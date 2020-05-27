@@ -15,7 +15,7 @@ namespace AdvancedTask.Business.AdvancedTask.Command
         public DefaultCommandMetaDataRepository(
           ChangeApprovalDynamicDataStoreFactory changeApprovalDynamicDataStoreFactory)
         {
-            this._changeApprovalDynamicDataStoreFactory = changeApprovalDynamicDataStoreFactory;
+            _changeApprovalDynamicDataStoreFactory = changeApprovalDynamicDataStoreFactory;
         }
 
         public CommandMetaData GetByApprovalId(int approvalId)
@@ -24,7 +24,7 @@ namespace AdvancedTask.Business.AdvancedTask.Command
 
             if (store == null)
                 return (CommandMetaData)null;
-            lock (DefaultCommandMetaDataRepository._lock)
+            lock (_lock)
             {
                 return store.Items<CommandMetaData>().SingleOrDefault<CommandMetaData>((Expression<Func<CommandMetaData, bool>>)(command => command.ApprovalId == approvalId));
             }
@@ -35,7 +35,7 @@ namespace AdvancedTask.Business.AdvancedTask.Command
             var store = this._changeApprovalDynamicDataStoreFactory.GetStore("EPiServer.ChangeApproval.Core.Internal.CommandMetaData");
             if (store == null)
                 return (CommandMetaData)null;
-            lock (DefaultCommandMetaDataRepository._lock)
+            lock (_lock)
             {
                 CommandMetaData commandMetaData = store.Items<CommandMetaData>().SingleOrDefault<CommandMetaData>((Expression<Func<CommandMetaData, bool>>)(command => command.CommandId == commandId));
                 return commandMetaData;

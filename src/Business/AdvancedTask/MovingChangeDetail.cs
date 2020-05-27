@@ -16,7 +16,7 @@ namespace AdvancedTask.Business.AdvancedTask
     public class MovingChangeDetail
     {
         private readonly LocalizationService _localizationService;
-        private readonly string _baseLanguagePath = "/episerver/changeapproval/movingcontentcommand";
+        private readonly string _baseLanguagePath = "/gadget/changeapproval/movingcontentcommand";
 
 
         private readonly ContentLoaderService _contentLoaderService;

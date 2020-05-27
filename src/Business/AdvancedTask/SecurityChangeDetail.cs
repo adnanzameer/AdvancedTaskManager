@@ -49,8 +49,8 @@ namespace AdvancedTask.Business.AdvancedTask
         {
             var byCommandId = _generalCommandService.GetCommandById(command);
             var contentChangeDetailsList = new List<IContentChangeDetails>();
-            var str1 = _localizationService.GetString("/episerver/changeapproval/securitysettingcommand/yes");
-            var str2 = _localizationService.GetString("/episerver/changeapproval/securitysettingcommand/no");
+            var str1 = _localizationService.GetString("/gadget/changeapproval/securitysettingcommand/yes");
+            var str2 = _localizationService.GetString("/gadget/changeapproval/securitysettingcommand/no");
             if (byCommandId == null)
                 return (IEnumerable<IContentChangeDetails>)null;
             var accessControlList1 = GetContentAccessControlList(byCommandId.CurrentSettingsJson);
@@ -60,7 +60,7 @@ namespace AdvancedTask.Business.AdvancedTask
             if (accessControlList1.IsInherited != accessControlList2.IsInherited)
             {
                 var contentChangeDetails = (IContentChangeDetails)new ContentChangeDetails();
-                contentChangeDetails.Name = _localizationService.GetString("/episerver/changeapproval/securitysettingcommand/inheritsettingsfromtheparentpage");
+                contentChangeDetails.Name = _localizationService.GetString("/gadget/changeapproval/securitysettingcommand/inheritsettingsfromtheparentpage");
                 contentChangeDetails.OldValue = accessControlList1.IsInherited ? (object)str1 : (object)str2;
                 contentChangeDetails.NewValue = accessControlList2.IsInherited ? (object)str1 : (object)str2;
                 contentChangeDetailsList.Add(contentChangeDetails);
@@ -70,13 +70,13 @@ namespace AdvancedTask.Business.AdvancedTask
             if (secCommand != null && (secCommand.SecuritySaveType == SecuritySaveType.MergeChildPermissions || secCommand.SecuritySaveType == SecuritySaveType.ReplaceChildPermissions))
             {
                 var contentChangeDetails = (IContentChangeDetails)new ContentChangeDetails();
-                contentChangeDetails.Name = _localizationService.GetString("/episerver/changeapproval/securitysettingcommand/applytosubitems");
+                contentChangeDetails.Name = _localizationService.GetString("/gadget/changeapproval/securitysettingcommand/applytosubitems");
                 contentChangeDetails.OldValue = (object)string.Empty;
                 contentChangeDetails.NewValue = (object)str1;
                 contentChangeDetailsList.Add(contentChangeDetails);
             }
             var contentChangeDetails1 = (IContentChangeDetails)new ContentChangeDetails();
-            contentChangeDetails1.Name = _localizationService.GetString("/episerver/changeapproval/securitysettingcommand/accessrolecontrol");
+            contentChangeDetails1.Name = _localizationService.GetString("/gadget/changeapproval/securitysettingcommand/accessrolecontrol");
             var source1 = accessControlList1.Entries.OrderBy<AccessControlEntry, string>((Func<AccessControlEntry, string>)(e => e.Name));
             var source2 = accessControlList2.Entries.OrderBy<AccessControlEntry, string>((Func<AccessControlEntry, string>)(e => e.Name));
             foreach (var accessControlEntry1 in (IEnumerable<AccessControlEntry>)source1)
@@ -106,14 +106,14 @@ namespace AdvancedTask.Business.AdvancedTask
             string text;
             if (currentAccessLevel == AccessLevel.NoAccess || currentAccessLevel == AccessLevel.Undefined)
             {
-                text = _localizationService.GetString("/episerver/changeapproval/accesslevels/" + (object)currentAccessLevel);
+                text = _localizationService.GetString("/gadget/changeapproval/accesslevels/" + (object)currentAccessLevel);
             }
             else
             {
                 foreach (var knownAccessLevel in KnownAccessLevels)
                 {
                     if (currentAccessLevel.HasFlag((System.Enum)knownAccessLevel))
-                        str = str + _localizationService.GetString("/episerver/changeapproval/accesslevels/" + (object)knownAccessLevel) + ", ";
+                        str = str + _localizationService.GetString("/gadget/changeapproval/accesslevels/" + (object)knownAccessLevel) + ", ";
                 }
                 text = str.TrimEnd(", ");
             }
@@ -131,7 +131,7 @@ namespace AdvancedTask.Business.AdvancedTask
             string text1;
             if ((newAccessLevel == AccessLevel.NoAccess || newAccessLevel == AccessLevel.Undefined) && newAccessLevel == currentAccessLevel)
             {
-                text1 = _localizationService.GetString("/episerver/changeapproval/accesslevels/" + (object)newAccessLevel);
+                text1 = _localizationService.GetString("/gadget/changeapproval/accesslevels/" + (object)newAccessLevel);
             }
             else
             {
@@ -139,7 +139,7 @@ namespace AdvancedTask.Business.AdvancedTask
                 {
                     if (currentAccessLevel.HasFlag((System.Enum)knownAccessLevel) || newAccessLevel.HasFlag((System.Enum)knownAccessLevel))
                     {
-                        var text2 = _localizationService.GetString("/episerver/changeapproval/accesslevels/" + (object)knownAccessLevel);
+                        var text2 = _localizationService.GetString("/gadget/changeapproval/accesslevels/" + (object)knownAccessLevel);
                         if (currentAccessLevel.HasFlag((System.Enum)knownAccessLevel) && !newAccessLevel.HasFlag((System.Enum)knownAccessLevel))
                             text2 = text2.Strikethrough();
                         else if (!currentAccessLevel.HasFlag((System.Enum)knownAccessLevel) && newAccessLevel.HasFlag((System.Enum)knownAccessLevel))

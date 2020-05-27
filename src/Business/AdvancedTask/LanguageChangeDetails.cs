@@ -46,49 +46,49 @@ namespace AdvancedTask.Business.AdvancedTask
             var dictionary = ((settingsFromJson2 == null ? 1 : settingsFromJson2.Count == 0 ? 1 : 0) & (flag ? 1 : 0)) != 0 ? GetLanguageSettings(parent) : settingsFromJson2;
             if (flag)
             {
-                var str1 = _localizationService.GetString("/episerver/changeapproval/languagesettingcommand/yes");
-                var str2 = _localizationService.GetString("/episerver/changeapproval/languagesettingcommand/no");
+                var str1 = _localizationService.GetString("/gadget/changeapproval/languagesettingcommand/yes");
+                var str2 = _localizationService.GetString("/gadget/changeapproval/languagesettingcommand/no");
                 contentChangeDetailsList.Add((IContentChangeDetails)new ContentChangeDetails()
                 {
-                    Name = _localizationService.GetString("/episerver/changeapproval/languagesettingcommand/inheritsettingsfromtheparentpage"),
-                    OldValue = settingsFromJson1.Values.Any<ContentLanguageSetting>((Func<ContentLanguageSetting, bool>)(st => st.DefinedOnContent.CompareToIgnoreWorkID(command.AppliedOnContentLink))) ? (object)str2 : (object)str1,
-                    NewValue = dictionary.Values.Any<ContentLanguageSetting>((Func<ContentLanguageSetting, bool>)(st => st.DefinedOnContent.CompareToIgnoreWorkID(command.AppliedOnContentLink))) ? (object)str2 : (object)str1
+                    Name = _localizationService.GetString("/gadget/changeapproval/languagesettingcommand/inheritsettingsfromtheparentpage"),
+                    OldValue = settingsFromJson1.Values.Any((Func<ContentLanguageSetting, bool>)(st => st.DefinedOnContent.CompareToIgnoreWorkID(command.AppliedOnContentLink))) ? (object)str2 : (object)str1,
+                    NewValue = dictionary.Values.Any((Func<ContentLanguageSetting, bool>)(st => st.DefinedOnContent.CompareToIgnoreWorkID(command.AppliedOnContentLink))) ? (object)str2 : (object)str1
                 });
             }
             var currentLangs = settingsFromJson1.Where<KeyValuePair<string, ContentLanguageSetting>>((Func<KeyValuePair<string, ContentLanguageSetting>, bool>)(s => s.Value.IsActive)).Select<KeyValuePair<string, ContentLanguageSetting>, string>((Func<KeyValuePair<string, ContentLanguageSetting>, string>)(s => s.Value.LanguageBranch));
-            var newLangs = dictionary.Where<KeyValuePair<string, ContentLanguageSetting>>((Func<KeyValuePair<string, ContentLanguageSetting>, bool>)(s => s.Value.IsActive)).Select<KeyValuePair<string, ContentLanguageSetting>, string>((Func<KeyValuePair<string, ContentLanguageSetting>, string>)(s => s.Value.LanguageBranch));
-            contentChangeDetailsList.Add((IContentChangeDetails)new ContentChangeDetails()
+            var newLangs = dictionary.Where((Func<KeyValuePair<string, ContentLanguageSetting>, bool>)(s => s.Value.IsActive)).Select<KeyValuePair<string, ContentLanguageSetting>, string>((Func<KeyValuePair<string, ContentLanguageSetting>, string>)(s => s.Value.LanguageBranch));
+            contentChangeDetailsList.Add(new ContentChangeDetails()
             {
-                Name = _localizationService.GetString("/episerver/changeapproval/languagesettingcommand/availableLanguages"),
-                OldValue = (object)FormatLanguageSettingsChange(currentLangs, newLangs, true),
-                NewValue = (object)FormatLanguageSettingsChange(currentLangs, newLangs, false)
+                Name = _localizationService.GetString("/gadget/changeapproval/languagesettingcommand/availableLanguages"),
+                OldValue = FormatLanguageSettingsChange(currentLangs, newLangs, true),
+                NewValue = FormatLanguageSettingsChange(currentLangs, newLangs, false)
             });
             var str3 = OldFallbackLanguagesToString(settingsFromJson1, dictionary);
             var str4 = NewFallbackLanguagesToString(settingsFromJson1, dictionary);
             contentChangeDetailsList.Add((IContentChangeDetails)new ContentChangeDetails()
             {
-                Name = _localizationService.GetString("/episerver/changeapproval/languagesettingcommand/fallbacklanguages"),
-                OldValue = (object)str3,
-                NewValue = (object)str4
+                Name = _localizationService.GetString("/gadget/changeapproval/languagesettingcommand/fallbacklanguages"),
+                OldValue = str3,
+                NewValue = str4
             });
             var str5 = OldReplacementLanguagesToString(settingsFromJson1, dictionary);
             var str6 = NewReplacementLanguagesToString(settingsFromJson1, dictionary);
-            contentChangeDetailsList.Add((IContentChangeDetails)new ContentChangeDetails()
+            contentChangeDetailsList.Add(new ContentChangeDetails()
             {
-                Name = _localizationService.GetString("/episerver/changeapproval/languagesettingcommand/replacementlanguages"),
-                OldValue = (object)str5,
-                NewValue = (object)str6
+                Name = _localizationService.GetString("/gadget/changeapproval/languagesettingcommand/replacementlanguages"),
+                OldValue = str5,
+                NewValue = str6
             });
-            return (IEnumerable<IContentChangeDetails>)contentChangeDetailsList;
+            return contentChangeDetailsList;
         }
 
         private ContentReference GetParent(ContentReference contentLink)
         {
-            var content = _contentRepository.Get<IContent>(contentLink, (LoaderOptions)LanguageSelector.AutoDetect(true));
+            var content = _contentRepository.Get<IContent>(contentLink, LanguageSelector.AutoDetect(true));
             if (content == null)
-                return (ContentReference)null;
+                return null;
             var source = _contentLanguageSettingsHandler.Get(content.ParentLink);
-            return source?.FirstOrDefault<ContentLanguageSetting>()?.DefinedOnContent;
+            return source?.FirstOrDefault()?.DefinedOnContent;
         }
 
         private string GetLanguageName(string languageCode)
@@ -161,7 +161,7 @@ namespace AdvancedTask.Business.AdvancedTask
                         stringBuilder.Append(str2);
                     }
                     else
-                        stringBuilder.Append(string.Format("{0}{1}{2}", (object)languageName, (object)ArrowSeparator, (object)_localizationService.GetString("/episerver/changeapproval/languagesettingcommand/none")));
+                        stringBuilder.Append(string.Format("{0}{1}{2}", (object)languageName, (object)ArrowSeparator, (object)_localizationService.GetString("/gadget/changeapproval/languagesettingcommand/none")));
                     stringBuilder.Append("|||");
                 }
             }
@@ -238,7 +238,7 @@ namespace AdvancedTask.Business.AdvancedTask
                 if (!string.IsNullOrEmpty(replacementLanguage1) || !string.IsNullOrEmpty(replacementLanguage2))
                 {
                     var languageName = GetLanguageName(key);
-                    var str = replacementLanguage1 != null && replacementLanguage1.Equals(replacementLanguage2) ? string.Format("{0}{1}{2}", (object)languageName, (object)ArrowSeparator, (object)replacementLanguage1).Fade() : string.Format("{0}{1}{2}", (object)languageName, (object)ArrowSeparator, !string.IsNullOrEmpty(replacementLanguage1) ? (object)replacementLanguage1 : (object)_localizationService.GetString("/episerver/changeapproval/languagesettingcommand/none"));
+                    var str = replacementLanguage1 != null && replacementLanguage1.Equals(replacementLanguage2) ? string.Format("{0}{1}{2}", (object)languageName, (object)ArrowSeparator, (object)replacementLanguage1).Fade() : string.Format("{0}{1}{2}", (object)languageName, (object)ArrowSeparator, !string.IsNullOrEmpty(replacementLanguage1) ? (object)replacementLanguage1 : (object)_localizationService.GetString("/gadget/changeapproval/languagesettingcommand/none"));
                     stringBuilder.Append(str);
                     stringBuilder.Append("|||");
                 }

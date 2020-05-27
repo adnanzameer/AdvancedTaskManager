@@ -23,7 +23,7 @@ namespace AdvancedTask.Business.AdvancedTask.Command
             }
             catch (Exception ex)
             {
-                MovingContentCommand._logger.Error(ex.Message);
+                _logger.Error(ex.Message);
                 return false;
             }
         }

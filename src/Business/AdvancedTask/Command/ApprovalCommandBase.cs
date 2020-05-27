@@ -21,8 +21,7 @@ namespace AdvancedTask.Business.AdvancedTask.Command
         {
             get
             {
-                ContentReference result;
-                return ContentReference.TryParse(this.AppliedOnContent, out result) ? result : ContentReference.EmptyReference;
+                return ContentReference.TryParse(this.AppliedOnContent, out var result) ? result : ContentReference.EmptyReference;
             }
             set
             {

@@ -19,7 +19,7 @@
                                 "Index", // Action name
                                 "", // css class
                                 "",
-                                new { pageNumber = Model.PageNumber, pageSize = Model.PageSize, sorting = Model.Sorting=="name_desc"?"name_aes":"name_desc"})%>
+                                new { pageNumber = Model.PageNumber, pageSize = Model.PageSize, sorting = Model.Sorting=="name_desc"?"name_aes":"name_desc",isChange = true})%>
                 </label>
             </th>
             <th>
@@ -30,7 +30,7 @@
                                 "Index", // Action name
                                 "", // css class
                                 "",
-                                new { pageNumber = Model.PageNumber, pageSize = Model.PageSize, sorting = Model.Sorting=="ctype_desc"?"ctype_aes":"ctype_desc"})%>
+                                new { pageNumber = Model.PageNumber, pageSize = Model.PageSize, sorting = Model.Sorting=="ctype_desc"?"ctype_aes":"ctype_desc",isChange = true})%>
                 </label>
             </th>
             <th>
@@ -41,7 +41,7 @@
                                 "Index", // Action name
                                 "", // css class
                                 "",
-                                new { pageNumber = Model.PageNumber, pageSize = Model.PageSize, sorting = Model.Sorting=="type_aes"?"type_aes":"type_desc"})%>
+                                new { pageNumber = Model.PageNumber, pageSize = Model.PageSize, sorting = Model.Sorting=="type_aes"?"type_aes":"type_desc",isChange = true})%>
                 </label>
             </th>
             <th>
@@ -52,7 +52,7 @@
                                 "Index", // Action name
                                 "", // css class
                                 "",
-                                new { pageNumber = Model.PageNumber, pageSize = Model.PageSize, sorting = Model.Sorting=="timestamp_desc"?"timestamp_aes":"timestamp_desc"})%>
+                                new { pageNumber = Model.PageNumber, pageSize = Model.PageSize, sorting = Model.Sorting=="timestamp_desc"?"timestamp_aes":"timestamp_desc",isChange = true})%>
                 </label>
             </th>
             <th>
@@ -63,7 +63,7 @@
                                 "Index", // Action name
                                 "", // css class
                                 "",
-                                new { pageNumber = Model.PageNumber, pageSize = Model.PageSize, sorting = Model.Sorting=="user_desc"?"user_aes":"user_desc"})%>
+                                new { pageNumber = Model.PageNumber, pageSize = Model.PageSize, sorting = Model.Sorting=="user_desc"?"user_aes":"user_desc",isChange = true})%>
                 </label>
             </th>
         </tr>
