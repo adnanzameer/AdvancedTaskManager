@@ -1,7 +1,12 @@
 ﻿using System;
+using System.Security.Principal;
+using System.Threading.Tasks;
 using AdvancedTask.Business.AdvancedTask;
 using AdvancedTask.Business.AdvancedTask.Command;
 using AdvancedTask.Business.AdvancedTask.Interface;
+using EPiServer;
+using EPiServer.Core;
+using EPiServer.Security;
 
 namespace AdvancedTask.Helper
 {
@@ -10,8 +15,7 @@ namespace AdvancedTask.Helper
         private readonly ICommandMetaDataRepository _commandMetaDataRepository;
         private readonly ApprovalCommandRepositoryBase _approvalCommandRepositoryBase;
 
-        public ApprovalCommandService(
-            ICommandMetaDataRepository cmdRepository, ApprovalCommandRepositoryBase approvalCommandRepositoryBase)
+        public ApprovalCommandService(ICommandMetaDataRepository cmdRepository, ApprovalCommandRepositoryBase approvalCommandRepositoryBase)
         {
             _commandMetaDataRepository = cmdRepository;
             _approvalCommandRepositoryBase = approvalCommandRepositoryBase;
@@ -30,7 +34,14 @@ namespace AdvancedTask.Helper
             return byApprovalId == null ? null : GetApprovalCommand(byApprovalId.Type, byApprovalId.CommandId);
         }
 
-        private ApprovalCommandBase GetApprovalCommand(string commandTypeName, Guid commandId)
+
+        public virtual CommandMetaData GetCommandMetaDataByApprovalId(int approvalId)
+        {
+            var byApprovalId = _commandMetaDataRepository.GetByApprovalId(approvalId);
+            return byApprovalId;
+        }
+
+        public ApprovalCommandBase GetApprovalCommand(string commandTypeName, Guid commandId)
         {
             ApprovalCommandBase byCommandId = null;
 
@@ -46,5 +57,6 @@ namespace AdvancedTask.Helper
             if (commandTypeName.EndsWith("SecuritySettingCommand")) byCommandId = _approvalCommandRepositoryBase.GetByCommandId<SecuritySettingCommand>(commandId, commandTypeName);
             return byCommandId;
         }
+
     }
 }

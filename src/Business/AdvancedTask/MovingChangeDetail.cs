@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using AdvancedTask.Business.AdvancedTask.Interface;
-using AdvancedTask.Business.AdvancedTask.Mapper;
 using AdvancedTask.Models;
-using EPiServer;
 using EPiServer.Cms.Shell.Service.Internal;
 using EPiServer.Core;
-using EPiServer.DataAbstraction;
 using EPiServer.Framework.Localization;
 using EPiServer.Security;
 using Newtonsoft.Json;
@@ -42,11 +39,11 @@ namespace AdvancedTask.Business.AdvancedTask
                 var movingPayLoad2 = JsonConvert.DeserializeObject<MovingPayLoad>(byCommandId.NewSettingsJson);
                 var content1 = _contentLoaderService.Get<IContent>(movingPayLoad1.Destination, AccessLevel.Read);
                 var content2 = _contentLoaderService.Get<IContent>(movingPayLoad2.Destination, AccessLevel.Read);
-                contentChangeDetailsList.Add((IContentChangeDetails)new ContentChangeDetails()
+                contentChangeDetailsList.Add(new ContentChangeDetails()
                 {
-                    Name = _localizationService.GetString(string.Format("{0}/path", (object)_baseLanguagePath)),
-                    OldValue = (object)content1?.ContentLink,
-                    NewValue = (object)content2?.ContentLink
+                    Name = _localizationService.GetString(string.Format("{0}/path", _baseLanguagePath)),
+                    OldValue = content1?.ContentLink,
+                    NewValue = content2?.ContentLink
                 });
             }
             catch (Exception ex)

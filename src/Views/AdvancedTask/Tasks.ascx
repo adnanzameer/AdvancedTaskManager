@@ -142,13 +142,13 @@
                 {
                     if (!m.CanUserPublish)
                     { %>
-            <a href="<%= PageEditing.GetEditUrl(m.ContentReference) %>" id="id-<%= m.ApprovalId.ToString() %>" data-value="ID: <%= m.ContentReference.ID %> - <%= m.ContentName %>" target="_blank"><%= Html.Encode(m.ContentName) %>
+            <a href="<%= m.URL %>" id="id-<%= m.ApprovalId.ToString() %>" data-value="ID: <%= m.ContentReference.ID %> - <%= m.ContentName %>" target="_blank"><%= Html.Encode(m.ContentName) %>
                 <span style="color: red" class="error-span" id="span-<%= m.ApprovalId.ToString() %>"></span>
             </a>
             <% }
                 else
                 { %>
-            <a href="<%= PageEditing.GetEditUrl(m.ContentReference) %>" target="_blank"><%= Html.Encode(m.ContentName) %></a>
+            <a href="<%= m.URL %>" target="_blank"><%= Html.Encode(m.ContentName) %></a>
             <% }
             }
             else
@@ -163,7 +163,7 @@
             <% }
                 else
                 { %>
-            <a href="<%= PageEditing.GetEditUrl(m.ContentReference) %>" target="_blank"><%= Html.Encode(m.ContentType) %></a>
+            <a href="<%= m.URL %>" target="_blank"><%= Html.Encode(m.ContentType) %></a>
             <% } %>
         </td>
         <td>
@@ -173,7 +173,7 @@
             <% }
                 else
                 { %>
-            <a href="<%= PageEditing.GetEditUrl(m.ContentReference) %>" target="_blank"><%= Html.Encode(m.Type) %></a>
+            <a href="<%= m.URL %>" target="_blank"><%= Html.Encode(m.Type) %></a>
             <% } %>
         </td>
         <td>
@@ -183,7 +183,7 @@
             <% }
                 else
                 { %>
-            <a href="<%= PageEditing.GetEditUrl(m.ContentReference) %>" target="_blank"><%= Html.Encode(m.DateTime) %></a>
+            <a href="<%= m.URL %>" target="_blank"><%= Html.Encode(m.DateTime) %></a>
             <% } %>
         </td>
         <td>
@@ -193,7 +193,7 @@
             <% }
                 else
                 { %>
-            <a href="<%= PageEditing.GetEditUrl(m.ContentReference) %>" target="_blank"><%= Html.Encode(m.StartedBy) %></a>
+            <a href="<%= m.URL %>" target="_blank"><%= Html.Encode(m.StartedBy) %></a>
             <% } %>
         </td>
 
@@ -206,7 +206,7 @@
                 <% }
                    else
                    { %>
-                    <a href="<%= PageEditing.GetEditUrl(m.ContentReference) %>" target="_blank"><%= Html.Encode(m.Deadline) %></a>
+                    <a href="<%= m.URL %>" target="_blank"><%= Html.Encode(m.Deadline) %></a>
                 <% } %>
             </td>
         <% } %>

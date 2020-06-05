@@ -15,7 +15,7 @@ namespace AdvancedTask.Helper
           this IApprovalRepository repository,
           IEnumerable<ContentReference> contentLinks)
         {
-            Validator.ThrowIfNull("references", (object)contentLinks);
+            Validator.ThrowIfNull("references", contentLinks);
             var source = await repository.GetItemsAsync(contentLinks.Select<ContentReference, Uri>((Func<ContentReference, Uri>)(cr => ChangeApprovalReferenceHelper.GetUri(cr, false)))).ConfigureAwait(false);
             return source == null ? (IEnumerable<ChangeApproval>)null : source.OfType<ChangeApproval>();
         }

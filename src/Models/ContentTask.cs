@@ -17,6 +17,7 @@ namespace AdvancedTask.Models
             StartedBy = "";
             WarningColor = "";
             Details= new List<IContentChangeDetails>();
+            URL = "";
         }
 
         public int ApprovalId { get; set; }
@@ -30,6 +31,7 @@ namespace AdvancedTask.Models
         public string WarningColor { get; set; }
         public bool NotificationUnread { get; set; }
         public bool CanUserPublish { get; set; }
+        public string URL { get; set; }
         public IEnumerable<IContentChangeDetails> Details { get; set; }
     }
 }

@@ -27,6 +27,7 @@ namespace AdvancedTask.Business.AdvancedTask.Command
         public enum ChangeTaskApprovalStatus
         {
             InReview,
+            Approved
         }
     }
 }

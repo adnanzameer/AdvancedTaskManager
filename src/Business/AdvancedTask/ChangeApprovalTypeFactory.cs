@@ -19,7 +19,7 @@ namespace AdvancedTask.Business.AdvancedTask
         {
             get
             {
-                return ChangeApprovalTypeFactory.ChangeApprovalType;
+                return ChangeApprovalType;
             }
         }
 

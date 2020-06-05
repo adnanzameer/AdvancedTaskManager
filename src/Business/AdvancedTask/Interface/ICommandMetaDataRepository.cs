@@ -7,6 +7,7 @@ namespace AdvancedTask.Business.AdvancedTask.Interface
     {
         CommandMetaData GetByApprovalId(int approvalId);
         CommandMetaData GetByCommandId(Guid commandId);
+        Guid Save(CommandMetaData commandMetaData);
     }
 }
 

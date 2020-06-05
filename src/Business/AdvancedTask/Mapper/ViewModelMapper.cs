@@ -32,14 +32,14 @@ namespace AdvancedTask.Business.AdvancedTask.Mapper
             var type = source.GetType();
             var mapping = this.GetMapping(type);
             if (mapping == null)
-                return (object)null;
+                return null;
 
             var instance = mapping.CreateInstance();
             var dictionary = instance.GetType().GetProperties().ToDictionary(p => p.Name, (IEqualityComparer<string>)StringComparer.OrdinalIgnoreCase);
             foreach (var property in type.GetProperties())
                 if (dictionary.TryGetValue(property.Name, out var propertyInfo) && propertyInfo.CanWrite && property.PropertyType == propertyInfo.PropertyType)
-                    propertyInfo.SetValue(instance, property.GetValue((object)source));
-            mapping.ExecuteAfterMappingAction((object)source, instance);
+                    propertyInfo.SetValue(instance, property.GetValue(source));
+            mapping.ExecuteAfterMappingAction(source, instance);
             return instance;
         }
 
@@ -63,7 +63,7 @@ namespace AdvancedTask.Business.AdvancedTask.Mapper
 
             public override object CreateInstance()
             {
-                return (object)new TModel();
+                return new TModel();
             }
 
             public override void ExecuteAfterMappingAction(object source, object model)

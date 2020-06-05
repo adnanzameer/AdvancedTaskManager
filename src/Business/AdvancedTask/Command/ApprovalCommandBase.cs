@@ -60,5 +60,13 @@ namespace AdvancedTask.Business.AdvancedTask.Command
         {
             return true;
         }
+
+        public virtual object CreateWritableClone()
+        {
+            ApprovalCommandBase approvalCommandBase = (ApprovalCommandBase)this.MemberwiseClone();
+            approvalCommandBase._isReadOnly = false;
+            return approvalCommandBase;
+        }
+
     }
 }

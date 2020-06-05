@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using AdvancedTask.Business.AdvancedTask;
 using EPiServer.Approvals;
 using EPiServer.Approvals.ContentApprovals;
@@ -56,36 +54,15 @@ namespace AdvancedTask.Helper
             return await this._approvalRepository.GetChangeApprovalAsync(contentLink.ToReferenceWithoutVersion()).ConfigureAwait(false);
         }
 
-        public virtual async Task<ChangeApproval> GetChangeApprovalAsync(
-          int id)
+        public virtual async Task<ChangeApproval> GetChangeApprovalAsync(int id)
         {
-            return await this._approvalRepository.GetChangeApprovalAsync(id).ConfigureAwait(false);
+            return await _approvalRepository.GetChangeApprovalAsync(id);
         }
 
         public virtual async Task<ContentApprovalDefinition> GetApprovalDefinitionVersionAsync(
           int definitionVersionId)
         {
-            return await this._approvalDefinitionVersionRepository.GetAsync(definitionVersionId).ConfigureAwait(false) as ContentApprovalDefinition;
-        }
-
-        public virtual IEnumerable<string> GetUsersFromApprovalDefinitionReviewers(
-          IEnumerable<ApprovalDefinitionReviewer> reviewers)
-        {
-            var source = new List<string>();
-            foreach (var reviewer in reviewers)
-            {
-                IEnumerable<string> strings;
-                if (reviewer.ReviewerType != ApprovalDefinitionReviewerType.User)
-                    strings = this._securityEntityProvider.GetUsersInRole(reviewer.Name);
-                else
-                    strings = ((IEnumerable<string>)new string[1]
-                    {
-            reviewer.Name
-                    }).AsEnumerable<string>();
-                var collection = strings;
-                source.AddRange(collection);
-            }
-            return source.Distinct<string>();
+            return await this._approvalDefinitionVersionRepository.GetAsync(definitionVersionId) as ContentApprovalDefinition;
         }
 
         private void ValidateContent(ContentReference contentLink, AccessLevel accessLevel)

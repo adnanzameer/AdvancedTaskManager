@@ -12,7 +12,7 @@ namespace AdvancedTask.Helper
         {
             if (contentLink == (ContentReference)null)
                 return (Uri)null;
-            var uriString = string.Format("{0}:{1}/{2}/", (object)ChangeApprovalTypeFactory.ChangeApprovalType, (object)(contentLink.ProviderName ?? ""), (object)contentLink.ID);
+            var uriString = string.Format("{0}:{1}/{2}/", ChangeApprovalTypeFactory.ChangeApprovalType, (contentLink.ProviderName ?? ""), contentLink.ID);
             if (!ignoreVersion && contentLink.WorkID != 0)
                 uriString = uriString + contentLink.WorkID.ToString() + "/";
             return new Uri(uriString);

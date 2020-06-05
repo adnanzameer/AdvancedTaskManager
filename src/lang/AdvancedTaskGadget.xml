@@ -80,6 +80,17 @@
                         <suggestedversion>Suggested version</suggestedversion>
                     </column>
                 </gridcommanddetail>
+                <accesslevels>
+                    <NoAccess>No Access</NoAccess>
+                    <Read>Read</Read>
+                    <Create>Create</Create>
+                    <Edit>Change</Edit>
+                    <Delete>Delete</Delete>
+                    <Publish>Publish</Publish>
+                    <Administer>Administer</Administer>
+                    <FullAccess>Full Access</FullAccess>
+                    <Undefined>Undefined</Undefined>
+                </accesslevels>
             </changeapproval>
         </gadget>
     </language>

@@ -6,6 +6,47 @@
 <%@ Import Namespace="EPiServer.Shell.Web.Mvc.Html" %>
 
 <% Html.RenderPartial("Menu", "ChangeApproval"); %>
+<style>
+    .inner-table {
+        border-collapse: collapse !important;
+        /*border: none !important;*/
+        empty-cells: show !important;
+        width: 100% !important;
+        height: 100% !important;
+        border-bottom: 1pt solid #aeaeae;
+        /*border-spacing: 0 !important;*/
+    }
+
+        .inner-table .short {
+            width: 20% !important;
+        }
+
+        .inner-table td {
+            padding: 6px !important;
+        }
+
+        .inner-table .header {
+            border-bottom: 1pt solid #aeaeae !important;
+        }
+
+        .inner-table .header-right {
+            border-right: 1pt solid #aeaeae !important;
+        }
+
+        .inner-table .epi-changeapproval-faded {
+            color: #818181 !important;
+        }
+
+    .changetask-detail {
+        background-color: #d9edf7 !important;
+    }
+
+    .change-anchor {
+        text-decoration: underline !important;
+        color: navy !important;
+    }
+</style>
+
 <table class="epi-default">
     <thead>
         <tr>
@@ -74,70 +115,53 @@
             foreach (ContentTask m in Model.ContentTaskList)
             {
     %>
-    <tr <%=m.NotificationUnread?"style=\"background-color: #FFF9C4;\"" :"" %>>
-        <td><%=Html.CheckBox(m.ApprovalId.ToString(), false, new { onchange = "selectionChanged(this)", @class="checkbox" })%></td>
+    <tr <%= m.NotificationUnread ? "style=\"background-color: #FFF9C4;cursor: pointer;\"" : "cursor: pointer" %> class="parent" title="Click to expand/collapse" id="<%= m.ApprovalId %>">
+        <td><%= Html.CheckBox(m.ApprovalId.ToString(), false, new {onchange = "selectionChanged(this)", @class = "checkbox"}) %></td>
         <td>
-            <% if (!ContentReference.IsNullOrEmpty(m.ContentReference))
-                {
-                    if (!m.CanUserPublish)
-                    { %>
-            <a href="<%= PageEditing.GetEditUrl(m.ContentReference) %>" id="id-<%= m.ApprovalId.ToString() %>" data-value="ID: <%= m.ContentReference.ID %> - <%= m.ContentName %>" target="_blank"><%= Html.Encode(m.ContentName) %>
-                <span style="color: red" class="error-span" id="span-<%= m.ApprovalId.ToString() %>"></span>
-            </a>
-            <% }
-                else
-                { %>
-            <a href="<%= PageEditing.GetEditUrl(m.ContentReference) %>" target="_blank"><%= Html.Encode(m.ContentName) %></a>
-            <% }
-                }
-                else
-                { %>
-            <%= m.ContentName%>
-            <% } %>
+            <%= m.ContentName %>
         </td>
         <td>
-            <% if (ContentReference.IsNullOrEmpty(m.ContentReference))
-                { %>
-            <%= m.ContentType%>
-            <% }
-                else
-                { %>
-            <a href="<%= PageEditing.GetEditUrl(m.ContentReference) %>" target="_blank"><%= Html.Encode(m.ContentType) %></a>
-            <% } %>
+            <%= m.ContentType %>
         </td>
         <td>
-            <% if (ContentReference.IsNullOrEmpty(m.ContentReference))
-                { %>
-            <%= m.Type%>
-            <% }
-                else
-                { %>
-            <a href="<%= PageEditing.GetEditUrl(m.ContentReference) %>" target="_blank"><%= Html.Encode(m.Type) %></a>
-            <% } %>
+            <%= m.Type %>
         </td>
         <td>
-            <% if (ContentReference.IsNullOrEmpty(m.ContentReference))
-                { %>
-            <%= m.DateTime%>
-            <% }
-                else
-                { %>
-            <a href="<%= PageEditing.GetEditUrl(m.ContentReference) %>" target="_blank"><%= Html.Encode(m.DateTime) %></a>
-            <% } %>
+            <%= m.DateTime %>
         </td>
         <td>
-            <% if (ContentReference.IsNullOrEmpty(m.ContentReference))
-                { %>
-            <%= m.StartedBy%>
-            <% }
-                else
-                { %>
-            <a href="<%= PageEditing.GetEditUrl(m.ContentReference) %>" target="_blank"><%= Html.Encode(m.StartedBy) %></a>
-            <% } %>
+            <%= m.StartedBy %>
         </td>
     </tr>
-    <%} %>
-    <%
+    <% if (m.Details != null && m.Details.Any())
+        { %>
+    <tr class="child-<%= m.ApprovalId %>" style="display: none;">
+        <td class="changetask-detail" colspan="6">
+            <table class="inner-table">
+                <thead>
+                    <tr class="header">
+                        <td class="short header-right"><strong>Name</strong></td>
+                        <td class="header-right"><strong>Current Version</strong></td>
+                        <td><strong>Suggested Version</strong></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% foreach (var ct in m.Details.ToList())
+                        {
+                    %>
+                    <tr>
+                        <td class="short"><%= ct.Name %></td>
+                        <td><%= ct.OldValue %></td>
+                        <td><%= ct.NewValue %></td>
+                    </tr>
+                    <% }
+                        } %>
+                </tbody>
+            </table>
+            <p style="padding-top: 20px"><a class="change-anchor" href="<%=m.URL%>" target="_blank">Go to the Change Details</a></p>
+        </td>
+    </tr>
+    <% }
         } %>
 </table>
 
@@ -149,6 +173,7 @@
         <textarea autocomplete="off" cols="70" id="approvalComment" name="approvalComment" class="epi-textarea--max-height--500 dijitTextBox dijitTextArea dijitExpandingTextArea dijitTextBoxError dijitTextAreaError dijitExpandingTextAreaError dijitError" tabindex="0" placeholder="Please specify why you are forcing approval of the content…" rows="1" style="overflow: auto hidden; box-sizing: border-box; height: 29px;" spellcheck="false"></textarea>
         <input type="hidden" name="pageSize" value="<%=Model.PageSize %>" />
         <input id="taskValues" type="hidden" name="taskValues" value="<%=Model.TaskValues%>" />
+        <input type="hidden" name="isChange" value="<%=true%>" />
         <div>
             <ul>
                 <li>
@@ -246,8 +271,8 @@
         if (selectedContent && selectedContent.length > 0) {
             ShowApproveSection();
 
-                document.getElementById('button').textContent =
-                    'Approve ' + selectedContent.length + ' Selected Content Changes';
+            document.getElementById('button').textContent =
+                'Approve ' + selectedContent.length + ' Selected Content Changes';
         } else {
             HideApproveSection();
             document.getElementById('button').textContent = 'Submit';
@@ -302,6 +327,14 @@
         }
     }
 
-
+    $(document).ready(function () {
+        $('tr.parent')
+            .css("cursor", "pointer")
+            .attr("title", "Click to expand/collapse")
+            .click(function () {
+                $(this).siblings('.child-' + this.id).toggle();
+            });
+        //$('tr[@class^=child-]').hide().children('td');
+    });    
 </script>
 

@@ -21,7 +21,10 @@ using System.Linq;
 using System.Security;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using AdvancedTask.Business.AdvancedTask;
+using AdvancedTask.Business.AdvancedTask.Interface;
 using AdvancedTask.Helper;
+using EPiServer.Editor;
 using Task = System.Threading.Tasks.Task;
 
 namespace AdvancedTask.Controllers
@@ -41,10 +44,11 @@ namespace AdvancedTask.Controllers
         private readonly IApprovalEngine _approvalEngine;
         private readonly LocalizationService _localizationService;
         private readonly ChangeTaskHelper _changeTaskHelper;
+        private readonly ChangeApprovalActions _changeApprovalService;
 
         private const string ContentApprovalDeadlinePropertyName = "ATM_ContentApprovalDeadline";
 
-        public AdvancedTaskController(IApprovalRepository approvalRepository, IContentRepository contentRepository, IContentTypeRepository contentTypeRepository, IUserNotificationRepository userNotificationRepository, IApprovalEngine approvalEngine, LocalizationService localizationService, IAsyncDatabaseExecutor asyncDatabaseExecutor, ChangeTaskHelper changeTaskHelper, UIHelper helper)
+        public AdvancedTaskController(IApprovalRepository approvalRepository, IContentRepository contentRepository, IContentTypeRepository contentTypeRepository, IUserNotificationRepository userNotificationRepository, IApprovalEngine approvalEngine, LocalizationService localizationService, IAsyncDatabaseExecutor asyncDatabaseExecutor, ChangeTaskHelper changeTaskHelper, UIHelper helper, ChangeApprovalActions changeApprovalService)
         {
             _approvalRepository = approvalRepository;
             _contentRepository = contentRepository;
@@ -54,6 +58,7 @@ namespace AdvancedTask.Controllers
             _localizationService = localizationService;
             _changeTaskHelper = changeTaskHelper;
             _helper = helper;
+            _changeApprovalService = changeApprovalService;
         }
         private void CheckAccess()
         {
@@ -88,7 +93,7 @@ namespace AdvancedTask.Controllers
                 {
                     viewModel.ChangeApproval = true;
 
-                    var changeTasks = Task.Run(async () => await ProcessChangeData(pageNr, pageSz, sorting, viewModel, taskValues, approvalComment, publishContent));
+                    var changeTasks = Task.Run(async () => await ProcessChangeData(pageNr, pageSz, sorting, viewModel, taskValues, approvalComment));
                     {
                         var changeTaskList = changeTasks.Result;
                         viewModel.ContentTaskList = changeTaskList;
@@ -103,18 +108,17 @@ namespace AdvancedTask.Controllers
                 var deleteChangeApprovalTasks = bool.Parse(ConfigurationManager.AppSettings["ATM:DeleteChangeApprovalTasks"] ?? "false");
                 if (deleteChangeApprovalTasks)
                 {
-                    var changeTasks = Task.Run(async () => await ProcessChangeData(pageNr, pageSz, sorting, viewModel, taskValues, approvalComment, publishContent));
+                    var changeTasks = Task.Run(async () => await ProcessChangeData(pageNr, pageSz, sorting, viewModel, taskValues, approvalComment));
                     {
                         var changeTaskList = changeTasks.Result;
 
                         var ids = changeTaskList.Select(contentTask => contentTask.ApprovalId).ToList();
-                        AbortTasks(ids).GetAwaiter().GetResult();
+                        Task.Run(async () => await AbortTasks(ids));
                     }
-
                 }
             }
 
-            var task = Task.Run(async () => await ProcessContentData(pageNr, pageSz, sorting, viewModel, taskValues, approvalComment, publishContent));
+            var task = Task.Run(async () => await ProcessContentData(pageNr, pageSz, sorting, viewModel, taskValues, approvalComment));
             {
                 var contentTaskList = task.Result;
                 viewModel.ContentTaskList = contentTaskList;
@@ -129,7 +133,8 @@ namespace AdvancedTask.Controllers
             return View("Index", viewModel);
         }
 
-        private async Task ApproveContent(string values, string approvalComment, bool publishContent)
+
+        private async Task ApproveContent(string values, string approvalComment)
         {
             if (!string.IsNullOrEmpty(values))
             {
@@ -140,9 +145,9 @@ namespace AdvancedTask.Controllers
                     if (approvalId != 0)
                     {
                         var approval = await _approvalRepository.GetAsync(approvalId);
-                        await _approvalEngine.ApproveAsync(approvalId, PrincipalInfo.CurrentPrincipal.Identity.Name, 1, ApprovalDecisionScope.Force, approvalComment);
+                        await _approvalEngine.ForceApproveAsync(approvalId, PrincipalInfo.CurrentPrincipal.Identity.Name, approvalComment);
 
-                        if (publishContent && approval is ContentApproval contentApproval)
+                        if (approval is ContentApproval contentApproval)
                         {
                             _contentRepository.TryGet(contentApproval.ContentLink, out IContent content);
 
@@ -183,17 +188,33 @@ namespace AdvancedTask.Controllers
             }
         }
 
+        private async Task ApproveChangeTask(string values, string approvalComment)
+        {
+            if (!string.IsNullOrEmpty(values))
+            {
+                var ids = values.Split(',');
+                foreach (var id in ids)
+                {
+                    int.TryParse(id, out var approvalId);
+                    if (approvalId != 0)
+                    {
+                        await _changeApprovalService.ForceComplete(approvalId, approvalComment);
+                    }
+                }
+            }
+        }
+
         private async Task AbortTasks(List<int> ids)
         {
             await _approvalEngine.AbortAsync(ids, PrincipalInfo.CurrentPrincipal.Identity.Name);
         }
 
 
-        private async Task<List<ContentTask>> ProcessContentData(int pageNumber, int pageSize, string sorting, AdvancedTaskIndexViewData model, string taskValues, string approvalComment, string publishContent)
+        private async Task<List<ContentTask>> ProcessContentData(int pageNumber, int pageSize, string sorting, AdvancedTaskIndexViewData model, string taskValues, string approvalComment)
         {
             if (!string.IsNullOrEmpty(taskValues))
             {
-                await ApproveContent(taskValues, approvalComment, !string.IsNullOrEmpty(publishContent) && publishContent == "true");
+                await ApproveContent(taskValues, approvalComment);
             }
 
             //List of All task for the user 
@@ -226,6 +247,7 @@ namespace AdvancedTask.Controllers
 
                     if (content != null)
                     {
+                        customTask.URL = PageEditing.GetEditUrl(approval.ContentLink);
                         id = content.ContentLink.ID.ToString();
                         var canUserPublish = await _helper.CanUserPublish(content);
 
@@ -306,11 +328,11 @@ namespace AdvancedTask.Controllers
             return taskList;
         }
 
-        private async Task<List<ContentTask>> ProcessChangeData(int pageNumber, int pageSize, string sorting, AdvancedTaskIndexViewData model, string taskValues, string approvalComment, string publishContent)
+        private async Task<List<ContentTask>> ProcessChangeData(int pageNumber, int pageSize, string sorting, AdvancedTaskIndexViewData model, string taskValues, string approvalComment)
         {
             if (!string.IsNullOrEmpty(taskValues))
             {
-                await ApproveContent(taskValues, approvalComment, !string.IsNullOrEmpty(publishContent) && publishContent == "false");
+                await ApproveChangeTask(taskValues, approvalComment);
             }
 
             //List of All task for the user 
@@ -336,7 +358,8 @@ namespace AdvancedTask.Controllers
                 {
                     ApprovalId = task.ID,
                     DateTime = task.ActiveStepStarted.ToString("dd MMMM HH:mm"),
-                    StartedBy = task.StartedBy
+                    StartedBy = task.StartedBy,
+                    URL = PageEditing.GetEditUrl(new ContentReference(task.ID)).Replace(".contentdata:", ".changeapproval:")
                 };
 
                 if (!(task is ContentApproval))

@@ -51,8 +51,8 @@ namespace AdvancedTask.Business.AdvancedTask
                 contentChangeDetailsList.Add((IContentChangeDetails)new ContentChangeDetails()
                 {
                     Name = _localizationService.GetString("/gadget/changeapproval/languagesettingcommand/inheritsettingsfromtheparentpage"),
-                    OldValue = settingsFromJson1.Values.Any((Func<ContentLanguageSetting, bool>)(st => st.DefinedOnContent.CompareToIgnoreWorkID(command.AppliedOnContentLink))) ? (object)str2 : (object)str1,
-                    NewValue = dictionary.Values.Any((Func<ContentLanguageSetting, bool>)(st => st.DefinedOnContent.CompareToIgnoreWorkID(command.AppliedOnContentLink))) ? (object)str2 : (object)str1
+                    OldValue = settingsFromJson1.Values.Any((Func<ContentLanguageSetting, bool>)(st => st.DefinedOnContent.CompareToIgnoreWorkID(command.AppliedOnContentLink))) ? str2 : str1,
+                    NewValue = dictionary.Values.Any((Func<ContentLanguageSetting, bool>)(st => st.DefinedOnContent.CompareToIgnoreWorkID(command.AppliedOnContentLink))) ? str2 : str1
                 });
             }
             var currentLangs = settingsFromJson1.Where<KeyValuePair<string, ContentLanguageSetting>>((Func<KeyValuePair<string, ContentLanguageSetting>, bool>)(s => s.Value.IsActive)).Select<KeyValuePair<string, ContentLanguageSetting>, string>((Func<KeyValuePair<string, ContentLanguageSetting>, string>)(s => s.Value.LanguageBranch));
@@ -101,7 +101,7 @@ namespace AdvancedTask.Business.AdvancedTask
 
         private string StringifyLanguages(IEnumerable<string> languages, string separator)
         {
-            return languages.Aggregate<string, string>(string.Empty, (Func<string, string, string>)((workingStr, next) => string.Format("{0}{1}{2}", (object)workingStr, (object)separator, (object)GetLanguageName(next)))).TrimStart(separator.ToCharArray());
+            return languages.Aggregate<string, string>(string.Empty, (Func<string, string, string>)((workingStr, next) => string.Format("{0}{1}{2}", workingStr, separator, GetLanguageName(next)))).TrimStart(separator.ToCharArray());
         }
 
         private string FormatLanguageSettingsChange(
@@ -122,14 +122,14 @@ namespace AdvancedTask.Business.AdvancedTask
                 {
                     var item = currentLang;
                     var languageName = GetLanguageName(item);
-                    str = newLangs.Any<string>((Func<string, bool>)(lang => lang.Equals(item, StringComparison.InvariantCultureIgnoreCase))) ? str + string.Format("{0}{1}", (object)languageName, (object)CommaSeparator) : str + string.Format("{0}{1}", (object)languageName.Strikethrough(), (object)CommaSeparator);
+                    str = newLangs.Any<string>((Func<string, bool>)(lang => lang.Equals(item, StringComparison.InvariantCultureIgnoreCase))) ? str + string.Format("{0}{1}", languageName, CommaSeparator) : str + string.Format("{0}{1}", languageName.Strikethrough(), CommaSeparator);
                 }
                 foreach (var newLang in newLangs)
                 {
                     var item = newLang;
                     var languageName = GetLanguageName(item);
                     if (!string.IsNullOrWhiteSpace(languageName) && !currentLangs.Any<string>((Func<string, bool>)(lang => lang.Equals(item, StringComparison.InvariantCultureIgnoreCase))))
-                        str += string.Format("{0}{1}", (object)languageName.Bold(), (object)CommaSeparator);
+                        str += string.Format("{0}{1}", languageName.Bold(), CommaSeparator);
                 }
             }
             return str.TrimEnd(CommaSeparator);
@@ -157,15 +157,15 @@ namespace AdvancedTask.Business.AdvancedTask
                     if (fallbackLanguages1.Count > 0)
                     {
                         var str1 = StringifyLanguages((IEnumerable<string>)fallbackLanguages1, ArrowSeparator);
-                        var str2 = fallbackLanguages1.SequenceEqual<string>((IEnumerable<string>)fallbackLanguages2) ? string.Format("{0}{1}{2}", (object)languageName, (object)ArrowSeparator, (object)str1).Fade() : string.Format("{0}{1}{2}", (object)languageName, (object)ArrowSeparator, (object)str1);
+                        var str2 = fallbackLanguages1.SequenceEqual<string>((IEnumerable<string>)fallbackLanguages2) ? string.Format("{0}{1}{2}", languageName, ArrowSeparator, str1).Fade() : string.Format("{0}{1}{2}", languageName, ArrowSeparator, str1);
                         stringBuilder.Append(str2);
                     }
                     else
-                        stringBuilder.Append(string.Format("{0}{1}{2}", (object)languageName, (object)ArrowSeparator, (object)_localizationService.GetString("/gadget/changeapproval/languagesettingcommand/none")));
-                    stringBuilder.Append("|||");
+                        stringBuilder.Append(string.Format("{0}{1}{2}", languageName, ArrowSeparator, _localizationService.GetString("/gadget/changeapproval/languagesettingcommand/none")));
+                    stringBuilder.Append("</br>");
                 }
             }
-            return stringBuilder.ToString().TrimEnd("|||");
+            return stringBuilder.ToString().TrimEnd("</br>");
         }
 
         private string NewFallbackLanguagesToString(
@@ -185,12 +185,12 @@ namespace AdvancedTask.Business.AdvancedTask
                         if (fallbackLanguages1.SequenceEqual<string>((IEnumerable<string>)fallbackLanguages2))
                         {
                             var str = StringifyLanguages((IEnumerable<string>)fallbackLanguages1, ArrowSeparator);
-                            stringBuilder.Append(string.Format("{0}{1}{2}", (object)languageName1, (object)ArrowSeparator, (object)str).Fade());
+                            stringBuilder.Append(string.Format("{0}{1}{2}", languageName1, ArrowSeparator, str).Fade());
                         }
                         else if (fallbackLanguages1.Count == 0 && fallbackLanguages2.Count > 0)
                         {
                             var str = StringifyLanguages((IEnumerable<string>)fallbackLanguages2, ArrowSeparator);
-                            stringBuilder.Append(string.Format("{0}{1}{2}", (object)languageName1, (object)ArrowSeparator, (object)str).Strikethrough());
+                            stringBuilder.Append(string.Format("{0}{1}{2}", languageName1, ArrowSeparator, str).Strikethrough());
                         }
                         else if (fallbackLanguages1.Count > 0)
                         {
@@ -199,24 +199,24 @@ namespace AdvancedTask.Business.AdvancedTask
                                 stringBuilder.Append(languageName1);
                                 foreach (var languageCode in fallbackLanguages2)
                                 {
-                                    var str = fallbackLanguages1.Contains(languageCode) ? string.Format("{0}{1}", (object)ArrowSeparator, (object)GetLanguageName(languageCode)) : string.Format("{0}{1}", (object)ArrowSeparator, (object)GetLanguageName(languageCode).Strikethrough());
+                                    var str = fallbackLanguages1.Contains(languageCode) ? string.Format("{0}{1}", ArrowSeparator, GetLanguageName(languageCode)) : string.Format("{0}{1}", ArrowSeparator, GetLanguageName(languageCode).Strikethrough());
                                     stringBuilder.Append(str);
                                 }
                                 foreach (var languageCode in fallbackLanguages1)
                                 {
                                     var languageName2 = GetLanguageName(languageCode);
                                     if (!string.IsNullOrWhiteSpace(languageName2) && !fallbackLanguages2.Contains(languageCode))
-                                        stringBuilder.Append(string.Format("{0}{1}", (object)ArrowSeparator, (object)languageName2.Bold()));
+                                        stringBuilder.Append(string.Format("{0}{1}", ArrowSeparator, languageName2.Bold()));
                                 }
                             }
                             else
                                 continue;
                         }
-                        stringBuilder.Append("|||");
+                        stringBuilder.Append("</br>");
                     }
                 }
             }
-            return stringBuilder.ToString().TrimEnd("|||");
+            return stringBuilder.ToString().TrimEnd("</br>");
         }
 
         private string GetReplacementLanguage(
@@ -238,12 +238,12 @@ namespace AdvancedTask.Business.AdvancedTask
                 if (!string.IsNullOrEmpty(replacementLanguage1) || !string.IsNullOrEmpty(replacementLanguage2))
                 {
                     var languageName = GetLanguageName(key);
-                    var str = replacementLanguage1 != null && replacementLanguage1.Equals(replacementLanguage2) ? string.Format("{0}{1}{2}", (object)languageName, (object)ArrowSeparator, (object)replacementLanguage1).Fade() : string.Format("{0}{1}{2}", (object)languageName, (object)ArrowSeparator, !string.IsNullOrEmpty(replacementLanguage1) ? (object)replacementLanguage1 : (object)_localizationService.GetString("/gadget/changeapproval/languagesettingcommand/none"));
+                    var str = replacementLanguage1 != null && replacementLanguage1.Equals(replacementLanguage2) ? string.Format("{0}{1}{2}", languageName, ArrowSeparator, replacementLanguage1).Fade() : string.Format("{0}{1}{2}", languageName, ArrowSeparator, !string.IsNullOrEmpty(replacementLanguage1) ? replacementLanguage1 : _localizationService.GetString("/gadget/changeapproval/languagesettingcommand/none"));
                     stringBuilder.Append(str);
-                    stringBuilder.Append("|||");
+                    stringBuilder.Append("</br>");
                 }
             }
-            return stringBuilder.ToString().TrimEnd("|||");
+            return stringBuilder.ToString().TrimEnd("</br>");
         }
 
         private string NewReplacementLanguagesToString(
@@ -261,16 +261,16 @@ namespace AdvancedTask.Business.AdvancedTask
                     if (!string.IsNullOrWhiteSpace(languageName))
                     {
                         if (replacementLanguage1 != null && replacementLanguage1.Equals(replacementLanguage2))
-                            stringBuilder.Append(string.Format("{0}{1}{2}", (object)languageName, (object)ArrowSeparator, (object)replacementLanguage1).Fade());
+                            stringBuilder.Append(string.Format("{0}{1}{2}", languageName, ArrowSeparator, replacementLanguage1).Fade());
                         else if (string.IsNullOrEmpty(replacementLanguage1))
-                            stringBuilder.Append(string.Format("{0}{1}{2}", (object)languageName, (object)ArrowSeparator, (object)replacementLanguage2).Strikethrough());
+                            stringBuilder.Append(string.Format("{0}{1}{2}", languageName, ArrowSeparator, replacementLanguage2).Strikethrough());
                         else
-                            stringBuilder.Append(string.Format("{0}{1}{2}", (object)languageName, (object)ArrowSeparator, (object)replacementLanguage1.Bold()));
+                            stringBuilder.Append(string.Format("{0}{1}{2}", languageName, ArrowSeparator, replacementLanguage1.Bold()));
                     }
-                    stringBuilder.Append("|||");
+                    stringBuilder.Append("</br>");
                 }
             }
-            return stringBuilder.ToString().TrimEnd("|||");
+            return stringBuilder.ToString().TrimEnd("</br>");
         }
 
         private IDictionary<string, ContentLanguageSetting> GetContentLanguageSettingsFromJson(

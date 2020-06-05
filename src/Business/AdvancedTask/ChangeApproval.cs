@@ -37,7 +37,7 @@ namespace AdvancedTask.Business.AdvancedTask
             // ISSUE: explicit non-virtual call
             if (writableClone != null)
             {
-                writableClone._contentLink = (object) contentLink != null
+                writableClone._contentLink =  contentLink != null
                     ? contentLink.CreateWritableClone()
                     : null;
                 return writableClone;

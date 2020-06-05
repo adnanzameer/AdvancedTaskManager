@@ -93,6 +93,7 @@
   <ItemGroup>
     <Compile Include="Business\AdvancedTaskInitialization.cs" />
     <Compile Include="Business\AdvancedTask\ApprovalCommandRepositoryBase.cs" />
+    <Compile Include="Business\AdvancedTask\ChangeApprovalActions.cs" />
     <Compile Include="Business\AdvancedTask\ContentACL.cs" />
     <Compile Include="Business\AdvancedTask\ContentChangeDetails.cs" />
     <Compile Include="Business\AdvancedTask\ExpirationChangeDetails.cs" />
