@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace AdvancedTask.Business.AdvancedTask
 {
-    public class ExpirationChangeDetails
+    internal class ExpirationChangeDetails
     {
         public IEnumerable<IContentChangeDetails> GetExpirationCommandChangeDetails(ChangeTaskViewModel model)
         {

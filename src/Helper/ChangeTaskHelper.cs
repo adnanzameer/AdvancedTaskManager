@@ -6,7 +6,7 @@ using EPiServer.Security;
 
 namespace AdvancedTask.Helper
 {
-    public class ChangeTaskHelper
+    internal class ChangeTaskHelper
     {
         private readonly ApprovalCommandService _generalCommandService;
         private readonly ApprovalCommandMapper _approvalCommandMapper;

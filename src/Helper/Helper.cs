@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace AdvancedTask.Helper
 {
-    public static class Helper
+    internal static class Helper
     {
         public static IEnumerable<DateTime> GetDaysInRange(this DateTime startDate, DateTime endDate)
         {

@@ -4,7 +4,7 @@ using System.Data.Common;
 
 namespace AdvancedTask.Business
 {
-    public static class NotificationMessageFromReader
+    internal static class NotificationMessageFromReader
     {
         public static InternalNotificationMessage Create(DbDataReader reader)
         {

@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace AdvancedTask.Business.AdvancedTask.Mapper
 {
-    public class ViewModelMapper
+    internal class ViewModelMapper
     {
         private readonly IDictionary<Type, Mapping> _typeMappings = (IDictionary<Type, ViewModelMapper.Mapping>)new Dictionary<Type, ViewModelMapper.Mapping>();
 

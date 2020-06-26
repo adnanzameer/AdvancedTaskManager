@@ -15,7 +15,7 @@ using EPiServer.Shell.Web;
 
 namespace AdvancedTask.Business.AdvancedTask
 {
-    public class LanguageChangeDetails
+    internal class LanguageChangeDetails
     {
         private readonly LocalizationService _localizationService;
 

@@ -5,7 +5,7 @@ using EPiServer.Core;
 
 namespace AdvancedTask.Business.AdvancedTask
 {
-    public class ChangeApproval : Approval
+    internal class ChangeApproval : Approval
     {
         private ContentReference _contentLink;
 

@@ -10,7 +10,7 @@ using EPiServer.ServiceLocation;
 namespace AdvancedTask.Helper
 {
     [ServiceConfiguration(typeof(ChangeApprovalHelper))]
-    public class ChangeApprovalHelper
+    internal class ChangeApprovalHelper
     {
         private readonly IApprovalRepository _approvalRepository;
         private readonly IApprovalDefinitionRepository _approvalDefinitionRepository;

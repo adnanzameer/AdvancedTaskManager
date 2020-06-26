@@ -4,7 +4,7 @@ using EPiServer.ServiceLocation;
 namespace AdvancedTask.Business.AdvancedTask.Command
 {
     [ServiceConfiguration(Lifecycle = ServiceInstanceScope.Hybrid)]
-    public class ChangeApprovalDynamicDataStoreFactory
+    internal class ChangeApprovalDynamicDataStoreFactory
     {
         public DynamicDataStore GetStore(string name)
         {

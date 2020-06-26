@@ -6,7 +6,7 @@ using EPiServer.DataAnnotations;
 
 namespace AdvancedTask.Business.AdvancedTask.Command
 {
-    public abstract class ApprovalCommandBase : IDynamicData
+    internal abstract class ApprovalCommandBase : IDynamicData
     {
         private bool _isReadOnly;
 

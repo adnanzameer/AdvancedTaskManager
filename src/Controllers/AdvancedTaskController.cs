@@ -34,7 +34,7 @@ namespace AdvancedTask.Controllers
     [EPiServer.Shell.Web.CssResource("ClientResources/Content/AdvancedTaskGadget.css")]
     [EPiServer.Shell.Web.ScriptResource("ClientResources/Scripts/jquery.form.js")]
     [Authorize]
-    public class AdvancedTaskController : Controller
+    internal class AdvancedTaskController : Controller
     {
         private readonly IApprovalRepository _approvalRepository;
         private readonly UIHelper _helper;

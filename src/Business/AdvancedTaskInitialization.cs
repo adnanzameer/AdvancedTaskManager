@@ -12,7 +12,7 @@ namespace AdvancedTask.Business
 {
     [InitializableModule]
     [ModuleDependency(typeof(EPiServer.Web.InitializationModule))]
-    public class AdvancedTaskInitialization : IInitializableModule
+    internal class AdvancedTaskInitialization : IInitializableModule
     {
         private const string ContentApprovalDeadlinePropertyName = "ATM_ContentApprovalDeadline";
 

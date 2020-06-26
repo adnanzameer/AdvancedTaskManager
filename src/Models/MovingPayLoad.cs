@@ -2,7 +2,7 @@
 
 namespace AdvancedTask.Models
 {
-    public class MovingPayLoad
+    internal class MovingPayLoad
     {
         public ContentReference Source { get; set; }
 

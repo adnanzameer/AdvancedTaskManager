@@ -12,7 +12,7 @@ using EPiServer.ServiceLocation;
 namespace AdvancedTask.Business.AdvancedTask.Mapper
 {
     [ServiceConfiguration(typeof(ApprovalCommandMapper), Lifecycle = ServiceInstanceScope.Singleton)]
-    public class ApprovalCommandMapper
+    internal class ApprovalCommandMapper
     {
         private readonly ViewModelMapper _mapper = new ViewModelMapper();
         private readonly IContentRepository _contentRepository;

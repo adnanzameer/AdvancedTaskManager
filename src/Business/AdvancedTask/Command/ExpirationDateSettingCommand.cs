@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 namespace AdvancedTask.Business.AdvancedTask.Command
 {
     [EPiServerDataStore(AutomaticallyRemapStore = true)]
-    public class ExpirationDateSettingCommand : ApprovalCommandBase, ICultureSpecificApprovalCommand
+    internal class ExpirationDateSettingCommand : ApprovalCommandBase, ICultureSpecificApprovalCommand
     {
         private Injected<IContentLoader> _contentLoader;
         public virtual string AppliedOnLanguageBranch { get; set; }

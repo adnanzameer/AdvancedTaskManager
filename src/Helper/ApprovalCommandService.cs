@@ -10,7 +10,7 @@ using EPiServer.Security;
 
 namespace AdvancedTask.Helper
 {
-    public class ApprovalCommandService
+    internal class ApprovalCommandService
     {
         private readonly ICommandMetaDataRepository _commandMetaDataRepository;
         private readonly ApprovalCommandRepositoryBase _approvalCommandRepositoryBase;

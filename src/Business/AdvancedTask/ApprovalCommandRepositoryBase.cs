@@ -4,7 +4,7 @@ using AdvancedTask.Business.AdvancedTask.Command;
 
 namespace AdvancedTask.Business.AdvancedTask
 {
-    public class ApprovalCommandRepositoryBase
+    internal class ApprovalCommandRepositoryBase
     {
         private readonly ChangeApprovalDynamicDataStoreFactory _changeApprovalDynamicDataStoreFactory;
 

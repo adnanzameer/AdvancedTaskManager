@@ -7,7 +7,7 @@ using AdvancedTask.Business.AdvancedTask.Interface;
 
 namespace AdvancedTask.Models
 {
-    public class ChangeTaskDetail
+    internal class ChangeTaskDetail
     {
         public ChangeTaskDetail()
         {

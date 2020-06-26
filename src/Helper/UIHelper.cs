@@ -14,7 +14,7 @@ using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace AdvancedTask.Helper
 {
-    public class UIHelper
+    internal class UIHelper
     {
         private readonly QueryableNotificationUserService _queryableNotificationUserService;
         private readonly ICurrentUiCulture _currentUiCulture;

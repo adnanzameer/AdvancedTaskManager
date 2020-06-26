@@ -6,7 +6,7 @@ using EPiServer.Core;
 
 namespace AdvancedTask.Helper
 {
-    public static class ChangeApprovalReferenceHelper
+    internal static class ChangeApprovalReferenceHelper
     {
         public static Uri GetUri(ContentReference contentLink, bool ignoreVersion)
         {

@@ -9,7 +9,7 @@ using EPiServer.Framework;
 
 namespace AdvancedTask.Helper
 {
-    public static class ChangeApprovalExtensions
+    internal static class ChangeApprovalExtensions
     {
         public static async Task<IEnumerable<ChangeApproval>> GetChangeApprovalItemsAsync(
           this IApprovalRepository repository,

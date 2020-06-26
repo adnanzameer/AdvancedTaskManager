@@ -20,7 +20,7 @@ using Newtonsoft.Json.Linq;
 
 namespace AdvancedTask.Business.AdvancedTask
 {
-    public class SecurityChangeDetail
+    internal class SecurityChangeDetail
     {
         private readonly ApprovalCommandService _generalCommandService;
         private readonly LocalizationService _localizationService;

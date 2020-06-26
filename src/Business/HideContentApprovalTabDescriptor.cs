@@ -8,7 +8,7 @@ using EPiServer.Shell.ObjectEditing.EditorDescriptors;
 namespace AdvancedTask.Business
 {
     [EditorDescriptorRegistration(TargetType = typeof(ContentData))]
-    public class HideCategoryEditorDescriptor : EditorDescriptor
+    internal class HideCategoryEditorDescriptor : EditorDescriptor
     {
         public override void ModifyMetadata(ExtendedMetadata metadata, IEnumerable<Attribute> attributes)
         {

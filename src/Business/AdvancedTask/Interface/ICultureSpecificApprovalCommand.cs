@@ -1,7 +1,7 @@
 ﻿
 namespace AdvancedTask.Business.AdvancedTask.Interface
 {
-    public interface ICultureSpecificApprovalCommand
+    internal interface ICultureSpecificApprovalCommand
     {
         string AppliedOnLanguageBranch { get; set; }
     }

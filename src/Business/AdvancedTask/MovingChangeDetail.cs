@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 
 namespace AdvancedTask.Business.AdvancedTask
 {
-    public class MovingChangeDetail
+    internal class MovingChangeDetail
     {
         private readonly LocalizationService _localizationService;
         private readonly string _baseLanguagePath = "/gadget/changeapproval/movingcontentcommand";

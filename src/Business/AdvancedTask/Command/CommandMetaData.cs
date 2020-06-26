@@ -6,7 +6,7 @@ using EPiServer.Data.Dynamic;
 namespace AdvancedTask.Business.AdvancedTask.Command
 {
     [EPiServerDataStore(AutomaticallyRemapStore = true)]
-    public class CommandMetaData : IDynamicData
+    internal class CommandMetaData : IDynamicData
     {
         public Identity Id { get; set; }
 

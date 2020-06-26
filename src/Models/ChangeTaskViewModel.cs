@@ -3,7 +3,7 @@ using EPiServer.Core;
 
 namespace AdvancedTask.Models
 {
-    public class ChangeTaskViewModel
+    internal class ChangeTaskViewModel
     {
         public string Id { get; set; }
 

@@ -9,7 +9,7 @@ using EPiServer.ServiceLocation;
 namespace AdvancedTask.Business.AdvancedTask.Command
 {
     [ServiceConfiguration(ServiceType = typeof(ICommandMetaDataRepository))]
-    public class DefaultCommandMetaDataRepository : ICommandMetaDataRepository
+    internal class DefaultCommandMetaDataRepository : ICommandMetaDataRepository
     {
         private static readonly object _lock = new object();
         private readonly ChangeApprovalDynamicDataStoreFactory _changeApprovalDynamicDataStoreFactory;

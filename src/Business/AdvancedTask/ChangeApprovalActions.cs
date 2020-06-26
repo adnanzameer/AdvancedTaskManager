@@ -9,7 +9,7 @@ using EPiServer.Security;
 namespace AdvancedTask.Business.AdvancedTask
 {
 
-    public class ChangeApprovalActions
+    internal class ChangeApprovalActions
     {
         private readonly ICommandMetaDataRepository _commandMetaDataRepository;
         private readonly IApprovalEngine _approvalEngine;
