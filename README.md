@@ -119,9 +119,9 @@ If the editor has published rights for some of the content after approving all c
 
 ## Change approval task information
 
- The table row of the change approval task information is act as accordion. On clicking on the row the change approval task details will show (and hide). 
+ The table row of the change approval task information acts like an accordion. On clicking on the row the change approval task details will show (and hide). 
 
- There are four types of Change approval taks.
+ There are four types of Change approval tasks.
 
  * Securty setting change
 
@@ -133,8 +133,7 @@ If the editor has published rights for some of the content after approving all c
 
  * Language setting change 
 
- ![Language setting change](assets/docsimages/ca-language
- .png)
+ ![Language setting change](assets/docsimages/ca-language.png)
 
  * Expiration date setting change
 
