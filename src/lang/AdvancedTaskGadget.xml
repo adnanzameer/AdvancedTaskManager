@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <languages>
-    <language name="English"
-              id="en">
+    <language name="English" id="en">
         <gadget>
             <tasks>
                 <ignored>Ignored</ignored>
@@ -14,7 +13,53 @@
                     With the Advanced Task Gadget you can manage existing awaiting review tasks related to Content Approval.
                 </info>
                 <taskcount>Displaying tasks {0}-{1} of {2}</taskcount>
+                <yousubject>You</yousubject>
             </tasks>
+            <changeapproval>
+                <languagesettingcommand>
+                    <yes>Yes</yes>
+                    <no>No</no>
+                    <none>None</none>
+                    <inheritsettingsfromtheparentpage>Inherit settings from the parent page</inheritsettingsfromtheparentpage>
+                    <availablelanguages>Available Languages</availablelanguages>
+                    <fallbacklanguages>Fallback Languages</fallbacklanguages>
+                    <replacementlanguages>Replacement Languages</replacementlanguages>
+                </languagesettingcommand>
+                <securitysettingcommand>
+                    <yes>Yes</yes>
+                    <no>No</no>
+                    <inheritsettingsfromtheparentpage>Inherit settings</inheritsettingsfromtheparentpage>
+                    <accessrolecontrol>Access Control List</accessrolecontrol>
+                    <applytosubitems>Applied to all sub-items</applytosubitems>
+                </securitysettingcommand>
+                <expirationdatesettingcommand>
+                    <pagearchivelink>Archive to</pagearchivelink>
+                    <pagestoppublish>Expiration date</pagestoppublish>
+                    <contentnotavailable>[Location is no longer available]</contentnotavailable>
+                </expirationdatesettingcommand>
+                <movingcontentcommand>
+                    <path>Path</path>
+                    <contentnotavailable>[Location is no longer available]</contentnotavailable>
+                </movingcontentcommand>
+                <gridcommanddetail>
+                    <column>
+                        <name>Name</name>
+                        <currentversion>Current version</currentversion>
+                        <suggestedversion>Suggested version</suggestedversion>
+                    </column>
+                </gridcommanddetail>
+                <accesslevels>
+                    <NoAccess>No Access</NoAccess>
+                    <Read>Read</Read>
+                    <Create>Create</Create>
+                    <Edit>Change</Edit>
+                    <Delete>Delete</Delete>
+                    <Publish>Publish</Publish>
+                    <Administer>Administer</Administer>
+                    <FullAccess>Full Access</FullAccess>
+                    <Undefined>Undefined</Undefined>
+                </accesslevels>
+            </changeapproval>
         </gadget>
     </language>
 </languages>

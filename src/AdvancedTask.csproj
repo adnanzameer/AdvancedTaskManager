@@ -92,7 +92,37 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Business\AdvancedTaskInitialization.cs" />
-    <Compile Include="Business\Helper.cs" />
+    <Compile Include="Business\AdvancedTask\ApprovalCommandRepositoryBase.cs" />
+    <Compile Include="Business\AdvancedTask\ContentACL.cs" />
+    <Compile Include="Business\AdvancedTask\ContentChangeDetails.cs" />
+    <Compile Include="Business\AdvancedTask\ExpirationChangeDetails.cs" />
+    <Compile Include="Business\AdvancedTask\Interface\IContentChangeDetails.cs" />
+    <Compile Include="Business\AdvancedTask\LanguageChangeDetails.cs" />
+    <Compile Include="Business\AdvancedTask\MovingChangeDetail.cs" />
+    <Compile Include="Business\AdvancedTask\SecurityChangeDetail.cs" />
+    <Compile Include="Business\AdvancedTask\Command\DefaultCommandMetaDataRepository.cs" />
+    <Compile Include="Business\AdvancedTask\Command\ExpirationDateSettingCommand.cs" />
+    <Compile Include="Business\AdvancedTask\ChangeApproval.cs" />
+    <Compile Include="Business\AdvancedTask\Command\ChangeApprovalDynamicDataStoreFactory.cs" />
+    <Compile Include="Helper\ChangeApprovalReferenceHelper.cs" />
+    <Compile Include="Business\AdvancedTask\ChangeApprovalTypeFactory.cs" />
+    <Compile Include="Helper\ChangeTaskHelper.cs" />
+    <Compile Include="Business\AdvancedTask\Command\CommandMetaData.cs" />
+    <Compile Include="Helper\ApprovalCommandService.cs" />
+    <Compile Include="Business\AdvancedTask\Command\ApprovalCommandBase.cs" />
+    <Compile Include="Helper\SettingCommandHelper.cs" />
+    <Compile Include="Models\ChangeTaskDetail.cs" />
+    <Compile Include="Models\ChangeTaskViewModel.cs" />
+    <Compile Include="Business\AdvancedTask\Interface\ICommandMetaDataRepository.cs" />
+    <Compile Include="Business\AdvancedTask\Interface\ICultureSpecificApprovalCommand.cs" />
+    <Compile Include="Business\AdvancedTask\Command\LanguageSettingCommand.cs" />
+    <Compile Include="Business\AdvancedTask\Command\MovingContentCommand.cs" />
+    <Compile Include="Models\MovingPayLoad.cs" />
+    <Compile Include="Business\AdvancedTask\Command\SecuritySettingCommand.cs" />
+    <Compile Include="Business\AdvancedTask\Mapper\ViewModelMapper.cs" />
+    <Compile Include="Business\AdvancedTask\Mapper\ApprovalCommandMapper.cs" />
+    <Compile Include="Helper\UIHelper.cs" />
+    <Compile Include="Helper\Helper.cs" />
     <Compile Include="Business\HideContentApprovalTabDescriptor.cs" />
     <Compile Include="Business\NotificationMessageFromReader.cs" />
     <Compile Include="Controllers\AdvancedTaskController.cs" />
@@ -100,7 +130,13 @@
     <Content Include="Views\AdvancedTask\Index.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
+    <Content Include="Views\AdvancedTask\Menu.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
     <Content Include="Views\AdvancedTask\Pager.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
+    <Content Include="Views\AdvancedTask\ChangeApproval.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
     <Content Include="Views\AdvancedTask\Tasks.ascx">
@@ -124,7 +160,7 @@
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Business\AdvancedTask\ContentTask.cs">
+    <Compile Include="Models\ContentTask.cs">
       <SubType>Code</SubType>
     </Compile>
     <Content Include="AdvancedTask.nuspec">

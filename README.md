@@ -1,9 +1,3 @@
-# Update 2.0.0
-
-* Support for Change Approval tasks (if NuGet package installed). Change Approval tasks will show along with the Content Approval tasks.
-* Support for all content type tasks in CMS. Now editors can view, approve and publish, Episerver Forms, ImageData & MediaData. 
-* Bug fixes for pagination and performance improvements.
-
 # Advanced Task Manager
  
 Currently, the User notification and Tasks (Awaiting Review) are disconnected and provide very basic information to the editors.
@@ -12,36 +6,48 @@ Currently, the User notification and Tasks (Awaiting Review) are disconnected an
 
 ![User notification](assets/docsimages/image003.png)
 
-The idea behind this project is two-fold. The first purpose is to build a more versatile Approval Sequence task management gadget (for Content & Change Awaiting Review tasks) to extend the information available to the editors. The second purpose is to combine user notifications with tasks and empower Approvers to act on their tasks within a single interface.
+The idea behind this project is two-fold. The first purpose is to build a more versatile Approval Sequence task management gadget (for Content & Change Awaiting Review tasks) to extend the information available to the editors. The second purpose is to combine user notifications with tasks and empower Approvers to act on their tasks within a single interface.  
 
-![Advanced Task Manager](assets/docsimages/image0051.png)
+![Advanced Task Manager - Content Approval](assets/docsimages/image0052.png)
+
+![Advanced Task Manager - Change Approval](assets/docsimages/change-approval.png)
 
 The gadget provides the following information about the task to the Editor:
+
+### Change Approval
+
 * Content Name
-* Approval Type (only visible if Change Approval NuGet package is installed and tasks are available)
 * Content Type
 * Type
 * Submitted Date/Time
 * Started By
 * Deadline (optional)
 
-The list of current features is:
+### Content Approval
+
+* Content Name
+* Content Type
+* Type
+* Submitted Date/Time
+* Started By
+
+The list of current features are as follow:
 * [Task ordering](#task-ordering)
 * [Deadline field for the content approval](#deadline-field-for-the-content-approval-optional)
 * [User notifications associated with the task](#user-notifications-associated-with-the-task)
 * [Approve entire approval sequence](#approve-entire-approval-sequence)
 * [Publish content after approval](#publish-content-after-approval)
+* [Change approval task information](#change-approval-task-information)
 
-Some features are disabled by default, but you can decide which ones are enabled by Configuring features.
+Some features are disabled by default, but you can decide which ones are enabled by Configuring features in the **Web.config**.
 
 ## Task ordering
 
 The gadget gives editors an option to sort through all the tasks with status Awaiting Review by the following columns:
-* Order tasks by time/date
-* Order tasks by approval type (only visible if Change Approval NuGet package is installed and tasks are available)
+* Order tasks by Content name
 * Order tasks by content type
 * Order tasks by type
-* Order tasks by category
+* Order tasks by time/date
 * Order tasks by a user who submitted the request
 * Order task by the deadline
 
@@ -49,7 +55,7 @@ The gadget gives editors an option to sort through all the tasks with status Awa
 
 ## Deadline field for the approval sequence (Optional)
 
-![Deadline field for the approval sequence](assets/docsimages/image0081.png)
+![Deadline field for the approval sequence](assets/docsimages/image008.png)
 
 The deadline property is a date/time property that allows editors to set priority against the content (Page or Block) so that the Approvers are aware of the priority ahead of approval.
 
@@ -111,6 +117,28 @@ If the editor has published rights for some of the content after approving all c
 
 ![Publish content after approval](assets/docsimages/image024.png)
 
+## Change approval task information
+
+ The table row of the change approval task information acts like an accordion. On clicking on the row the change approval task details will show (and hide). 
+
+ There are four types of Change approval tasks.
+
+ * Securty setting change
+
+ ![Securty setting change](assets/docsimages/ca-security.png)
+
+ * Moving content change
+
+ ![Moving content change](assets/docsimages/ca-moving.png)
+
+ * Language setting change 
+
+ ![Language setting change](assets/docsimages/ca-language.png)
+
+ * Expiration date setting change
+
+ ![Expiration date setting change](assets/docsimages/ca-expire.png)
+
 ## Configuring features
 
 To turn on or off one or more features, use the following **<appSettings>** elements of **Web.config**. By way of an example set false on the feature that should not be available.
@@ -130,3 +158,13 @@ Add the ```Advanced Task Manager``` gadget in the dashboard
 ## Contributing
 
 If you can help please do so by contributing to the package! Reach out package maintainer for additional details if needed.
+
+# Update 2.2.0
+
+* New tab and better UI for Change Approval tasks.
+
+# Update 2.0.0
+
+* Change Approval tasks will show along with the Content Approval tasks.
+* Support for all content type tasks in CMS. Now editors can view, approve and publish, Episerver Forms, ImageData & MediaData. 
+* Bug fixes for pagination and performance improvements.
