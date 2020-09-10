@@ -2,12 +2,20 @@
 using System.Collections.Generic;
 using AdvancedTask.Business.AdvancedTask.Interface;
 using AdvancedTask.Models;
+using EPiServer.Framework.Localization;
 using Newtonsoft.Json;
 
 namespace AdvancedTask.Business.AdvancedTask
 {
     internal class ExpirationChangeDetails
     {
+        private readonly LocalizationService _localizationService;
+
+        public ExpirationChangeDetails(LocalizationService localizationService)
+        {
+            _localizationService = localizationService;
+        }
+
         public IEnumerable<IContentChangeDetails> GetExpirationCommandChangeDetails(ChangeTaskViewModel model)
         {
             var interceptPropertyList = new List<string>() { "PageStopPublish", "PageArchiveLink" };
@@ -22,7 +30,7 @@ namespace AdvancedTask.Business.AdvancedTask
                     if (dictionary1.ContainsKey(interceptProperty))
                         contentChangeDetailsList.Add(new ContentChangeDetails()
                         {
-                            Name = interceptProperty.ToLowerInvariant(),
+                            Name = _localizationService.GetString("/gadget/changeapproval/expirationdatesettingcommand/" + interceptProperty.ToLowerInvariant()),
                             OldValue = dictionary1[interceptProperty],
                             NewValue = dictionary2[interceptProperty]
                         });
@@ -30,7 +38,7 @@ namespace AdvancedTask.Business.AdvancedTask
             }
             catch (Exception ex)
             {
-                // _logger.Error(ex.Message);
+                 //_logger.Error(ex.Message);
             }
             return contentChangeDetailsList;
         }

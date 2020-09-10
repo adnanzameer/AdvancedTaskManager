@@ -13,14 +13,16 @@ namespace AdvancedTask.Helper
         private readonly LanguageChangeDetails _languageChangeDetails;
         private readonly MovingChangeDetail _movingChangeDetail;
         private readonly SecurityChangeDetail _securityChangeDetail;
+        private readonly ExpirationChangeDetails _expirationChangeDetails;
 
-        public ChangeTaskHelper(ApprovalCommandService generalCommandService, ApprovalCommandMapper approvalCommandMapper, LanguageChangeDetails languageChangeDetails, MovingChangeDetail movingChangeDetail, SecurityChangeDetail securityChangeDetail)
+        public ChangeTaskHelper(ApprovalCommandService generalCommandService, ApprovalCommandMapper approvalCommandMapper, LanguageChangeDetails languageChangeDetails, MovingChangeDetail movingChangeDetail, SecurityChangeDetail securityChangeDetail, ExpirationChangeDetails expirationChangeDetails)
         {
             _generalCommandService = generalCommandService;
             _approvalCommandMapper = approvalCommandMapper;
             _languageChangeDetails = languageChangeDetails;
             _movingChangeDetail = movingChangeDetail;
             _securityChangeDetail = securityChangeDetail;
+            _expirationChangeDetails = expirationChangeDetails;
         }
 
 
@@ -39,8 +41,7 @@ namespace AdvancedTask.Helper
                 else if (taskDetails.TypeIdentifier.ToLower().EndsWith("expirationdatesettingcommand"))
                 {
                     customTask.Type = "Expiration Date Setting";
-                    var helper = new ExpirationChangeDetails();
-                    customTask.Details = helper.GetExpirationCommandChangeDetails(taskDetails);
+                    customTask.Details = _expirationChangeDetails.GetExpirationCommandChangeDetails(taskDetails);
                 }
                 else if (taskDetails.TypeIdentifier.ToLower().EndsWith("languagesettingcommand"))
                 {

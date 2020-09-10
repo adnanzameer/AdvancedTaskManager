@@ -8,6 +8,8 @@ namespace AdvancedTask.Business.AdvancedTask.Command
     [EPiServerDataStore(AutomaticallyRemapStore = true)]
     internal class CommandMetaData : IDynamicData
     {
+        private bool _isReadOnly;
+
         public Identity Id { get; set; }
 
         [EPiServerDataIndex]
@@ -28,6 +30,29 @@ namespace AdvancedTask.Business.AdvancedTask.Command
         {
             InReview,
             Approved
+        }
+
+        public bool IsReadOnly
+        {
+            get
+            {
+                return _isReadOnly;
+            }
+            protected set
+            {
+            }
+        }
+
+        public void MakeReadOnly()
+        {
+            _isReadOnly = true;
+        }
+
+        public object CreateWritableClone()
+        {
+            CommandMetaData commandMetaData = (CommandMetaData)this.MemberwiseClone();
+            commandMetaData._isReadOnly = false;
+            return (object)commandMetaData;
         }
     }
 }

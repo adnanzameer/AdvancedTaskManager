@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Security.Principal;
 using System.Threading.Tasks;
 using AdvancedTask.Business.AdvancedTask.Command;
 using AdvancedTask.Business.AdvancedTask.Interface;
 using AdvancedTask.Helper;
+using Castle.Core.Configuration;
 using EPiServer.Approvals;
 using EPiServer.Security;
 
@@ -14,12 +16,14 @@ namespace AdvancedTask.Business.AdvancedTask
         private readonly ICommandMetaDataRepository _commandMetaDataRepository;
         private readonly IApprovalEngine _approvalEngine;
         private readonly ApprovalCommandService _approvalCommandService;
+        private readonly ChangeApprovalHelper _changeApprovalHelper;
 
-        public ChangeApprovalActions(ICommandMetaDataRepository cmdRepository, IApprovalEngine approvalEngine, ApprovalCommandService approvalCommandService)
+        public ChangeApprovalActions(ICommandMetaDataRepository cmdRepository, IApprovalEngine approvalEngine, ApprovalCommandService approvalCommandService, ChangeApprovalHelper changeApprovalHelper)
         {
             _commandMetaDataRepository = cmdRepository;
             _approvalEngine = approvalEngine;
             _approvalCommandService = approvalCommandService;
+            _changeApprovalHelper = changeApprovalHelper;
         }
 
         public async Task ForceComplete(int approvalId, string forceReason)
@@ -38,31 +42,37 @@ namespace AdvancedTask.Business.AdvancedTask
             else
             if (commandMetaData.Type.EndsWith("SecuritySettingCommand"))
                 await ForceAccept(byCommandId as SecuritySettingCommand, forceReason);
-
         }
-
 
         private async Task ForceAccept<T>(T approvalCommand, string forceReason) where T : ApprovalCommandBase
         {
+            approvalCommand = (T)approvalCommand.CreateWritableClone();
             await _approvalEngine.ForceApproveAsync(approvalCommand.ApprovalID, PrincipalInfo.CurrentPrincipal.Identity.Name, forceReason);
             PostChangeApprovalTransition(approvalCommand, CommandMetaData.ChangeTaskApprovalStatus.Approved);
         }
 
-
         private void PostChangeApprovalTransition<T>(T approvalCommand, CommandMetaData.ChangeTaskApprovalStatus approvalStatus) where T : ApprovalCommandBase
         {
+            try
+            {
+                if (approvalCommand.IsReadOnly)
+                    approvalCommand = (T)approvalCommand.CreateWritableClone();
 
-            //if (approvalCommand.IsReadOnly)
-            //    approvalCommand = (T)approvalCommand.CreateWritableClone();
+                approvalCommand.ChangedBy = PrincipalInfo.CurrentPrincipal.Identity.Name;
+                approvalCommand.CommandStatus = approvalStatus;
+                approvalCommand.Saved = DateTime.Now;
 
-            approvalCommand.ChangedBy = PrincipalInfo.CurrentPrincipal.Identity.Name;
-            approvalCommand.CommandStatus = approvalStatus;
-            approvalCommand.Saved = DateTime.Now;
-            var byCommandId = this._commandMetaDataRepository.GetByCommandId(approvalCommand.Id.ExternalId);
-            if (byCommandId == null)
-                return;
-            byCommandId.CommandStatus = approvalStatus;
-            _commandMetaDataRepository.Save(byCommandId);
+                var byCommandId = _commandMetaDataRepository.GetByCommandId(approvalCommand.Id.ExternalId);
+                if (byCommandId == null)
+                    return;
+                byCommandId.CommandStatus = approvalStatus;
+                _commandMetaDataRepository.Save(byCommandId);
+
+            }
+            catch (Exception e)
+            {
+                var abc = e;
+            }
         }
     }
 }

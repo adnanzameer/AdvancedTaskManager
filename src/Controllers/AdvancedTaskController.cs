@@ -60,6 +60,7 @@ namespace AdvancedTask.Controllers
             _helper = helper;
             _changeApprovalService = changeApprovalService;
         }
+
         private void CheckAccess()
         {
             if (!PrincipalInfo.HasEditAccess)
@@ -132,7 +133,6 @@ namespace AdvancedTask.Controllers
 
             return View("Index", viewModel);
         }
-
 
         private async Task ApproveContent(string values, string approvalComment)
         {
@@ -208,7 +208,6 @@ namespace AdvancedTask.Controllers
         {
             await _approvalEngine.AbortAsync(ids, PrincipalInfo.CurrentPrincipal.Identity.Name);
         }
-
 
         private async Task<List<ContentTask>> ProcessContentData(int pageNumber, int pageSize, string sorting, AdvancedTaskIndexViewData model, string taskValues, string approvalComment)
         {
@@ -348,7 +347,6 @@ namespace AdvancedTask.Controllers
 
             var taskList = new List<ContentTask>();
 
-
             foreach (var task in list.PagedResult)
             {
                 IContent content = null;
@@ -426,6 +424,7 @@ namespace AdvancedTask.Controllers
 
             return customTask;
         }
+
         private List<ContentTask> SortColumns(string sorting, List<ContentTask> taskList)
         {
             //Sorting of the Columns 
