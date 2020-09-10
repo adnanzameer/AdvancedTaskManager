@@ -8,9 +8,14 @@ Currently, the User notification and Tasks (Awaiting Review) are disconnected an
 
 The idea behind this project is two-fold. The first purpose is to build a more versatile Approval Sequence task management gadget (for Content & Change Awaiting Review tasks) to extend the information available to the editors. The second purpose is to combine user notifications with tasks and empower Approvers to act on their tasks within a single interface.  
 
-![Advanced Task Manager](assets/docsimages/image005.png)
+![Advanced Task Manager - Content Approval](assets/docsimages/image0052.png)
+
+![Advanced Task Manager - Change Approval](assets/docsimages/change-approval.png)
 
 The gadget provides the following information about the task to the Editor:
+
+### Change Approval
+
 * Content Name
 * Content Type
 * Type
@@ -18,22 +23,31 @@ The gadget provides the following information about the task to the Editor:
 * Started By
 * Deadline (optional)
 
-The list of current features is:
+### Content Approval
+
+* Content Name
+* Content Type
+* Type
+* Submitted Date/Time
+* Started By
+
+The list of current features are as follow:
 * [Task ordering](#task-ordering)
 * [Deadline field for the content approval](#deadline-field-for-the-content-approval-optional)
 * [User notifications associated with the task](#user-notifications-associated-with-the-task)
 * [Approve entire approval sequence](#approve-entire-approval-sequence)
 * [Publish content after approval](#publish-content-after-approval)
+* [Change approval task information](#change-approval-task-information)
 
-Some features are disabled by default, but you can decide which ones are enabled by Configuring features.
+Some features are disabled by default, but you can decide which ones are enabled by Configuring features in the **Web.config**.
 
 ## Task ordering
 
 The gadget gives editors an option to sort through all the tasks with status Awaiting Review by the following columns:
-* Order tasks by time/date
+* Order tasks by Content name
 * Order tasks by content type
 * Order tasks by type
-* Order tasks by category
+* Order tasks by time/date
 * Order tasks by a user who submitted the request
 * Order task by the deadline
 
@@ -102,6 +116,29 @@ If the editor has published rights for the content approval, the option for ```P
 If the editor has published rights for some of the content after approving all content then only content the editor can publish will be published. The warning messages will appear against the content which the editor cannot publish.
 
 ![Publish content after approval](assets/docsimages/image024.png)
+
+## Change approval task information
+
+ The table row of the change approval task information is act as accordion. On clicking on the row the change approval task details will show (and hide). 
+
+ There are four types of Change approval taks.
+
+ * Securty setting change
+
+ ![Securty setting change](assets/docsimages/ca-security.png)
+
+ * Moving content change
+
+ ![Moving content change](assets/docsimages/ca-moving.png)
+
+ * Language setting change 
+
+ ![Language setting change](assets/docsimages/ca-language
+ .png)
+
+ * Expiration date setting change
+
+ ![Expiration date setting change](assets/docsimages/ca-expire.png)
 
 ## Configuring features
 
