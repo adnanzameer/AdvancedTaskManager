@@ -1,9 +1,3 @@
-# Update 2.0.0
-
-* Change Approval tasks will show along with the Content Approval tasks.
-* Support for all content type tasks in CMS. Now editors can view, approve and publish, Episerver Forms, ImageData & MediaData. 
-* Bug fixes for pagination and performance improvements.
-
 # Advanced Task Manager
  
 Currently, the User notification and Tasks (Awaiting Review) are disconnected and provide very basic information to the editors.
@@ -14,11 +8,10 @@ Currently, the User notification and Tasks (Awaiting Review) are disconnected an
 
 The idea behind this project is two-fold. The first purpose is to build a more versatile Approval Sequence task management gadget (for Content & Change Awaiting Review tasks) to extend the information available to the editors. The second purpose is to combine user notifications with tasks and empower Approvers to act on their tasks within a single interface.  
 
-![Advanced Task Manager](assets/docsimages/image0051.png)
+![Advanced Task Manager](assets/docsimages/image005.png)
 
 The gadget provides the following information about the task to the Editor:
 * Content Name
-* Approval Type (only if Change Approval tasks are available)
 * Content Type
 * Type
 * Submitted Date/Time
@@ -38,7 +31,6 @@ Some features are disabled by default, but you can decide which ones are enabled
 
 The gadget gives editors an option to sort through all the tasks with status Awaiting Review by the following columns:
 * Order tasks by time/date
-* Order tasks by approval type
 * Order tasks by content type
 * Order tasks by type
 * Order tasks by category
@@ -49,7 +41,7 @@ The gadget gives editors an option to sort through all the tasks with status Awa
 
 ## Deadline field for the approval sequence (Optional)
 
-![Deadline field for the approval sequence](assets/docsimages/image0081.png)
+![Deadline field for the approval sequence](assets/docsimages/image008.png)
 
 The deadline property is a date/time property that allows editors to set priority against the content (Page or Block) so that the Approvers are aware of the priority ahead of approval.
 
@@ -130,3 +122,13 @@ Add the ```Advanced Task Manager``` gadget in the dashboard
 ## Contributing
 
 If you can help please do so by contributing to the package! Reach out package maintainer for additional details if needed.
+
+# Update 2.2.0
+
+* New tab and better UI for Change Approval tasks.
+
+# Update 2.0.0
+
+* Change Approval tasks will show along with the Content Approval tasks.
+* Support for all content type tasks in CMS. Now editors can view, approve and publish, Episerver Forms, ImageData & MediaData. 
+* Bug fixes for pagination and performance improvements.
