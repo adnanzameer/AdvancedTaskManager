@@ -21,8 +21,6 @@ using System.Linq;
 using System.Security;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using AdvancedTask.Business.AdvancedTask;
-using AdvancedTask.Business.AdvancedTask.Interface;
 using AdvancedTask.Helper;
 using EPiServer.Editor;
 using Task = System.Threading.Tasks.Task;
@@ -44,11 +42,10 @@ namespace AdvancedTask.Controllers
         private readonly IApprovalEngine _approvalEngine;
         private readonly LocalizationService _localizationService;
         private readonly ChangeTaskHelper _changeTaskHelper;
-        private readonly ChangeApprovalActions _changeApprovalService;
 
         private const string ContentApprovalDeadlinePropertyName = "ATM_ContentApprovalDeadline";
 
-        public AdvancedTaskController(IApprovalRepository approvalRepository, IContentRepository contentRepository, IContentTypeRepository contentTypeRepository, IUserNotificationRepository userNotificationRepository, IApprovalEngine approvalEngine, LocalizationService localizationService, IAsyncDatabaseExecutor asyncDatabaseExecutor, ChangeTaskHelper changeTaskHelper, UIHelper helper, ChangeApprovalActions changeApprovalService)
+        public AdvancedTaskController(IApprovalRepository approvalRepository, IContentRepository contentRepository, IContentTypeRepository contentTypeRepository, IUserNotificationRepository userNotificationRepository, IApprovalEngine approvalEngine, LocalizationService localizationService, IAsyncDatabaseExecutor asyncDatabaseExecutor, ChangeTaskHelper changeTaskHelper, UIHelper helper)
         {
             _approvalRepository = approvalRepository;
             _contentRepository = contentRepository;
@@ -58,7 +55,6 @@ namespace AdvancedTask.Controllers
             _localizationService = localizationService;
             _changeTaskHelper = changeTaskHelper;
             _helper = helper;
-            _changeApprovalService = changeApprovalService;
         }
 
         private void CheckAccess()
@@ -94,7 +90,7 @@ namespace AdvancedTask.Controllers
                 {
                     viewModel.ChangeApproval = true;
 
-                    var changeTasks = Task.Run(async () => await ProcessChangeData(pageNr, pageSz, sorting, viewModel, taskValues, approvalComment));
+                    var changeTasks = Task.Run(async () => await ProcessChangeData(pageNr, pageSz, sorting, viewModel));
                     {
                         var changeTaskList = changeTasks.Result;
                         viewModel.ContentTaskList = changeTaskList;
@@ -109,7 +105,7 @@ namespace AdvancedTask.Controllers
                 var deleteChangeApprovalTasks = bool.Parse(ConfigurationManager.AppSettings["ATM:DeleteChangeApprovalTasks"] ?? "false");
                 if (deleteChangeApprovalTasks)
                 {
-                    var changeTasks = Task.Run(async () => await ProcessChangeData(pageNr, pageSz, sorting, viewModel, taskValues, approvalComment));
+                    var changeTasks = Task.Run(async () => await ProcessChangeData(pageNr, pageSz, sorting, viewModel));
                     {
                         var changeTaskList = changeTasks.Result;
 
@@ -187,23 +183,6 @@ namespace AdvancedTask.Controllers
                 }
             }
         }
-
-        private async Task ApproveChangeTask(string values, string approvalComment)
-        {
-            if (!string.IsNullOrEmpty(values))
-            {
-                var ids = values.Split(',');
-                foreach (var id in ids)
-                {
-                    int.TryParse(id, out var approvalId);
-                    if (approvalId != 0)
-                    {
-                        await _changeApprovalService.ForceComplete(approvalId, approvalComment);
-                    }
-                }
-            }
-        }
-
         private async Task AbortTasks(List<int> ids)
         {
             await _approvalEngine.AbortAsync(ids, PrincipalInfo.CurrentPrincipal.Identity.Name);
@@ -327,13 +306,8 @@ namespace AdvancedTask.Controllers
             return taskList;
         }
 
-        private async Task<List<ContentTask>> ProcessChangeData(int pageNumber, int pageSize, string sorting, AdvancedTaskIndexViewData model, string taskValues, string approvalComment)
+        private async Task<List<ContentTask>> ProcessChangeData(int pageNumber, int pageSize, string sorting, AdvancedTaskIndexViewData model)
         {
-            if (!string.IsNullOrEmpty(taskValues))
-            {
-                await ApproveChangeTask(taskValues, approvalComment);
-            }
-
             //List of All task for the user 
             var query = new ApprovalQuery
             {

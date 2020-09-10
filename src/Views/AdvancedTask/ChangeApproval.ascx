@@ -51,8 +51,6 @@
     <thead>
         <tr>
             <th>
-                <input type="checkbox" onchange="checkAll(this)" name="chk[]" id="chk" /></th>
-            <th>
                 <label>
                     <%= Html.ViewLink(
                                 "Content Name",
@@ -116,7 +114,6 @@
             {
     %>
     <tr <%= m.NotificationUnread ? "style=\"background-color: #FFF9C4;cursor: pointer;\"" : "cursor: pointer" %> class="parent" title="Click to expand/collapse" id="<%= m.ApprovalId %>">
-        <td><%= Html.CheckBox(m.ApprovalId.ToString(), false, new {onchange = "selectionChanged(this)", @class = "checkbox"}) %></td>
         <td>
             <%= m.ContentName %>
         </td>
@@ -164,169 +161,8 @@
     <% }
         } %>
 </table>
-
-<div class="epi-formArea" id="approve" style="display: none;">
-    <fieldset>
-        <% Html.BeginGadgetForm("Index"); %>
-        <p>Approve Entire Approval Sequence</p>
-
-        <textarea autocomplete="off" cols="70" id="approvalComment" name="approvalComment" class="epi-textarea--max-height--500 dijitTextBox dijitTextArea dijitExpandingTextArea dijitTextBoxError dijitTextAreaError dijitExpandingTextAreaError dijitError" tabindex="0" placeholder="Please specify why you are forcing approval of the content…" rows="1" style="overflow: auto hidden; box-sizing: border-box; height: 29px;" spellcheck="false"></textarea>
-        <input type="hidden" name="pageSize" value="<%=Model.PageSize %>" />
-        <input id="taskValues" type="hidden" name="taskValues" value="<%=Model.TaskValues%>" />
-        <input type="hidden" name="isChange" value="<%=true%>" />
-        <div>
-            <ul>
-                <li>
-                    <button type="submit" class="taskbutton search" id="button" onclick="return Submit();">Submit</button>
-                </li>
-            </ul>
-        </div>
-        <% Html.EndForm(); %>
-    </fieldset>
-</div>
 <br />
 <script type="text/javascript">
-    var selectedContent = [];
-
-    function selectionChanged(element) {
-        if (element.checked && element.id !== 'chk') {
-            if (!selectedContent.includes(element.name)) {
-                selectedContent.push(element.name);
-            }
-        } else {
-            var index = selectedContent.indexOf(element.name);
-            if (index > -1 && element.id !== 'chk') {
-                removeA(selectedContent, element.name);
-
-                var checkbox = document.getElementById('chk');
-                if (selectedContent.length === 0 && checkbox.checked) {
-                    checkbox.checked = false;
-                }
-            }
-
-            var name = element.name;
-            var element1 = document.getElementById('span-' + name);
-            if (element1) {
-                element1.textContent = "";
-            }
-        }
-        setButtonText();
-        setCheckboxSelectedValues();
-    }
-
-    function setCheckboxSelectedValues() {
-        var value = '';
-        selectedContent.forEach(function (content) {
-            value = value + ',' + content;
-        });
-
-        document.getElementById('taskValues').value = value;
-    }
-
-    function checkAll(ele) {
-        var checkboxes = document.getElementsByClassName('checkbox');
-        if (ele.checked) {
-            for (var i = 0; i < checkboxes.length; i++) {
-                if (checkboxes[i].type === 'checkbox') {
-                    checkboxes[i].checked = true;
-                    selectionChanged(checkboxes[i]);
-                }
-            }
-        } else {
-            for (var j = 0; j < checkboxes.length; j++)
-                if (checkboxes[j].type === 'checkbox') {
-                    checkboxes[j].checked = false;
-                    selectionChanged(checkboxes[j]);
-                }
-        }
-    }
-
-    function removeA(arr) {
-        var what, a = arguments, L = a.length, ax;
-        while (L > 1 && arr.length) {
-            what = a[--L];
-            while ((ax = arr.indexOf(what)) !== -1) {
-                arr.splice(ax, 1);
-            }
-        }
-        return arr;
-    }
-
-    function Submit() {
-        var comment = document.getElementById("approvalComment").value;
-        if (comment === "" || comment.length === 0) {
-            alert("Add comment.");
-            return false;
-        } else {
-            var message = "Are you sure that you want to approve the entire approval sequence? This will approve all remaining steps. This action cannot be undone.";
-            if (confirm(message)) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-    }
-
-    function setButtonText() {
-        if (selectedContent && selectedContent.length > 0) {
-            ShowApproveSection();
-
-            document.getElementById('button').textContent =
-                'Approve ' + selectedContent.length + ' Selected Content Changes';
-        } else {
-            HideApproveSection();
-            document.getElementById('button').textContent = 'Submit';
-        }
-    }
-
-    function checkboxChecked(checkboxElem) {
-        if (checkboxElem.checked) {
-            checkboxElem.value = "true";
-        } else {
-            checkboxElem.value = "false";
-            var elements = document.getElementsByClassName('error-span');
-            for (var i = 0; i < elements.length; i++) {
-                elements[i].innerHTML = "";
-            }
-        }
-        setButtonText();
-    }
-
-    var coll = document.getElementsByClassName("collapsible");
-    var i;
-
-    if (coll) {
-        for (i = 0; i < coll.length; i++) {
-            coll[i].addEventListener("click",
-                function () {
-                    this.classList.toggle("active");
-                    var content = this.nextElementSibling;
-                    if (content.style.display === "block") {
-                        content.style.display = "none";
-                    } else {
-                        content.style.display = "block";
-                    }
-                });
-        }
-    }
-
-    function ShowApproveSection() {
-        var x = document.getElementById("approve");
-        if (x) {
-            x.style.display = "block";
-        }
-    }
-
-    function HideApproveSection() {
-        var x = document.getElementById("approve");
-        if (x) {
-            x.style.display = "none";
-        }
-        if (document.getElementById("lblMessage")) {
-            document.getElementById("lblMessage").innerHTML = "";
-        }
-    }
-
     $(document).ready(function () {
         $('tr.parent')
             .css("cursor", "pointer")

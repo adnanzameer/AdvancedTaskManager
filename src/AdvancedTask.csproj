@@ -93,7 +93,6 @@
   <ItemGroup>
     <Compile Include="Business\AdvancedTaskInitialization.cs" />
     <Compile Include="Business\AdvancedTask\ApprovalCommandRepositoryBase.cs" />
-    <Compile Include="Business\AdvancedTask\ChangeApprovalActions.cs" />
     <Compile Include="Business\AdvancedTask\ContentACL.cs" />
     <Compile Include="Business\AdvancedTask\ContentChangeDetails.cs" />
     <Compile Include="Business\AdvancedTask\ExpirationChangeDetails.cs" />
@@ -101,12 +100,10 @@
     <Compile Include="Business\AdvancedTask\LanguageChangeDetails.cs" />
     <Compile Include="Business\AdvancedTask\MovingChangeDetail.cs" />
     <Compile Include="Business\AdvancedTask\SecurityChangeDetail.cs" />
-    <Compile Include="Helper\ChangeApprovalHelper.cs" />
     <Compile Include="Business\AdvancedTask\Command\DefaultCommandMetaDataRepository.cs" />
     <Compile Include="Business\AdvancedTask\Command\ExpirationDateSettingCommand.cs" />
     <Compile Include="Business\AdvancedTask\ChangeApproval.cs" />
     <Compile Include="Business\AdvancedTask\Command\ChangeApprovalDynamicDataStoreFactory.cs" />
-    <Compile Include="Helper\ChangeApprovalExtensions.cs" />
     <Compile Include="Helper\ChangeApprovalReferenceHelper.cs" />
     <Compile Include="Business\AdvancedTask\ChangeApprovalTypeFactory.cs" />
     <Compile Include="Helper\ChangeTaskHelper.cs" />

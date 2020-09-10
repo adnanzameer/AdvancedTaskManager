@@ -42,8 +42,8 @@ namespace AdvancedTask.Business.AdvancedTask
                 contentChangeDetailsList.Add(new ContentChangeDetails()
                 {
                     Name = _localizationService.GetString(string.Format("{0}/path", _baseLanguagePath)),
-                    OldValue = content1?.ContentLink,
-                    NewValue = content2?.ContentLink
+                    OldValue = content1?.Name,
+                    NewValue = content2?.Name
                 });
             }
             catch (Exception ex)
