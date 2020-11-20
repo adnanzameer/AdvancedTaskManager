@@ -24,7 +24,7 @@ using System.Web.Mvc;
 using AdvancedTask.Helper;
 using EPiServer.Editor;
 using Task = System.Threading.Tasks.Task;
-
+using EPiServer.Logging.Compatibility;
 namespace AdvancedTask.Controllers
 {
     [EPiServer.Shell.Web.ScriptResource("ClientResources/Scripts/jquery.blockUI.js")]
@@ -34,6 +34,7 @@ namespace AdvancedTask.Controllers
     [Authorize]
     internal class AdvancedTaskController : Controller
     {
+        private static readonly ILog Log = LogManager.GetLogger(typeof(AdvancedTaskController));
         private readonly IApprovalRepository _approvalRepository;
         private readonly UIHelper _helper;
         private readonly IContentRepository _contentRepository;
@@ -141,43 +142,59 @@ namespace AdvancedTask.Controllers
                     if (approvalId != 0)
                     {
                         var approval = await _approvalRepository.GetAsync(approvalId);
-                        await _approvalEngine.ForceApproveAsync(approvalId, PrincipalInfo.CurrentPrincipal.Identity.Name, approvalComment);
 
-                        if (approval is ContentApproval contentApproval)
+                        try
                         {
-                            _contentRepository.TryGet(contentApproval.ContentLink, out IContent content);
+                            await _approvalEngine.ForceApproveAsync(approvalId,
+                                PrincipalInfo.CurrentPrincipal.Identity.Name, approvalComment);
 
-                            var canUserPublish = await _helper.CanUserPublish(content);
-                            if (content != null && canUserPublish)
+                            if (approval is ContentApproval contentApproval)
                             {
-                                switch (content)
+                                try
                                 {
-                                    case PageData page:
+                                    _contentRepository.TryGet(contentApproval.ContentLink, out IContent content);
+
+                                    var canUserPublish = await _helper.CanUserPublish(content);
+                                    if (content != null && canUserPublish)
+                                    {
+                                        switch (content)
                                         {
-                                            var clone = page.CreateWritableClone();
-                                            _contentRepository.Save(clone, SaveAction.Publish, AccessLevel.Publish);
-                                            break;
+                                            case PageData page:
+                                                {
+                                                    var clone = page.CreateWritableClone();
+                                                    _contentRepository.Save(clone, SaveAction.Publish, AccessLevel.Publish);
+                                                    break;
+                                                }
+                                            case BlockData block:
+                                                {
+                                                    var clone = block.CreateWritableClone() as IContent;
+                                                    _contentRepository.Save(clone, SaveAction.Publish, AccessLevel.Publish);
+                                                    break;
+                                                }
+                                            case ImageData image:
+                                                {
+                                                    var clone = image.CreateWritableClone() as IContent;
+                                                    _contentRepository.Save(clone, SaveAction.Publish, AccessLevel.Publish);
+                                                    break;
+                                                }
+                                            case MediaData media:
+                                                {
+                                                    var clone = media.CreateWritableClone() as IContent;
+                                                    _contentRepository.Save(clone, SaveAction.Publish, AccessLevel.Publish);
+                                                    break;
+                                                }
                                         }
-                                    case BlockData block:
-                                        {
-                                            var clone = block.CreateWritableClone() as IContent;
-                                            _contentRepository.Save(clone, SaveAction.Publish, AccessLevel.Publish);
-                                            break;
-                                        }
-                                    case ImageData image:
-                                        {
-                                            var clone = image.CreateWritableClone() as IContent;
-                                            _contentRepository.Save(clone, SaveAction.Publish, AccessLevel.Publish);
-                                            break;
-                                        }
-                                    case MediaData media:
-                                        {
-                                            var clone = media.CreateWritableClone() as IContent;
-                                            _contentRepository.Save(clone, SaveAction.Publish, AccessLevel.Publish);
-                                            break;
-                                        }
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    Log.Error("Advanced Task Manager - Publish Content Id: " + contentApproval.ContentLink.ID + Environment.NewLine  + ex);
                                 }
                             }
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Error("Advanced Task Manager - Approval Id: " + approval.ID + Environment.NewLine + ex);
                         }
                     }
                 }
