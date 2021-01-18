@@ -2,17 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using AdvancedTask.Business.AdvancedTask;
 using AdvancedTask.Business.AdvancedTask.Command;
 using AdvancedTask.Business.AdvancedTask.Interface;
-using AdvancedTask.Business.AdvancedTask.Mapper;
 using AdvancedTask.Helper;
-using AdvancedTask.Models;
-using EPiServer;
-using EPiServer.Cms.Shell.Service.Internal;
-using EPiServer.Core;
-using EPiServer.DataAbstraction;
 using EPiServer.Framework.Localization;
+using EPiServer.Logging;
 using EPiServer.Security;
 using EPiServer.Shell.Web;
 using Newtonsoft.Json;
@@ -22,6 +16,7 @@ namespace AdvancedTask.Business.AdvancedTask
 {
     internal class SecurityChangeDetail
     {
+        private static readonly ILogger Logger = LogManager.GetLogger(typeof(SecurityChangeDetail));
         private readonly ApprovalCommandService _generalCommandService;
         private readonly LocalizationService _localizationService;
 
@@ -50,12 +45,15 @@ namespace AdvancedTask.Business.AdvancedTask
             var contentChangeDetailsList = new List<IContentChangeDetails>();
             var str1 = _localizationService.GetString("/gadget/changeapproval/securitysettingcommand/yes");
             var str2 = _localizationService.GetString("/gadget/changeapproval/securitysettingcommand/no");
+
             if (byCommandId == null)
-                return null;
+                return new List<IContentChangeDetails>();
+
             var accessControlList1 = GetContentAccessControlList(byCommandId.CurrentSettingsJson);
             var accessControlList2 = GetContentAccessControlList(byCommandId.NewSettingsJson);
             if (accessControlList1 == null || accessControlList2 == null)
-                return null;
+                return new List<IContentChangeDetails>();
+
             if (accessControlList1.IsInherited != accessControlList2.IsInherited)
             {
                 var contentChangeDetails = (IContentChangeDetails)new ContentChangeDetails();
@@ -175,7 +173,7 @@ namespace AdvancedTask.Business.AdvancedTask
             }
             catch (Exception ex)
             {
-                //_logger.Error(ex.Message, ex);
+                Logger.Error(ex.Message, ex);
             }
             return accessControlEntryList;
         }

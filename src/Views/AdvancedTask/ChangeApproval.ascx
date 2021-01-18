@@ -1,9 +1,5 @@
 ﻿<%@ Control Language="C#" Inherits="System.Web.Mvc.ViewUserControl<AdvancedTask.Models.AdvancedTaskIndexViewData>" %>
-<%@ Import Namespace="AdvancedTask.Business.AdvancedTask" %>
 <%@ Import Namespace="AdvancedTask.Models" %>
-<%@ Import Namespace="EPiServer.Core" %>
-<%@ Import Namespace="EPiServer.Editor" %>
-<%@ Import Namespace="EPiServer.Shell.Web.Mvc.Html" %>
 
 <% Html.RenderPartial("Menu", "ChangeApproval"); %>
 <style>
@@ -47,10 +43,10 @@
     }
 </style>
 
-<table class="epi-default">
+<table aria-describedby="change approval tasks" class="epi-default">
     <thead>
         <tr>
-            <th>
+            <th scope="col">
                 <label>
                     <%= Html.ViewLink(
                                 "Content Name",
@@ -61,7 +57,7 @@
                                 new { pageNumber = Model.PageNumber, pageSize = Model.PageSize, sorting = Model.Sorting=="name_desc"?"name_aes":"name_desc",isChange = true})%>
                 </label>
             </th>
-            <th>
+            <th scope="col">
                 <label>
                     <%= Html.ViewLink(
                                 "Content Type",
@@ -72,7 +68,7 @@
                                 new { pageNumber = Model.PageNumber, pageSize = Model.PageSize, sorting = Model.Sorting=="ctype_desc"?"ctype_aes":"ctype_desc",isChange = true})%>
                 </label>
             </th>
-            <th>
+            <th scope="col">
                 <label>
                     <%= Html.ViewLink(
                                 "Type",
@@ -83,7 +79,7 @@
                                 new { pageNumber = Model.PageNumber, pageSize = Model.PageSize, sorting = Model.Sorting=="type_aes"?"type_aes":"type_desc",isChange = true})%>
                 </label>
             </th>
-            <th>
+            <th scope="col">
                 <label>
                     <%= Html.ViewLink(
                                 "Submitted Date/Time",
@@ -94,7 +90,7 @@
                                 new { pageNumber = Model.PageNumber, pageSize = Model.PageSize, sorting = Model.Sorting=="timestamp_desc"?"timestamp_aes":"timestamp_desc",isChange = true})%>
                 </label>
             </th>
-            <th>
+            <th scope="col">
                 <label>
                     <%= Html.ViewLink(
                                 "Started By",
@@ -134,7 +130,7 @@
         { %>
     <tr class="child-<%= m.ApprovalId %>" style="display: none;">
         <td class="changetask-detail" colspan="6">
-            <table class="inner-table">
+            <table aria-describedby="change approval task detail" class="inner-table">
                 <thead>
                     <tr class="header">
                         <td class="short header-right"><strong>Name</strong></td>

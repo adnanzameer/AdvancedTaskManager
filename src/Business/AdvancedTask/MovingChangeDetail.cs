@@ -5,6 +5,7 @@ using AdvancedTask.Models;
 using EPiServer.Cms.Shell.Service.Internal;
 using EPiServer.Core;
 using EPiServer.Framework.Localization;
+using EPiServer.Logging;
 using EPiServer.Security;
 using Newtonsoft.Json;
 
@@ -12,9 +13,9 @@ namespace AdvancedTask.Business.AdvancedTask
 {
     internal class MovingChangeDetail
     {
+        private static readonly ILogger Logger = LogManager.GetLogger(typeof(MovingChangeDetail));
         private readonly LocalizationService _localizationService;
         private readonly string _baseLanguagePath = "/gadget/changeapproval/movingcontentcommand";
-
 
         private readonly ContentLoaderService _contentLoaderService;
 
@@ -23,15 +24,15 @@ namespace AdvancedTask.Business.AdvancedTask
             _contentLoaderService = contentLoaderService;
             _localizationService = localizationService;
         }
-
-
+        
         #region moving
 
         public IEnumerable<IContentChangeDetails> GetMovingChangeDetails(ChangeTaskViewModel byCommandId)
         {
 
             if (byCommandId == null)
-                return null;
+                return new List<IContentChangeDetails>();
+
             var contentChangeDetailsList = new List<IContentChangeDetails>();
             try
             {
@@ -48,7 +49,7 @@ namespace AdvancedTask.Business.AdvancedTask
             }
             catch (Exception ex)
             {
-
+                Logger.Error(ex.Message, ex);
             }
             return contentChangeDetailsList;
         }

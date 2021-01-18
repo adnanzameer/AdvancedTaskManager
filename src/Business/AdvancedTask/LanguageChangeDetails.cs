@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using AdvancedTask.Business.AdvancedTask.Interface;
-using AdvancedTask.Business.AdvancedTask.Mapper;
 using AdvancedTask.Helper;
 using AdvancedTask.Models;
 using EPiServer;
-using EPiServer.Cms.Shell.Service.Internal;
 using EPiServer.Core;
 using EPiServer.DataAbstraction;
 using EPiServer.Framework.Localization;
@@ -52,7 +50,7 @@ namespace AdvancedTask.Business.AdvancedTask
                 {
                     Name = _localizationService.GetString("/gadget/changeapproval/languagesettingcommand/inheritsettingsfromtheparentpage"),
                     OldValue = settingsFromJson1.Values.Any((Func<ContentLanguageSetting, bool>)(st => st.DefinedOnContent.CompareToIgnoreWorkID(command.AppliedOnContentLink))) ? str2 : str1,
-                    NewValue = dictionary.Values.Any((Func<ContentLanguageSetting, bool>)(st => st.DefinedOnContent.CompareToIgnoreWorkID(command.AppliedOnContentLink))) ? str2 : str1
+                    NewValue = dictionary != null && dictionary.Values.Any((Func<ContentLanguageSetting, bool>)(st => st.DefinedOnContent.CompareToIgnoreWorkID(command.AppliedOnContentLink))) ? str2 : str1
                 });
             }
             var currentLangs = settingsFromJson1.Where<KeyValuePair<string, ContentLanguageSetting>>((Func<KeyValuePair<string, ContentLanguageSetting>, bool>)(s => s.Value.IsActive)).Select<KeyValuePair<string, ContentLanguageSetting>, string>((Func<KeyValuePair<string, ContentLanguageSetting>, string>)(s => s.Value.LanguageBranch));

@@ -1,5 +1,4 @@
 ﻿<%@ Control Language="C#" Inherits="System.Web.Mvc.ViewUserControl<AdvancedTask.Models.AdvancedTaskIndexViewData>" %>
-<%@ Import Namespace="EPiServer.Shell.Web.Mvc.Html" %>
 <div class="pagerwrapper">
 
 
@@ -32,9 +31,9 @@
             {
                 if (Model.TotalPagesCount > 1)
                 { %>
-        <span><b>
+        <span><strong>
             <%= Model.PageNumber%>
-        </b></span>
+        </strong></span>
         <% }
                 continue;
             } %>

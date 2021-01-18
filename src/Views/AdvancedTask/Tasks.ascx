@@ -1,9 +1,6 @@
 ﻿<%@ Control Language="C#" Inherits="System.Web.Mvc.ViewUserControl<AdvancedTask.Models.AdvancedTaskIndexViewData>" %>
-<%@ Import Namespace="AdvancedTask.Business.AdvancedTask" %>
 <%@ Import Namespace="AdvancedTask.Models" %>
 <%@ Import Namespace="EPiServer.Core" %>
-<%@ Import Namespace="EPiServer.Editor" %>
-<%@ Import Namespace="EPiServer.Shell.Web.Mvc.Html" %>
 
 <style>
     .red {
@@ -46,17 +43,17 @@
         padding-bottom: 15px;
     }
 </style>
-<%  bool enableContentApprovalDeadline = bool.Parse(ConfigurationManager.AppSettings["ATM:EnableContentApprovalDeadline"] ?? "false"); %>
+<%  var enableContentApprovalDeadline = bool.Parse(ConfigurationManager.AppSettings["ATM:EnableContentApprovalDeadline"] ?? "false"); %>
 <% if (Model.ShowChangeApprovalTab)
    { %>
     <% Html.RenderPartial("Menu", "Index"); %>
 <% } %>
-<table class="epi-default">
+<table aria-describedby="content approval task" class="epi-default">
     <thead>
         <tr>
-            <th>
+            <th scope="col">
                 <input type="checkbox" onchange="checkAll(this)" name="chk[]" id="chk" /></th>
-            <th>
+            <th scope="col">
                 <label>
                     <%= Html.ViewLink(
                                 "Content Name",
@@ -67,7 +64,7 @@
                                 new { pageNumber = Model.PageNumber, pageSize = Model.PageSize, sorting = Model.Sorting=="name_desc"?"name_aes":"name_desc"})%>
                 </label>
             </th>
-            <th>
+            <th scope="col">
                 <label>
                     <%= Html.ViewLink(
                                 "Content Type",
@@ -78,7 +75,7 @@
                                 new { pageNumber = Model.PageNumber, pageSize = Model.PageSize, sorting = Model.Sorting=="ctype_desc"?"ctype_aes":"ctype_desc"})%>
                 </label>
             </th>
-            <th>
+            <th scope="col">
                 <label>
                     <%= Html.ViewLink(
                                 "Type",
@@ -89,7 +86,7 @@
                                 new { pageNumber = Model.PageNumber, pageSize = Model.PageSize, sorting = Model.Sorting=="type_aes"?"type_aes":"type_desc"})%>
                 </label>
             </th>
-            <th>
+            <th scope="col">
                 <label>
                     <%= Html.ViewLink(
                                 "Submitted Date/Time",
@@ -100,7 +97,7 @@
                                 new { pageNumber = Model.PageNumber, pageSize = Model.PageSize, sorting = Model.Sorting=="timestamp_desc"?"timestamp_aes":"timestamp_desc"})%>
                 </label>
             </th>
-            <th>
+            <th scope="col">
                 <label>
                     <%= Html.ViewLink(
                                 "Started By",
@@ -113,7 +110,7 @@
             </th>
             <% if (enableContentApprovalDeadline)
                { %>
-            <th>
+            <th scope="col">
                 <label>
                     <%= Html.ViewLink(
                             "Deadline",
@@ -218,9 +215,8 @@
 
 <div class="epi-formArea" id="approve" style="display: none;">
     <fieldset>
+        <legend>Approve Entire Approval Sequence</legend>
         <% Html.BeginGadgetForm("Index"); %>
-            <p>Approve Entire Approval Sequence</p>
-
             <textarea autocomplete="off" cols="70" id="approvalComment" name="approvalComment" class="epi-textarea--max-height--500 dijitTextBox dijitTextArea dijitExpandingTextArea dijitTextBoxError dijitTextAreaError dijitExpandingTextAreaError dijitError" tabindex="0" placeholder="Please specify why you are forcing approval of the content…" rows="1" style="overflow: auto hidden; box-sizing: border-box; height: 29px;" spellcheck="false"></textarea>
             <input type="hidden" name="pageSize" value="<%=Model.PageSize %>" />
             <input id="taskValues" type="hidden" name="taskValues" value="<%=Model.TaskValues%>" />

@@ -1,4 +1,13 @@
-﻿using AdvancedTask.Business;
+﻿using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.Linq;
+using System.Security;
+using System.Threading.Tasks;
+using System.Web.Mvc;
+using AdvancedTask.Business;
+using AdvancedTask.Helper;
 using AdvancedTask.Models;
 using EPiServer;
 using EPiServer.Approvals;
@@ -7,23 +16,13 @@ using EPiServer.Core;
 using EPiServer.Data;
 using EPiServer.DataAbstraction;
 using EPiServer.DataAccess;
+using EPiServer.Editor;
 using EPiServer.Framework.Localization;
 using EPiServer.Notification;
 using EPiServer.Notification.Internal;
 using EPiServer.Security;
 using EPiServer.ServiceLocation;
 using EPiServer.Shell.Gadgets;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Security;
-using System.Threading.Tasks;
-using System.Web.Mvc;
-using AdvancedTask.Helper;
-using EPiServer.Editor;
-using Task = System.Threading.Tasks.Task;
 
 namespace AdvancedTask.Controllers
 {
@@ -140,14 +139,14 @@ namespace AdvancedTask.Controllers
                     int.TryParse(id, out var approvalId);
                     if (approvalId != 0)
                     {
-                        var approval = await _approvalRepository.GetAsync(approvalId);
-                        await _approvalEngine.ForceApproveAsync(approvalId, PrincipalInfo.CurrentPrincipal.Identity.Name, approvalComment);
+                        var approval = await _approvalRepository.GetAsync(approvalId).ConfigureAwait(false);
+                        await _approvalEngine.ForceApproveAsync(approvalId, PrincipalInfo.CurrentPrincipal.Identity.Name, approvalComment).ConfigureAwait(false);
 
                         if (approval is ContentApproval contentApproval)
                         {
                             _contentRepository.TryGet(contentApproval.ContentLink, out IContent content);
 
-                            var canUserPublish = await _helper.CanUserPublish(content);
+                            var canUserPublish = await _helper.CanUserPublish(content).ConfigureAwait(false);
                             if (content != null && canUserPublish)
                             {
                                 switch (content)
@@ -185,14 +184,14 @@ namespace AdvancedTask.Controllers
         }
         private async Task AbortTasks(List<int> ids)
         {
-            await _approvalEngine.AbortAsync(ids, PrincipalInfo.CurrentPrincipal.Identity.Name);
+            await _approvalEngine.AbortAsync(ids, PrincipalInfo.CurrentPrincipal.Identity.Name).ConfigureAwait(false);
         }
 
         private async Task<List<ContentTask>> ProcessContentData(int pageNumber, int pageSize, string sorting, AdvancedTaskIndexViewData model, string taskValues, string approvalComment)
         {
             if (!string.IsNullOrEmpty(taskValues))
             {
-                await ApproveContent(taskValues, approvalComment);
+                await ApproveContent(taskValues, approvalComment).ConfigureAwait(false);
             }
 
             //List of All task for the user 
@@ -203,7 +202,7 @@ namespace AdvancedTask.Controllers
                 Reference = new Uri("content:")
             };
 
-            var list = await _approvalRepository.ListAsync(query, (pageNumber - 1) * pageSize, pageSize);
+            var list = await _approvalRepository.ListAsync(query, (pageNumber - 1) * pageSize, pageSize).ConfigureAwait(false);
             model.TotalItemsCount = Convert.ToInt32(list.TotalCount);
 
             var taskList = new List<ContentTask>();
@@ -227,7 +226,7 @@ namespace AdvancedTask.Controllers
                     {
                         customTask.URL = PageEditing.GetEditUrl(approval.ContentLink);
                         id = content.ContentLink.ID.ToString();
-                        var canUserPublish = await _helper.CanUserPublish(content);
+                        var canUserPublish = await _helper.CanUserPublish(content).ConfigureAwait(false);
 
                         customTask.CanUserPublish = canUserPublish;
                         customTask.ContentReference = content.ContentLink;
@@ -268,7 +267,7 @@ namespace AdvancedTask.Controllers
                             var propertyData = content.Property.Get(ContentApprovalDeadlinePropertyName) ?? content.Property[ContentApprovalDeadlinePropertyName];
                             if (propertyData != null)
                             {
-                                DateTime.TryParse(propertyData.ToString(), out DateTime dateValue);
+                                DateTime.TryParse(propertyData.ToString(), out var dateValue);
                                 if (dateValue != DateTime.MinValue)
                                 {
                                     if (!string.IsNullOrEmpty(customTask.Type))
@@ -295,7 +294,7 @@ namespace AdvancedTask.Controllers
                     }
 
                     //Get Notifications
-                    customTask = await GetNotifications(id, customTask, true);
+                    customTask = await GetNotifications(id, customTask, true).ConfigureAwait(false);
 
                     taskList.Add(customTask);
                 }
@@ -316,7 +315,7 @@ namespace AdvancedTask.Controllers
                 Reference = new Uri("changeapproval:")
             };
 
-            var list = await _approvalRepository.ListAsync(query, (pageNumber - 1) * pageSize, pageSize);
+            var list = await _approvalRepository.ListAsync(query, (pageNumber - 1) * pageSize, pageSize).ConfigureAwait(false);
             model.TotalItemsCount = Convert.ToInt32(list.TotalCount);
 
             var taskList = new List<ContentTask>();
@@ -346,17 +345,14 @@ namespace AdvancedTask.Controllers
                         customTask.Details = taskDetails.Details;
                     }
 
-                    if (task.Reference != null)
+                    if (task.Reference != null && !string.IsNullOrEmpty(task.Reference.AbsolutePath))
                     {
-                        if (!string.IsNullOrEmpty(task.Reference.AbsolutePath))
-                        {
-                            var pageId = task.Reference.AbsolutePath.Replace("/", "");
+                        var pageId = task.Reference.AbsolutePath.Replace("/", "");
 
-                            int.TryParse(pageId, out var contentId);
-                            if (contentId != 0)
-                            {
-                                _contentRepository.TryGet(new ContentReference(contentId), out content);
-                            }
+                        int.TryParse(pageId, out var contentId);
+                        if (contentId != 0)
+                        {
+                            _contentRepository.TryGet(new ContentReference(contentId), out content);
                         }
                     }
 
@@ -366,7 +362,7 @@ namespace AdvancedTask.Controllers
                         customTask.ContentType = GetTypeContent(content);
                     }
 
-                    customTask = await GetNotifications(id, customTask, false);
+                    customTask = await GetNotifications(id, customTask, false).ConfigureAwait(false);
 
                     taskList.Add(customTask);
                 }
@@ -379,14 +375,14 @@ namespace AdvancedTask.Controllers
 
         private async Task<ContentTask> GetNotifications(string id, ContentTask customTask, bool isContentQuery)
         {
-            var notifications = await GetNotifications(PrincipalInfo.CurrentPrincipal.Identity.Name, id, isContentQuery);
+            var notifications = await GetNotifications(PrincipalInfo.CurrentPrincipal.Identity.Name, id, isContentQuery).ConfigureAwait(false);
 
             if (notifications != null && notifications.PagedResult != null && notifications.PagedResult.Any())
             {
                 //Mark Notification Read
                 foreach (var notification in notifications.PagedResult)
                 {
-                    await _userNotificationRepository.MarkUserNotificationAsReadAsync(new NotificationUser(PrincipalInfo.CurrentPrincipal.Identity.Name), notification.ID);
+                    await _userNotificationRepository.MarkUserNotificationAsReadAsync(new NotificationUser(PrincipalInfo.CurrentPrincipal.Identity.Name), notification.ID).ConfigureAwait(false);
                 }
 
                 customTask.NotificationUnread = true;

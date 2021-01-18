@@ -30,11 +30,11 @@ namespace AdvancedTask.Helper
             _localizationService = localizationService;
         }
 
-        public string GetDisplayNameForUser(string senderUsername)
+        public async Task<string> GetDisplayNameForUser(string senderUsername)
         {
             if (string.IsNullOrEmpty(senderUsername))
                 return null;
-            var result = this._queryableNotificationUserService.GetAsync(senderUsername).ConfigureAwait(false).GetAwaiter().GetResult();
+            var result = await _queryableNotificationUserService.GetAsync(senderUsername).ConfigureAwait(false);
             if (result == null)
                 return null;
             var name = PrincipalInfo.CurrentPrincipal.Identity.Name;
@@ -49,8 +49,8 @@ namespace AdvancedTask.Helper
             IList<string> roles;
             using (var store = new UserStore<ApplicationUser>(new ApplicationDbContext<ApplicationUser>("EPiServerDB")))
             {
-                var user = await store.FindByNameAsync(PrincipalInfo.CurrentPrincipal.Identity.Name);
-                roles = await GetUserToRoles(store, user);
+                var user = await store.FindByNameAsync(PrincipalInfo.CurrentPrincipal.Identity.Name).ConfigureAwait(false);
+                roles = await GetUserToRoles(store, user).ConfigureAwait(false);
             }
             return RoleHasAccess(content, roles.ToArray(), AccessLevel.Publish);
         }
@@ -73,7 +73,7 @@ namespace AdvancedTask.Helper
             IUserRoleStore<ApplicationUser, string> userRoleStore = store;
             using (new RoleStore<IdentityRole>(new ApplicationDbContext<ApplicationUser>("EPiServerDB")))
             {
-                return await userRoleStore.GetRolesAsync(user);
+                return await userRoleStore.GetRolesAsync(user).ConfigureAwait(false);
             }
         }
     }

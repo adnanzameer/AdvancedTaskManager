@@ -1,6 +1,4 @@
 ﻿<%@ Control Language="C#" Inherits="System.Web.Mvc.ViewUserControl<string>" %>
-<%@ Import Namespace="EPiServer.Cms.Shell" %>
-<%@ Import Namespace="EPiServer.Shell.Web.Mvc.Html" %>
 
 <div class="epi-tabView">
     <ul>

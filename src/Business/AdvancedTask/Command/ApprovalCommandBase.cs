@@ -51,9 +51,7 @@ namespace AdvancedTask.Business.AdvancedTask.Command
             {
                 return this._isReadOnly;
             }
-            protected set
-            {
-            }
+            set { _isReadOnly = value; }
         }
 
         public virtual bool IsValid()
@@ -63,7 +61,7 @@ namespace AdvancedTask.Business.AdvancedTask.Command
 
         public virtual object CreateWritableClone()
         {
-            ApprovalCommandBase approvalCommandBase = (ApprovalCommandBase)this.MemberwiseClone();
+            var approvalCommandBase = (ApprovalCommandBase)this.MemberwiseClone();
             approvalCommandBase._isReadOnly = false;
             return approvalCommandBase;
         }

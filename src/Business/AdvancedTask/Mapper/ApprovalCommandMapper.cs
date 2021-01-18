@@ -55,12 +55,14 @@ namespace AdvancedTask.Business.AdvancedTask.Mapper
                 commandViewModel1.CanExecute = approvalCommand.CommandStatus == CommandMetaData.ChangeTaskApprovalStatus.InReview;
                 var fullName = approvalCommand.GetType().FullName;
                 if (fullName != null)
+                {
                     commandViewModel1.TypeIdentifier = fullName.ToLower();
+                }
 
                 commandViewModel1.Id = approvalCommand.Id.ExternalId.ToString();
                 commandViewModel1.IsCommandDataValid = approvalCommand.IsValid();
-                commandViewModel1.CreatedBy = _uiHelper.GetDisplayNameForUser(commandViewModel1.CreatedBy);
-                commandViewModel1.ChangedBy = _uiHelper.GetDisplayNameForUser(commandViewModel1.ChangedBy);
+                commandViewModel1.CreatedBy = _uiHelper.GetDisplayNameForUser(commandViewModel1.CreatedBy).ConfigureAwait(false).GetAwaiter().GetResult();
+                commandViewModel1.ChangedBy = _uiHelper.GetDisplayNameForUser(commandViewModel1.ChangedBy).ConfigureAwait(false).GetAwaiter().GetResult();
                 commandViewModel1.CanUserActOnHisOwnChanges = !string.Equals(approvalCommand.CreatedBy, principal.Identity.Name, StringComparison.OrdinalIgnoreCase);
                 return commandViewModel1;
             }

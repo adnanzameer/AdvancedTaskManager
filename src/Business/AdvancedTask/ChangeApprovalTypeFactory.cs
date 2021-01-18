@@ -7,7 +7,7 @@ namespace AdvancedTask.Business.AdvancedTask
 {
     internal class ChangeApprovalTypeFactory : IApprovalTypeFactory
     {
-        public static string ChangeApprovalType = "changeapproval";
+        public const string ChangeApprovalType = "changeapproval";
         private readonly IApprovalDefinitionReferenceResolver _approvalReferenceResolver;
 
         public ChangeApprovalTypeFactory(IApprovalDefinitionReferenceResolver approvalReferenceResolver)

@@ -5,6 +5,7 @@ using AdvancedTask.Business.AdvancedTask.Interface;
 using EPiServer;
 using EPiServer.Core;
 using EPiServer.Data.Dynamic;
+using EPiServer.Logging.Compatibility;
 using EPiServer.ServiceLocation;
 using Newtonsoft.Json;
 
@@ -13,6 +14,8 @@ namespace AdvancedTask.Business.AdvancedTask.Command
     [EPiServerDataStore(AutomaticallyRemapStore = true)]
     internal class ExpirationDateSettingCommand : ApprovalCommandBase, ICultureSpecificApprovalCommand
     {
+        private static readonly ILog Log = LogManager.GetLogger(typeof(ExpirationDateSettingCommand));
+
         private Injected<IContentLoader> _contentLoader;
         public virtual string AppliedOnLanguageBranch { get; set; }
 
@@ -49,8 +52,9 @@ namespace AdvancedTask.Business.AdvancedTask.Command
             }
             catch (Exception ex)
             {
-                return false;
+                Log.Error(ex.Message, ex);
             }
+            return false;
         }
     }
 }
