@@ -294,7 +294,7 @@ namespace AdvancedTask.Controllers
                     }
 
                     //Get Notifications
-                    customTask = await GetNotifications(id, customTask, true).ConfigureAwait(false);
+                    customTask = await GetNotificationsById(id, customTask, true).ConfigureAwait(false);
 
                     taskList.Add(customTask);
                 }
@@ -362,7 +362,7 @@ namespace AdvancedTask.Controllers
                         customTask.ContentType = GetTypeContent(content);
                     }
 
-                    customTask = await GetNotifications(id, customTask, false).ConfigureAwait(false);
+                    customTask = await GetNotificationsById(id, customTask, false).ConfigureAwait(false);
 
                     taskList.Add(customTask);
                 }
@@ -373,9 +373,9 @@ namespace AdvancedTask.Controllers
             return taskList;
         }
 
-        private async Task<ContentTask> GetNotifications(string id, ContentTask customTask, bool isContentQuery)
+        private async Task<ContentTask> GetNotificationsById(string id, ContentTask customTask, bool isContentQuery)
         {
-            var notifications = await GetNotifications(PrincipalInfo.CurrentPrincipal.Identity.Name, id, isContentQuery).ConfigureAwait(false);
+            var notifications = await GetUserNotifications(PrincipalInfo.CurrentPrincipal.Identity.Name, id, isContentQuery).ConfigureAwait(false);
 
             if (notifications != null && notifications.PagedResult != null && notifications.PagedResult.Any())
             {
@@ -481,7 +481,7 @@ namespace AdvancedTask.Controllers
             return contentName;
         }
 
-        private async Task<PagedInternalNotificationMessageResult> GetNotifications(string user, string contentId, bool isContentQuery = true)
+        private async Task<PagedInternalNotificationMessageResult> GetUserNotifications(string user, string contentId, bool isContentQuery = true)
         {
             var db = ServiceLocator.Current.GetInstance<IAsyncDatabaseExecutor>();
             return new PagedInternalNotificationMessageResult(await db.ExecuteAsync(async () =>

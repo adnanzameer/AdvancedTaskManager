@@ -101,7 +101,7 @@ namespace AdvancedTask.Business.AdvancedTask
 
         private string LocalizeCurrentAccessLevel(string accessLevelName, AccessLevel currentAccessLevel, AccessLevel newAccessLevel)
         {
-            var str = string.Format("{0}: ", accessLevelName);
+            var str = $"{accessLevelName}: ";
             string text;
             if (currentAccessLevel == AccessLevel.NoAccess || currentAccessLevel == AccessLevel.Undefined)
             {

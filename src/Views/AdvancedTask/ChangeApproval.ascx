@@ -133,9 +133,9 @@
             <table aria-describedby="change approval task detail" class="inner-table">
                 <thead>
                     <tr class="header">
-                        <td class="short header-right"><strong>Name</strong></td>
-                        <td class="header-right"><strong>Current Version</strong></td>
-                        <td><strong>Suggested Version</strong></td>
+                        <th scope="col" class="short header-right"><strong>Name</strong></th>
+                        <th scope="col" class="header-right"><strong>Current Version</strong></th>
+                        <th scope="col"><strong>Suggested Version</strong></th>
                     </tr>
                 </thead>
                 <tbody>

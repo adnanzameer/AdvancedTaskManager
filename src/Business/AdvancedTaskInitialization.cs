@@ -6,7 +6,6 @@ using EPiServer.DataAbstraction;
 using EPiServer.Framework;
 using EPiServer.Framework.Initialization;
 using EPiServer.Security;
-using EPiServer.ServiceLocation;
 
 namespace AdvancedTask.Business
 {
@@ -17,10 +16,18 @@ namespace AdvancedTask.Business
         private const string ContentApprovalDeadlinePropertyName = "ATM_ContentApprovalDeadline";
 
         private static readonly object _lock = new object();
-        private Injected<IContentTypeRepository> _contentTypeRepository;
-        private Injected<ITabDefinitionRepository> _tabDefinitionRepository;
-        private Injected<IPropertyDefinitionRepository> _propertyDefinitionRepository;
-        private Injected<IPropertyDefinitionTypeRepository> _propertyDefinitionTypeRepository;
+        private readonly IContentTypeRepository _contentTypeRepository;
+        private readonly ITabDefinitionRepository _tabDefinitionRepository;
+        private readonly IPropertyDefinitionRepository _propertyDefinitionRepository;
+        private readonly IPropertyDefinitionTypeRepository _propertyDefinitionTypeRepository;
+
+        public AdvancedTaskInitialization(IContentTypeRepository contentTypeRepository, ITabDefinitionRepository tabDefinitionRepository, IPropertyDefinitionRepository propertyDefinitionRepository, IPropertyDefinitionTypeRepository propertyDefinitionTypeRepository)
+        {
+            _contentTypeRepository = contentTypeRepository;
+            _tabDefinitionRepository = tabDefinitionRepository;
+            _propertyDefinitionRepository = propertyDefinitionRepository;
+            _propertyDefinitionTypeRepository = propertyDefinitionTypeRepository;
+        }
 
         public void Initialize(InitializationEngine context)
         {
@@ -43,7 +50,7 @@ namespace AdvancedTask.Business
         {
             CreateOrDeleteTab("Content Approval", true);
 
-            foreach (var contentType in _contentTypeRepository.Service.List().Where(x => x.IsAvailable))
+            foreach (var contentType in _contentTypeRepository.List().Where(x => x.IsAvailable))
                 CreateUpdatePropertyDefinition(
                     contentType,
                     ContentApprovalDeadlinePropertyName,
@@ -54,7 +61,7 @@ namespace AdvancedTask.Business
 
         private void DeleteMappingProperties()
         {
-            foreach (var contentType in _contentTypeRepository.Service.List().Where(x => x.IsAvailable))
+            foreach (var contentType in _contentTypeRepository.List().Where(x => x.IsAvailable))
                 DeletePropertyDefinition(
                     contentType,
                     ContentApprovalDeadlinePropertyName);
@@ -65,7 +72,7 @@ namespace AdvancedTask.Business
             var obj2 = _lock;
             lock (obj2)
             {
-                var tabDefinition = this._tabDefinitionRepository.Service.Load(tabName);
+                var tabDefinition = this._tabDefinitionRepository.Load(tabName);
                 if (createNew)
                 {
                     if (tabDefinition != null)
@@ -77,11 +84,11 @@ namespace AdvancedTask.Business
                         SortIndex = 300,
                         RequiredAccess = AccessLevel.Edit
                     };
-                    _tabDefinitionRepository.Service.Save(tabDefinition);
+                    _tabDefinitionRepository.Save(tabDefinition);
                 }
                 else if (tabDefinition != null)
                 {
-                    _tabDefinitionRepository.Service.Delete(tabDefinition);
+                    _tabDefinitionRepository.Delete(tabDefinition);
                 }
             }
         }
@@ -108,26 +115,26 @@ namespace AdvancedTask.Business
             if (editCaption != null)
                 propertyDefinition.EditCaption = editCaption;
             if (propertyDefinitionType != null)
-                propertyDefinition.Type = this._propertyDefinitionTypeRepository.Service.Load(propertyDefinitionType);
+                propertyDefinition.Type = this._propertyDefinitionTypeRepository.Load(propertyDefinitionType);
             if (tabName != null)
             {
                 var obj2 = _lock;
                 lock (obj2)
                 {
-                    propertyDefinition.Tab = _tabDefinitionRepository.Service.Load(tabName);
+                    propertyDefinition.Tab = _tabDefinitionRepository.Load(tabName);
                 }
             }
 
             if (propertyOrder.HasValue)
                 propertyDefinition.FieldOrder = propertyOrder.Value;
-            _propertyDefinitionRepository.Service.Save(propertyDefinition);
+            _propertyDefinitionRepository.Save(propertyDefinition);
         }
 
         private void DeletePropertyDefinition(ContentType contentType, string propertyDefinitionName)
         {
             var propertyDefinition = GetPropertyDefinition(contentType, propertyDefinitionName);
 
-            if (propertyDefinition != null) _propertyDefinitionRepository.Service.Delete(propertyDefinition);
+            if (propertyDefinition != null) _propertyDefinitionRepository.Delete(propertyDefinition);
         }
 
         private PropertyDefinition GetPropertyDefinition(ContentType contentType, string propertyName, Type propertyDefinitionType = null)
