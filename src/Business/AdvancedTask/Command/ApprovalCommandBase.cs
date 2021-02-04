@@ -47,13 +47,8 @@ namespace AdvancedTask.Business.AdvancedTask.Command
 
         public virtual bool IsReadOnly
         {
-            get
-            {
-                return this._isReadOnly;
-            }
-            protected set
-            {
-            }
+            get => this._isReadOnly;
+            protected set => this._isReadOnly = value;
         }
 
         public virtual bool IsValid()
