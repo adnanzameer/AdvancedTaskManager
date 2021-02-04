@@ -58,7 +58,7 @@ namespace AdvancedTask.Business.AdvancedTask.Command
 
         public virtual object CreateWritableClone()
         {
-            ApprovalCommandBase approvalCommandBase = (ApprovalCommandBase)this.MemberwiseClone();
+            var approvalCommandBase = (ApprovalCommandBase)this.MemberwiseClone();
             approvalCommandBase._isReadOnly = false;
             return approvalCommandBase;
         }

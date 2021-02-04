@@ -1,6 +1,6 @@
-﻿using EPiServer.Notification.Internal;
-using System;
+﻿using System;
 using System.Data.Common;
+using EPiServer.Notification.Internal;
 
 namespace AdvancedTask.Business
 {

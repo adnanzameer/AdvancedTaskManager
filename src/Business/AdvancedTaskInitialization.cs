@@ -1,12 +1,12 @@
-﻿using EPiServer.Core;
+﻿using System;
+using System.Configuration;
+using System.Linq;
+using EPiServer.Core;
 using EPiServer.DataAbstraction;
 using EPiServer.Framework;
 using EPiServer.Framework.Initialization;
 using EPiServer.Security;
 using EPiServer.ServiceLocation;
-using System;
-using System.Configuration;
-using System.Linq;
 
 namespace AdvancedTask.Business
 {
@@ -143,6 +143,9 @@ namespace AdvancedTask.Business
         }
 
 
-        public void Uninitialize(InitializationEngine context) { }
+        public void Uninitialize(InitializationEngine context)
+        {
+            // required
+        }
     }
 }

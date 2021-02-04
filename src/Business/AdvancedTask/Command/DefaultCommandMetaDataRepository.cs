@@ -2,8 +2,6 @@
 using System.Linq;
 using System.Linq.Expressions;
 using AdvancedTask.Business.AdvancedTask.Interface;
-using EPiServer.Data;
-using EPiServer.Data.Dynamic;
 using EPiServer.ServiceLocation;
 
 namespace AdvancedTask.Business.AdvancedTask.Command
@@ -39,7 +37,7 @@ namespace AdvancedTask.Business.AdvancedTask.Command
                 return (CommandMetaData)null;
             lock (_lock)
             {
-                CommandMetaData commandMetaData = store.Items<CommandMetaData>().SingleOrDefault<CommandMetaData>((Expression<Func<CommandMetaData, bool>>)(command => command.CommandId == commandId));
+                var commandMetaData = store.Items<CommandMetaData>().SingleOrDefault<CommandMetaData>((Expression<Func<CommandMetaData, bool>>)(command => command.CommandId == commandId));
                 return commandMetaData;
             }
         }
@@ -47,7 +45,7 @@ namespace AdvancedTask.Business.AdvancedTask.Command
 
         public Guid Save(CommandMetaData commandMetaData)
         {
-            DynamicDataStore store = this._changeApprovalDynamicDataStoreFactory.GetStore("EPiServer.ChangeApproval.Core.Internal.CommandMetaData");
+            var store = this._changeApprovalDynamicDataStoreFactory.GetStore("EPiServer.ChangeApproval.Core.Internal.CommandMetaData");
             if (store == null)
                 return Guid.Empty;
             lock (_lock)

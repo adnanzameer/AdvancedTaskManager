@@ -1,4 +1,13 @@
-﻿using AdvancedTask.Business;
+﻿using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.Linq;
+using System.Security;
+using System.Threading.Tasks;
+using System.Web.Mvc;
+using AdvancedTask.Business;
+using AdvancedTask.Helper;
 using AdvancedTask.Models;
 using EPiServer;
 using EPiServer.Approvals;
@@ -7,23 +16,13 @@ using EPiServer.Core;
 using EPiServer.Data;
 using EPiServer.DataAbstraction;
 using EPiServer.DataAccess;
+using EPiServer.Editor;
 using EPiServer.Framework.Localization;
 using EPiServer.Notification;
 using EPiServer.Notification.Internal;
 using EPiServer.Security;
 using EPiServer.ServiceLocation;
 using EPiServer.Shell.Gadgets;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Security;
-using System.Threading.Tasks;
-using System.Web.Mvc;
-using AdvancedTask.Helper;
-using EPiServer.Editor;
-using Task = System.Threading.Tasks.Task;
 
 namespace AdvancedTask.Controllers
 {
@@ -268,7 +267,7 @@ namespace AdvancedTask.Controllers
                             var propertyData = content.Property.Get(ContentApprovalDeadlinePropertyName) ?? content.Property[ContentApprovalDeadlinePropertyName];
                             if (propertyData != null)
                             {
-                                DateTime.TryParse(propertyData.ToString(), out DateTime dateValue);
+                                DateTime.TryParse(propertyData.ToString(), out var dateValue);
                                 if (dateValue != DateTime.MinValue)
                                 {
                                     if (!string.IsNullOrEmpty(customTask.Type))
@@ -346,17 +345,14 @@ namespace AdvancedTask.Controllers
                         customTask.Details = taskDetails.Details;
                     }
 
-                    if (task.Reference != null)
+                    if (task.Reference != null && !string.IsNullOrEmpty(task.Reference.AbsolutePath))
                     {
-                        if (!string.IsNullOrEmpty(task.Reference.AbsolutePath))
-                        {
-                            var pageId = task.Reference.AbsolutePath.Replace("/", "");
+                        var pageId = task.Reference.AbsolutePath.Replace("/", "");
 
-                            int.TryParse(pageId, out var contentId);
-                            if (contentId != 0)
-                            {
-                                _contentRepository.TryGet(new ContentReference(contentId), out content);
-                            }
+                        int.TryParse(pageId, out var contentId);
+                        if (contentId != 0)
+                        {
+                            _contentRepository.TryGet(new ContentReference(contentId), out content);
                         }
                     }
 
@@ -379,7 +375,7 @@ namespace AdvancedTask.Controllers
 
         private async Task<ContentTask> GetNotifications(string id, ContentTask customTask, bool isContentQuery)
         {
-            var notifications = await GetNotifications(PrincipalInfo.CurrentPrincipal.Identity.Name, id, isContentQuery).ConfigureAwait(false);
+            var notifications = await GetUserNotifications(PrincipalInfo.CurrentPrincipal.Identity.Name, id, isContentQuery).ConfigureAwait(false);
 
             if (notifications != null && notifications.PagedResult != null && notifications.PagedResult.Any())
             {
@@ -485,7 +481,7 @@ namespace AdvancedTask.Controllers
             return contentName;
         }
 
-        private async Task<PagedInternalNotificationMessageResult> GetNotifications(string user, string contentId, bool isContentQuery = true)
+        private async Task<PagedInternalNotificationMessageResult> GetUserNotifications(string user, string contentId, bool isContentQuery = true)
         {
             var db = ServiceLocator.Current.GetInstance<IAsyncDatabaseExecutor>();
             return new PagedInternalNotificationMessageResult(await db.ExecuteAsync(async () =>

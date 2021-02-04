@@ -2,16 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using AdvancedTask.Business.AdvancedTask;
 using AdvancedTask.Business.AdvancedTask.Command;
 using AdvancedTask.Business.AdvancedTask.Interface;
-using AdvancedTask.Business.AdvancedTask.Mapper;
 using AdvancedTask.Helper;
-using AdvancedTask.Models;
-using EPiServer;
-using EPiServer.Cms.Shell.Service.Internal;
-using EPiServer.Core;
-using EPiServer.DataAbstraction;
 using EPiServer.Framework.Localization;
 using EPiServer.Logging;
 using EPiServer.Security;
@@ -53,11 +46,11 @@ namespace AdvancedTask.Business.AdvancedTask
             var str1 = _localizationService.GetString("/gadget/changeapproval/securitysettingcommand/yes");
             var str2 = _localizationService.GetString("/gadget/changeapproval/securitysettingcommand/no");
             if (byCommandId == null)
-                return null;
+                return new List<IContentChangeDetails>();
             var accessControlList1 = GetContentAccessControlList(byCommandId.CurrentSettingsJson);
             var accessControlList2 = GetContentAccessControlList(byCommandId.NewSettingsJson);
             if (accessControlList1 == null || accessControlList2 == null)
-                return null;
+                return new List<IContentChangeDetails>();
             if (accessControlList1.IsInherited != accessControlList2.IsInherited)
             {
                 var contentChangeDetails = (IContentChangeDetails)new ContentChangeDetails();

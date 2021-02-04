@@ -32,9 +32,9 @@
             {
                 if (Model.TotalPagesCount > 1)
                 { %>
-        <span><b>
+        <span><strong>
             <%= Model.PageNumber%>
-        </b></span>
+        </strong></span>
         <% }
                 continue;
             } %>

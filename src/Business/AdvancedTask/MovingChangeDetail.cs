@@ -32,7 +32,8 @@ namespace AdvancedTask.Business.AdvancedTask
         {
 
             if (byCommandId == null)
-                return null;
+                return new List<IContentChangeDetails>();
+
             var contentChangeDetailsList = new List<IContentChangeDetails>();
             try
             {
