@@ -23,7 +23,7 @@ namespace AdvancedTask.Business.AdvancedTask.Command
             }
             catch (Exception ex)
             {
-                _logger.Error(ex.Message);
+                _logger.Error(ex.Message, ex);
                 return false;
             }
         }

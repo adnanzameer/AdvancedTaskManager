@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using AdvancedTask.Business.AdvancedTask.Command;
 using AdvancedTask.Business.AdvancedTask.Interface;
 using AdvancedTask.Models;
 using EPiServer.Framework.Localization;
+using EPiServer.Logging;
 using Newtonsoft.Json;
 
 namespace AdvancedTask.Business.AdvancedTask
@@ -10,6 +12,7 @@ namespace AdvancedTask.Business.AdvancedTask
     internal class ExpirationChangeDetails
     {
         private readonly LocalizationService _localizationService;
+        private static readonly ILogger _logger = LogManager.GetLogger(typeof(ExpirationChangeDetails));
 
         public ExpirationChangeDetails(LocalizationService localizationService)
         {
@@ -38,7 +41,7 @@ namespace AdvancedTask.Business.AdvancedTask
             }
             catch (Exception ex)
             {
-                 //_logger.Error(ex.Message);
+                _logger.Error(ex.Message, ex);
             }
             return contentChangeDetailsList;
         }

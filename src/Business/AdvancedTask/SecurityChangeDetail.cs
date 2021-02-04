@@ -13,6 +13,7 @@ using EPiServer.Cms.Shell.Service.Internal;
 using EPiServer.Core;
 using EPiServer.DataAbstraction;
 using EPiServer.Framework.Localization;
+using EPiServer.Logging;
 using EPiServer.Security;
 using EPiServer.Shell.Web;
 using Newtonsoft.Json;
@@ -24,6 +25,7 @@ namespace AdvancedTask.Business.AdvancedTask
     {
         private readonly ApprovalCommandService _generalCommandService;
         private readonly LocalizationService _localizationService;
+        private static readonly ILogger _logger = LogManager.GetLogger(typeof(SecurityChangeDetail));
 
         private static readonly List<AccessLevel> KnownAccessLevels = new List<AccessLevel>()
         {
@@ -175,7 +177,7 @@ namespace AdvancedTask.Business.AdvancedTask
             }
             catch (Exception ex)
             {
-                //_logger.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
             return accessControlEntryList;
         }
