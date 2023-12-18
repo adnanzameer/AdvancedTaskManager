@@ -184,7 +184,7 @@ namespace AdvancedTask.Pages.AdvancedTask
                         {
                             _contentRepository.TryGet(contentApproval.ContentLink, out IContent content);
 
-                            var canUserPublish = await _helper.CanUserPublish(content);
+                            var canUserPublish = _helper.CanUserPublish(content);
                             if (content != null && canUserPublish)
                             {
                                 switch (content)
@@ -264,7 +264,7 @@ namespace AdvancedTask.Pages.AdvancedTask
                     {
                         customTask.URL = "";//PageEditing.GetEditUrl(approval.ContentLink);
                         id = content.ContentLink.ID.ToString();
-                        var canUserPublish = await _helper.CanUserPublish(content);
+                        var canUserPublish =  _helper.CanUserPublish(content);
 
                         customTask.CanUserPublish = canUserPublish;
                         customTask.ContentReference = content.ContentLink;

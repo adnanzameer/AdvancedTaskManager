@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Principal;
-using System.Threading.Tasks;
 using EPiServer.Core;
 using EPiServer.Framework.Localization;
 using EPiServer.Notification;
@@ -15,7 +11,7 @@ namespace AdvancedTask.Helper
     public interface IUIHelper
     {
         string GetDisplayNameForUser(string senderUsername);
-        Task<bool> CanUserPublish<T>(T content) where T : IContent;
+        bool CanUserPublish<T>(T content) where T : IContent;
     }
 
     public class UIHelper : IUIHelper
@@ -54,35 +50,16 @@ namespace AdvancedTask.Helper
             return !string.IsNullOrEmpty(result.DisplayName) ? result.DisplayName : result.UserName;
         }
 
-        public async Task<bool> CanUserPublish<T>(T content) where T : IContent
-        {
-            IList<string> roles = new List<string>();
-            //using (var store = new UserStore<ApplicationUser>(new ApplicationDbContext<ApplicationUser>("EPiServerDB")))
-            //{
-            // if (PrincipalInfo.CurrentPrincipal.Identity != null)
-            // {
-            //  var user = await store.FindByNameAsync(PrincipalInfo.CurrentPrincipal.Identity.Name);
-            //  roles = await GetUserToRoles(store, user);
-            // }
-            //}
-            var accessor = ServiceLocator.Current.GetInstance<IPrincipalAccessor>();
-            
-            return RoleHasAccess(content, roles.ToArray(), AccessLevel.Publish);
-        }
-
-        private bool RoleHasAccess<T>(T content, string[] roles, AccessLevel accessLevel) where T : IContent
+        public bool CanUserPublish<T>(T content) where T : IContent
         {
             var securedContent = content as ISecurable;
             if (securedContent != null)
             {
                 var descriptor = securedContent.GetSecurityDescriptor();
-                var identity = new GenericIdentity("doesn't matter");
-                var principal = new GenericPrincipal(identity, roles);
-                return descriptor.HasAccess(principal, accessLevel);
+                var accessor = ServiceLocator.Current.GetInstance<IPrincipalAccessor>();
+                return descriptor.HasAccess(accessor.Principal, AccessLevel.Publish);
             }
             return false;
         }
-
-
     }
 }
