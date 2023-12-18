@@ -1,0 +1,22 @@
+﻿@*@model string
+
+<div class="epi-tabView">
+    <ul>
+        <li class="@(Model == "Index" ? "selected" : "") ntab">
+            @Html.ActionLink(
+            "Content Approval",
+            "Index",
+            "AdvancedTask"
+            )
+        </li>
+
+        <li class="@(Model == "ChangeApproval" ? "selected" : "") ntab">
+            @Html.ActionLink(
+            "Change Approval",
+            "Index",
+            "AdvancedTask", 
+            "",
+            new { isChange = true })
+        </li>
+    </ul>
+</div>*@

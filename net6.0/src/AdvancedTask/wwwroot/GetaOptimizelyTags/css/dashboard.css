@@ -1,0 +1,265 @@
+/*
+ * Icons
+ */
+
+.feather {
+    width: 16px;
+    height: 16px;
+    margin-bottom: 3px;
+}
+
+/*
+ * Navbar
+ */
+
+.geta-logo svg {
+    width: 60px;
+}
+
+.geta-logo-prefix {
+    color: white;
+    font-size: 12px;
+}
+
+.version {
+    color: white;
+    font-size: 0.6em;
+}
+
+/*
+ * Search
+ */
+
+.search-container {
+    margin-top: 15px;
+}
+
+    .search-container .search-button {
+        width: 120px;
+    }
+
+.task {
+    padding-left: 1.5em;
+    padding-right: 1.5em;
+    overflow: hidden;
+    font-family: Barlow, sans-serif;
+}
+
+.tasktable {
+    width: 80%;
+}
+
+
+.task-full {
+    width: 100%;
+}
+
+.task div.shorter {
+    text-align: center;
+    width: 13%;
+    word-break: normal;
+    float: left;
+}
+
+.task td.longer {
+    width: 45%;
+    word-break: break-all;
+    word-wrap: break-word;
+}
+
+.task td.shorter {
+    width: auto;
+    text-align: center;
+}
+
+    .task td.shorter a, input {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+.task .task-longer {
+    width: 96%;
+    min-height: 20px;
+}
+
+
+.task .pager, .task .pagercenter, .task .pagerright {
+    display: inline-block;
+    white-space: nowrap;
+    width: 30%;
+}
+
+.task .pager {
+    float: left;
+}
+
+.task .pagercenter {
+    float: left;
+    text-align: center;
+    margin-left: 55px;
+}
+
+.task .pagerright {
+    float: right;
+    text-align: center;
+}
+
+.task .pagercenter span, .pagercenter a {
+    vertical-align: top;
+}
+
+.task .arrow img {
+    vertical-align: bottom;
+}
+
+.task .pagerright .refresh {
+    float: right;
+    width: 22px;
+    height: 22px;
+    background-color: #ededed;
+    background-image: url(/App_Themes/Default/Images/Tools/Refresh.gif);
+    background-repeat: no-repeat;
+    background-position: center;
+    position: relative;
+}
+
+.task .pagerright .refreshinput {
+    float: right;
+    width: 30px;
+    margin-right: 0.3em;
+    text-align: center;
+    height: 20px;
+}
+
+.task .pagerright .refreshlabel {
+    float: right;
+    margin-top: 3px;
+}
+
+.task .pagerwrapper {
+    margin-left: 2px;
+    margin-right: 2px;
+}
+
+.task .taskhidden {
+    display: none;
+}
+
+
+.task.hidden {
+    display: none;
+}
+
+
+.task button::-moz-focus-inner,
+[type="button"]::-moz-focus-inner {
+    padding: 0;
+    border: 0;
+}
+
+.task button {
+    padding: 3px 7px;
+    /*min-height: 20px;
+    padding: 14px;
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;*/
+}
+
+.task.allreferers {
+    color: #398AC9;
+    font-weight: bold;
+}
+
+.task.epi-tabView {
+    margin-bottom: 0;
+}
+
+
+.task .ntab.selected, .task .ntab {
+    border: 1px solid gray;
+    color: #FFFFFF !important;
+    float: left;
+    font-size: 13px;
+    font-weight: normal;
+    text-shadow: none;
+}
+
+    .task .ntab a {
+        padding: 9px;
+        float: left;
+    }
+
+    .task .ntab.selected {
+        background: #555B64;
+    }
+
+.task .ntab {
+    border: 1px solid #DDDDDD;
+    background: #eee;
+}
+
+.task .selected.ntab a {
+    color: #FFFFFF !important;
+}
+
+.task ul.epi-tabView-navigation {
+    background: 0;
+}
+
+.task.row, .task.alt.header {
+    width: 49%;
+    float: left;
+    word-break: break-all;
+}
+
+    .task.row.right {
+        float: right;
+    }
+
+.task.alt.header {
+    padding-left: 10px;
+    border-left: solid 1px #eee;
+}
+
+.taskbutton {
+    background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #ebebeb) );
+    background: -moz-linear-gradient( center top, #ededed 5%, #ebebeb 100% );
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#ebebeb');
+    background-color: #ededed;
+    border: 2px solid #d1d1d1;
+    display: inline-block;
+    color: #050505;
+    font-family: Verdana;
+    font-size: 13px;
+    font-weight: normal;
+    padding: 6px 4px;
+    text-decoration: none;
+}
+
+    .taskbutton:hover {
+        background: none;
+        background-color: #c2ce00;
+        border-color: #a1a1a1;
+        cursor: pointer;
+    }
+
+    .taskbutton:active {
+        position: relative;
+        top: 1px;
+    }
+
+.task-search {
+    height: 21px;
+    padding-bottom: 4px;
+    margin: 0 0 0 5px;
+}
+
+.task .red {
+    background-color: orangered;
+    color: white;
+}
+
+.task .green {
+    background-color: yellowgreen;
+    color: white;
+}

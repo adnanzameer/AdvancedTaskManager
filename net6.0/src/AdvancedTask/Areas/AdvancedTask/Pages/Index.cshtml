@@ -1,0 +1,18 @@
+﻿<div class="task">
+    @*    @if (Model.ChangeApproval)
+    {
+    await Html.RenderPartialAsync("ChangeApproval", Model);
+    }
+    else
+    {
+    await Html.RenderPartialAsync("Tasks", Model);
+    }
+
+    @{
+    await Html.RenderPartialAsync("Pager", Model);
+    }*@
+
+    @{
+        await Html.RenderPartialAsync("Tasks");
+    }
+</div>
