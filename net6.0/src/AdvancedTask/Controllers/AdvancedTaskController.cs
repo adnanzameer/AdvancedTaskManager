@@ -78,7 +78,7 @@ namespace AdvancedTask.Controllers
 
             await ChangeApprovalModel(viewModel);
 
-            return View("~/AdminPlugins/AdvancedTask/Pages/Index.cshtml", viewModel);
+            return View(viewModel);
         }
 
         private async Task ChangeApprovalModel(AdvancedTaskIndexViewData viewModel)
@@ -122,14 +122,14 @@ namespace AdvancedTask.Controllers
                 }
 
                 await ChangeApprovalModel(viewModel);
-                return View("~/AdminPlugins/AdvancedTask/Pages/Index.cshtml", viewModel);
+                return View(viewModel);
             }
             
             ViewBag.ChangeApproval = true;
             var approvalTasks = await GetChangeApprovalTasks(viewModel);
             viewModel.ContentTaskList = approvalTasks;
 
-            return View("~/AdminPlugins/AdvancedTask/Pages/ChangeApproval.cshtml", viewModel);
+            return View(viewModel);
         }
 
         [HttpPost]
