@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using AdvancedTask.Helper;
 using EPiServer.Approvals;
 
@@ -7,7 +6,7 @@ namespace AdvancedTask.Business.AdvancedTask
 {
     public class ChangeApprovalTypeFactory : IApprovalTypeFactory
     {
-        public static string ChangeApprovalType = "changeapproval";
+        public static readonly string ChangeApprovalType = "changeapproval";
         private readonly IApprovalDefinitionReferenceResolver _approvalReferenceResolver;
 
         public ChangeApprovalTypeFactory(IApprovalDefinitionReferenceResolver approvalReferenceResolver)
@@ -15,33 +14,15 @@ namespace AdvancedTask.Business.AdvancedTask
             _approvalReferenceResolver = approvalReferenceResolver;
         }
 
-        public string ApprovalType
-        {
-            get
-            {
-                return ChangeApprovalType;
-            }
-        }
+        public string ApprovalType => ChangeApprovalType;
 
-        public IApprovalDefinitionReferenceResolver DefinitionReferenceResolver
-        {
-            get
-            {
-                return _approvalReferenceResolver;
-            }
-        }
+        public IApprovalDefinitionReferenceResolver DefinitionReferenceResolver => _approvalReferenceResolver;
 
-        public IApprovalLanguageResolver LanguageResolver
-        {
-            get
-            {
-                return null;
-            }
-        }
+        public IApprovalLanguageResolver LanguageResolver => null;
 
         public Approval CreateApproval(Uri reference)
         {
-            return new ChangeApproval()
+            return new ChangeApproval
             {
                 ContentLink = ChangeApprovalReferenceHelper.GetContentReference(reference)
             };

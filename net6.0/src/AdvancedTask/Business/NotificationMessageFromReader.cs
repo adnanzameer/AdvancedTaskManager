@@ -4,7 +4,7 @@ using System.Data.Common;
 
 namespace AdvancedTask.Business
 {
-    internal static class NotificationMessageFromReader
+    public static class NotificationMessageFromReader
     {
         public static InternalNotificationMessage Create(DbDataReader reader)
         {
@@ -21,19 +21,19 @@ namespace AdvancedTask.Business
             };
             var obj1 = reader["Sent"];
             if (obj1 != DBNull.Value)
-                notificationMessage.Sent = new DateTime?(Convert.ToDateTime(obj1).ToLocalTime());
+                notificationMessage.Sent = Convert.ToDateTime(obj1).ToLocalTime();
 
             var obj2 = reader["SendAt"];
             if (obj2 != DBNull.Value)
-                notificationMessage.SendAt = new DateTime?(Convert.ToDateTime(obj2).ToLocalTime());
+                notificationMessage.SendAt = Convert.ToDateTime(obj2).ToLocalTime();
 
             var obj3 = reader["Read"];
             if (obj3 != DBNull.Value)
-                notificationMessage.Read = new DateTime?(Convert.ToDateTime(obj3).ToLocalTime());
+                notificationMessage.Read = Convert.ToDateTime(obj3).ToLocalTime();
 
             var obj4 = reader["Category"];
             if (obj4 != DBNull.Value)
-                notificationMessage.Category = new Uri(Convert.ToString(obj4));
+                notificationMessage.Category = new Uri(Convert.ToString(obj4) ?? string.Empty);
 
             return notificationMessage;
         }

@@ -9,20 +9,11 @@ namespace AdvancedTask.Business.AdvancedTask
     {
         private ContentReference _contentLink;
 
-        public override Uri Reference
-        {
-            get
-            {
-                return ChangeApprovalReferenceHelper.GetUri(_contentLink, false);
-            }
-        }
+        public override Uri Reference => ChangeApprovalReferenceHelper.GetUri(_contentLink, false);
 
         public ContentReference ContentLink
         {
-            get
-            {
-                return _contentLink;
-            }
+            get => _contentLink;
             set
             {
                 ThrowIfReadOnly();

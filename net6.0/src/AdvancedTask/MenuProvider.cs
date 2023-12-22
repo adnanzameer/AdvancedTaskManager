@@ -9,7 +9,8 @@ namespace AdvancedTask
     {
         public IEnumerable<MenuItem> GetMenuItems()
         {
-            var url = Paths.ToResource(GetType(), "container");
+            //var url = Paths.ToResource(GetType(), "container");
+            var url = Paths.ToResource("Advanced Task", "container");
 
             var link = new UrlMenuItem(
                 "Advanced Task Manager",

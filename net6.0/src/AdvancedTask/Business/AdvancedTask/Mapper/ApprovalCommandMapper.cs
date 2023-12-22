@@ -41,7 +41,7 @@ namespace AdvancedTask.Business.AdvancedTask.Mapper
             var appliedOnContentLink = approvalCommand.AppliedOnContentLink;
             var settings = new LoaderOptions
             {
-                new LanguageLoaderOption()
+                new LanguageLoaderOption
                 {
                     Language = cultureInfo, FallbackBehaviour = LanguageBehaviour.FallbackWithMaster
                 }
@@ -64,7 +64,8 @@ namespace AdvancedTask.Business.AdvancedTask.Mapper
                 commandViewModel1.IsCommandDataValid = approvalCommand.IsValid();
                 commandViewModel1.CreatedBy = _uiHelper.GetDisplayNameForUser(commandViewModel1.CreatedBy);
                 commandViewModel1.ChangedBy = _uiHelper.GetDisplayNameForUser(commandViewModel1.ChangedBy);
-                commandViewModel1.CanUserActOnHisOwnChanges = !string.Equals(approvalCommand.CreatedBy, principal.Identity.Name, StringComparison.OrdinalIgnoreCase);
+                if (principal.Identity != null)
+                    commandViewModel1.CanUserActOnHisOwnChanges = !string.Equals(approvalCommand.CreatedBy, principal.Identity.Name, StringComparison.OrdinalIgnoreCase);
                 return commandViewModel1;
             }
 

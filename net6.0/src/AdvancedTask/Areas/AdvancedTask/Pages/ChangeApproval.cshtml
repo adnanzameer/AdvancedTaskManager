@@ -1,16 +1,13 @@
-﻿@*@using AdvancedTask.Models
+﻿@using AdvancedTask.Models
 @model AdvancedTask.Models.AdvancedTaskIndexViewData
-
-@using AdvancedTask.Business.AdvancedTask
-@using AdvancedTask.Models
-@using EPiServer.Core
-@using EPiServer.Editor
-@using EPiServer.Shell.Web.Mvc.Html
-
 @{
+    ViewBag.Title = "Advanced Task Manager";
+    ViewBag.Info = "Administration of Awaiting Review Tasks of Content Approval and Change Approval.";
+}
+@*@{
     await Html.RenderPartialAsync("Menu", "ChangeApproval");
 }
-
+*@
 <style>
     .inner-table {
         border-collapse: collapse !important;
@@ -40,124 +37,114 @@
             color: #818181 !important;
         }
 
-    .changetask-detail {
-        background-color: #d9edf7 !important;
+    .margin-top-15 {
+        margin-top: 15px !important;
     }
 
-    .change-anchor {
-        text-decoration: underline !important;
-        color: navy !important;
+    .thead-dark {
+        color: #fff;
+        background-color: #212529;
+        border-color: #32383e;
     }
 </style>
 
-<table class="epi-default">
-    <thead>
-        <tr>
-            <th>
-                <label>
-                    @Html.ActionLink(
-                    "Content Name",
-                    "Index",
-                    "AdvancedTask",
-                    "",
-                    new { pageNumber = Model.PageNumber, pageSize = Model.PageSize, sorting = Model.Sorting == "name_desc" ? "name_aes" : "name_desc", isChange = true })
-                </label>
-            </th>
-            <th>
-                <label>
-                    @Html.ActionLink(
-                    "Content Type",
-                    "Index",
-                    "AdvancedTask",
-                    "",
-                    new { pageNumber = Model.PageNumber, pageSize = Model.PageSize, sorting = Model.Sorting == "ctype_desc" ? "ctype_aes" : "ctype_desc", isChange = true })
-                </label>
-            </th>
-            <th>
-                <label>
-                    @Html.ActionLink(
-                    "Type",
-                    "Index",
-                    "AdvancedTask",
-                    "",
-                    new { pageNumber = Model.PageNumber, pageSize = Model.PageSize, sorting = Model.Sorting == "type_aes" ? "type_aes" : "type_desc", isChange = true })
-                </label>
-            </th>
-            <th>
-                <label>
-                    @Html.ActionLink(
-                    "Submitted Date/Time",
-                    "Index",
-                    "AdvancedTask",
-                    "",
-                    new { pageNumber = Model.PageNumber, pageSize = Model.PageSize, sorting = Model.Sorting == "timestamp_desc" ? "timestamp_aes" : "timestamp_desc", isChange = true })
-                </label>
-            </th>
-            <th>
-                <label>
-                    @Html.ActionLink(
-                    "Started By",
-                    "Index",
-                    "AdvancedTask",
-                    "",
-                    new { pageNumber = Model.PageNumber, pageSize = Model.PageSize, sorting = Model.Sorting == "user_desc" ? "user_aes" : "user_desc", isChange = true })
-                </label>
-            </th>
-        </tr>
-    </thead>
-
-    @if (Model.ContentTaskList.Count > 0)
-    {
-        foreach (ContentTask m in Model.ContentTaskList)
-        {
-            <tr @(m.NotificationUnread ? "style=\"background-color: #FFF9C4;cursor: pointer;\"" : "cursor: pointer") class="parent" title="Click to expand/collapse" id="@m.ApprovalId">
-                <td>
-                    @m.ContentName
-                </td>
-                <td>
-                    @m.ContentType
-                </td>
-                <td>
-                    @m.Type
-                </td>
-                <td>
-                    @m.DateTime
-                </td>
-                <td>
-                    @m.StartedBy
-                </td>
-            </tr>
-            if (m.Details != null && m.Details.Any())
-            {
-                <tr class="child-@m.ApprovalId" style="display: none;">
-                    <td class="changetask-detail" colspan="6">
-                        <table class="inner-table">
-                            <thead>
-                                <tr class="header">
-                                    <td class="short header-right"><strong>Name</strong></td>
-                                    <td class="header-right"><strong>Current Version</strong></td>
-                                    <td><strong>Suggested Version</strong></td>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var ct in m.Details.ToList())
-                                {
-                                    <tr>
-                                        <td class="short">@ct.Name</td>
-                                        <td>@ct.OldValue</td>
-                                        <td>@ct.NewValue</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                        <p style="padding-top: 20px"><a class="change-anchor" href="@m.URL" target="_blank">Go to the Change Details</a></p>
-                    </td>
+<div class="col-sm-12">
+    <div class="table-responsive mt-3">
+        <table class="table table-hover" id="sortable-table">
+            <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Content type </th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Submitted (UTC)</th>
+                    <th scope="col">Started by</th>
                 </tr>
+            </thead>
+
+            @if (Model.ContentTaskList.Count > 0)
+            {
+                foreach (var contentTask in Model.ContentTaskList)
+                {
+                    <tr @(contentTask.NotificationUnread ? "style=\"background-color: #FFF9C4;cursor: pointer;\"" : "cursor: pointer") class="parent" title="Click to expand/collapse" id="@contentTask.ApprovalId">
+                        <td>
+                            @if (!string.IsNullOrEmpty(contentTask.ContentIcon))
+                            {
+                                <span data-feather="@contentTask.ContentIcon"></span>
+                            }
+                            @contentTask.ContentName
+                        </td>
+                        <td>@contentTask.ContentType</td>
+                        <td>@contentTask.Type</td>
+                        <td data-original-title="@contentTask.DateTimeUserFriendly" data-container="body" data-toggle="tooltip" data-placement="bottom" title="@contentTask.DateTimeUserFriendly">@contentTask.DateTime</td>
+                        <td>@contentTask.StartedBy</td>
+                    </tr>
+                    if (contentTask.Details != null && contentTask.Details.Any())
+                    {
+                        <tr class="child-@contentTask.ApprovalId" style="display: none;">
+                            <td class="changetask-detail" colspan="6">
+                                <table class="table inner-table table-striped">
+                                    <thead class="thead-dark">
+                                        <tr class="header">
+                                            <td class="short header-right"><strong>Name</strong></td>
+                                            <td class="header-right"><strong>Current version</strong></td>
+                                            <td><strong>Suggested version</strong></td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var ct in contentTask.Details.ToList())
+                                        {
+                                            <tr>
+                                                <td class="short">@Html.Raw(ct.Name)</td>
+                                                <td>@Html.Raw(ct.OldValue)</td>
+                                                <td>@Html.Raw(ct.NewValue)</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                                <p style="padding-top: 20px"><a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="@contentTask.URL" target="_blank">Go to the Change Details</a></p>
+                            </td>
+                        </tr>
+                    }
+                }
             }
+        </table>
+        @if (Model.TotalItemsCount > Model.PageSize)
+        {
+            <nav class="navbar">
+                <div class="col-sm-5 col-md-4 me-0 px-3">
+                    @($"Displaying tasks {Model.MinIndexOfItem}-{Model.MaxIndexOfItem} of {Model.TotalItemsCount}")
+                </div>
+                <div class="col-sm-7 col-md-8  mb-1 px-3">
+                    <ul class="pagination pagination-sm margin-top-15">
+
+                        <li class="page-item @(Model.PageNumber > 1 ? "" : "disabled")">
+                            <a class="page-link" href="@Model.PageUrl(Model.PageNumber - 1)" aria-label="Previous">
+                                <span aria-hidden="true"><strong>Previous</strong></span>
+                            </a>
+                        </li>
+
+                        @foreach (int i in Model.Pages)
+                        {
+                            if (i == 0)
+                            {
+                                <li>&nbsp; <span data-feather="more-horizontal"></span> &nbsp;</li>
+                                continue;
+                            }
+                            <li class="page-item  @(i == Model.PageNumber ? "active" : "")"><a class="page-link" href="@Model.PageUrl(i)">@i</a></li>
+                        }
+
+                        <li class="page-item @(Model.PageNumber < Model.TotalPagesCount ? "" : "disabled")">
+                            <a class="page-link" href="@Model.PageUrl(Model.PageNumber + 1)" aria-label="Next">
+                                <span aria-hidden="true"><strong>Next</strong></span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
         }
-    }
-</table>
-<br />
+    </div>
+</div>
+
 <script type="text/javascript">
     $(document).ready(function () {
         $('tr.parent')
@@ -167,5 +154,8 @@
                 $(this).siblings('.child-' + this.id).toggle();
             });
     });
+
+    $(function () {
+        $("[data-toggle='tooltip']").tooltip();
+    });
 </script>
-*@

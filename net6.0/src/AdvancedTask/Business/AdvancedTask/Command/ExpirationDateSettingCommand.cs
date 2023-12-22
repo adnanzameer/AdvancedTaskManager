@@ -5,6 +5,7 @@ using AdvancedTask.Business.AdvancedTask.Interface;
 using EPiServer;
 using EPiServer.Core;
 using EPiServer.Data.Dynamic;
+using EPiServer.Logging;
 using EPiServer.ServiceLocation;
 using Newtonsoft.Json;
 
@@ -18,23 +19,21 @@ namespace AdvancedTask.Business.AdvancedTask.Command
 
         public virtual List<int> AffectedVersions { get; set; }
 
+        private static readonly ILogger Logger = LogManager.GetLogger(typeof(ExpirationDateSettingCommand));
         public override bool IsValid()
         {
             try
             {
                 var dictionary = JsonConvert.DeserializeObject<IDictionary<string, object>>(NewSettingsJson);
                 var versionable = (string.IsNullOrEmpty(this.AppliedOnLanguageBranch) ? _contentLoader.Service.Get<IContent>(AppliedOnContentLink) : _contentLoader.Service.Get<IContent>(AppliedOnContentLink, new CultureInfo(AppliedOnLanguageBranch))) as IVersionable;
-                object obj;
-                if (dictionary.TryGetValue("PageStopPublish", out obj))
+                if (dictionary.TryGetValue("PageStopPublish", out var obj))
                 {
-                    var nullable = obj as DateTime?;
-                    if (nullable.HasValue && versionable != null)
+                    if (obj is DateTime nullable && versionable != null)
                     {
                         var startPublish = versionable.StartPublish;
                         if (startPublish.HasValue)
                         {
-                            var dateTime1 = nullable.Value;
-                            ref var local2 = ref dateTime1;
+                            ref var local2 = ref nullable;
                             startPublish = versionable.StartPublish;
                             if (startPublish != null)
                             {
@@ -49,6 +48,7 @@ namespace AdvancedTask.Business.AdvancedTask.Command
             }
             catch (Exception ex)
             {
+                Logger.Error(ex.Message, ex);
                 return false;
             }
         }

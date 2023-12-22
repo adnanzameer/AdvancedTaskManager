@@ -34,10 +34,7 @@ namespace AdvancedTask.Business.AdvancedTask.Command
 
         public bool IsReadOnly
         {
-            get
-            {
-                return _isReadOnly;
-            }
+            get => _isReadOnly;
             protected set
             {
             }

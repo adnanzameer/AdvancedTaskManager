@@ -1,6 +1,6 @@
 ﻿namespace AdvancedTask.Helper
 {
-    internal static class SettingCommandHelper
+    public static class SettingCommandHelper
     {
         public static string Fade(this string text)
         {

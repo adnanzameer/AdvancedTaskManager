@@ -2,8 +2,6 @@
 using System.Linq;
 using System.Linq.Expressions;
 using AdvancedTask.Business.AdvancedTask.Interface;
-using EPiServer.Data;
-using EPiServer.Data.Dynamic;
 using EPiServer.ServiceLocation;
 
 namespace AdvancedTask.Business.AdvancedTask.Command
@@ -11,7 +9,7 @@ namespace AdvancedTask.Business.AdvancedTask.Command
     [ServiceConfiguration(ServiceType = typeof(ICommandMetaDataRepository))]
     public class DefaultCommandMetaDataRepository : ICommandMetaDataRepository
     {
-        private static readonly object _lock = new object();
+        private static readonly object Lock = new();
         private readonly ChangeApprovalDynamicDataStoreFactory _changeApprovalDynamicDataStoreFactory;
 
         public DefaultCommandMetaDataRepository(
@@ -25,10 +23,10 @@ namespace AdvancedTask.Business.AdvancedTask.Command
             var store = this._changeApprovalDynamicDataStoreFactory.GetStore("EPiServer.ChangeApproval.Core.Internal.CommandMetaData");
 
             if (store == null)
-                return (CommandMetaData)null;
-            lock (_lock)
+                return null;
+            lock (Lock)
             {
-                return store.Items<CommandMetaData>().SingleOrDefault<CommandMetaData>((Expression<Func<CommandMetaData, bool>>)(command => command.ApprovalId == approvalId));
+                return store.Items<CommandMetaData>().SingleOrDefault((Expression<Func<CommandMetaData, bool>>)(command => command.ApprovalId == approvalId));
             }
         }
 
@@ -36,10 +34,10 @@ namespace AdvancedTask.Business.AdvancedTask.Command
         {
             var store = this._changeApprovalDynamicDataStoreFactory.GetStore("EPiServer.ChangeApproval.Core.Internal.CommandMetaData");
             if (store == null)
-                return (CommandMetaData)null;
-            lock (_lock)
+                return null;
+            lock (Lock)
             {
-                CommandMetaData commandMetaData = store.Items<CommandMetaData>().SingleOrDefault<CommandMetaData>((Expression<Func<CommandMetaData, bool>>)(command => command.CommandId == commandId));
+                CommandMetaData commandMetaData = store.Items<CommandMetaData>().SingleOrDefault((Expression<Func<CommandMetaData, bool>>)(command => command.CommandId == commandId));
                 return commandMetaData;
             }
         }
@@ -47,10 +45,10 @@ namespace AdvancedTask.Business.AdvancedTask.Command
 
         public Guid Save(CommandMetaData commandMetaData)
         {
-            DynamicDataStore store = this._changeApprovalDynamicDataStoreFactory.GetStore("EPiServer.ChangeApproval.Core.Internal.CommandMetaData");
+            var store = this._changeApprovalDynamicDataStoreFactory.GetStore("EPiServer.ChangeApproval.Core.Internal.CommandMetaData");
             if (store == null)
                 return Guid.Empty;
-            lock (_lock)
+            lock (Lock)
             {
                 var identity = store.Save(commandMetaData);
                 return identity == null ? Guid.Empty : identity.ExternalId;

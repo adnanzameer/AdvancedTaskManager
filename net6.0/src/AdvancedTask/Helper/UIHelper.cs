@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using EPiServer.Core;
-using EPiServer.Framework.Localization;
+using EPiServer.Framework.Modules.Internal;
 using EPiServer.Notification;
 using EPiServer.Security;
-using EPiServer.ServiceLocation;
 using EPiServer.Shell.Profile.Internal;
 
 namespace AdvancedTask.Helper
@@ -12,22 +14,21 @@ namespace AdvancedTask.Helper
     {
         string GetDisplayNameForUser(string senderUsername);
         bool CanUserPublish<T>(T content) where T : IContent;
+        Task<List<string>> GetUserRoles();
     }
 
     public class UIHelper : IUIHelper
     {
         private readonly QueryableNotificationUserService _queryableNotificationUserService;
         private readonly ICurrentUiCulture _currentUiCulture;
-        private readonly LocalizationService _localizationService;
-
-        public UIHelper(
-          QueryableNotificationUserService queryableNotificationUserService,
-          ICurrentUiCulture currentUiCulture,
-          LocalizationService localizationService)
+        private readonly IPrincipalAccessor _principalAccessor;
+        private readonly SecurityEntityProvider _securityEntityProvider;
+        public UIHelper(QueryableNotificationUserService queryableNotificationUserService, ICurrentUiCulture currentUiCulture, IPrincipalAccessor principalAccessor, SecurityEntityProvider securityEntityProvider)
         {
             _queryableNotificationUserService = queryableNotificationUserService;
             _currentUiCulture = currentUiCulture;
-            _localizationService = localizationService;
+            _principalAccessor = principalAccessor;
+            _securityEntityProvider = securityEntityProvider;
         }
 
         public string GetDisplayNameForUser(string senderUsername)
@@ -39,16 +40,29 @@ namespace AdvancedTask.Helper
             if (result == null)
                 return null;
 
-            if (PrincipalInfo.CurrentPrincipal.Identity != null)
+            if (_principalAccessor.Principal.Identity != null)
             {
-                var name = PrincipalInfo.CurrentPrincipal.Identity.Name;
+                var name = _principalAccessor.Principal.Identity.Name;
                 var culture = _currentUiCulture.Get(name);
                 if (result.UserName.Equals(name, StringComparison.OrdinalIgnoreCase))
-                    return _localizationService.GetStringByCulture("/gadget/tasks/yousubject", culture);
+                    return "You";
             }
 
             return !string.IsNullOrEmpty(result.DisplayName) ? result.DisplayName : result.UserName;
         }
+
+        public async Task<List<string>> GetUserRoles()
+        {
+            if (_principalAccessor.Principal.Identity != null)
+            {
+                var name = _principalAccessor.Principal.Identity.Name;
+                var roles = await _securityEntityProvider.GetRolesForUserAsync(name);
+                return roles.ToList();
+            }
+
+            return new List<string>();
+        }
+
 
         public bool CanUserPublish<T>(T content) where T : IContent
         {
@@ -56,10 +70,21 @@ namespace AdvancedTask.Helper
             if (securedContent != null)
             {
                 var descriptor = securedContent.GetSecurityDescriptor();
-                var accessor = ServiceLocator.Current.GetInstance<IPrincipalAccessor>();
-                return descriptor.HasAccess(accessor.Principal, AccessLevel.Publish);
+
+                return descriptor.HasAccess(_principalAccessor.Principal, AccessLevel.Publish);
             }
             return false;
+        }
+
+
+        public static string GetEditUrl(ContentReference contentLink)
+        {
+            return $"{ModuleResourceResolver.Instance.ResolvePath("CMS", null)}#context=epi.cms.contentdata:///{contentLink}";
+        }
+
+        public static string GetEditUrl(ContentReference contentLink, string language)
+        {
+            return $"{ModuleResourceResolver.Instance.ResolvePath("CMS", null).TrimEnd('/')}/?language={language}#context=epi.cms.contentdata:///{contentLink}";
         }
     }
 }

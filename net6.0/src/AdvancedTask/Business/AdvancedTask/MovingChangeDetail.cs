@@ -4,7 +4,7 @@ using AdvancedTask.Business.AdvancedTask.Interface;
 using AdvancedTask.Models;
 using EPiServer.Cms.Shell.Service.Internal;
 using EPiServer.Core;
-using EPiServer.Framework.Localization;
+using EPiServer.Logging;
 using EPiServer.Security;
 using Newtonsoft.Json;
 
@@ -17,16 +17,14 @@ namespace AdvancedTask.Business.AdvancedTask
 
     public class MovingChangeDetail : IMovingChangeDetail
     {
-        private readonly LocalizationService _localizationService;
-        private readonly string _baseLanguagePath = "/gadget/changeapproval/movingcontentcommand";
-
+        private readonly ILogger _logger;
 
         private readonly ContentLoaderService _contentLoaderService;
 
-        public MovingChangeDetail(ContentLoaderService contentLoaderService, LocalizationService localizationService)
+        public MovingChangeDetail(ContentLoaderService contentLoaderService)
         {
             _contentLoaderService = contentLoaderService;
-            _localizationService = localizationService;
+            _logger = LogManager.GetLogger(typeof(MovingChangeDetail));
         }
 
 
@@ -46,14 +44,14 @@ namespace AdvancedTask.Business.AdvancedTask
                 var content2 = _contentLoaderService.Get<IContent>(movingPayLoad2.Destination, AccessLevel.Read);
                 contentChangeDetailsList.Add(new ContentChangeDetails()
                 {
-                    Name = _localizationService.GetString(string.Format("{0}/path", _baseLanguagePath)),
+                    Name = "Path",
                     OldValue = content1?.Name,
                     NewValue = content2?.Name
                 });
             }
             catch (Exception ex)
             {
-
+                _logger.Error(ex.Message, ex);
             }
             return contentChangeDetailsList;
         }

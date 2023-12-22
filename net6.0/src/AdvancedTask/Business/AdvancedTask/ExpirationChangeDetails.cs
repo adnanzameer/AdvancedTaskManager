@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using AdvancedTask.Business.AdvancedTask.Interface;
 using AdvancedTask.Models;
-using EPiServer.Framework.Localization;
+using EPiServer.Logging;
 using Newtonsoft.Json;
 
 namespace AdvancedTask.Business.AdvancedTask
@@ -14,11 +14,11 @@ namespace AdvancedTask.Business.AdvancedTask
 
     public class ExpirationChangeDetails : IExpirationChangeDetails
     {
-        private readonly LocalizationService _localizationService;
+        private readonly ILogger _logger;
 
-        public ExpirationChangeDetails(LocalizationService localizationService)
+        public ExpirationChangeDetails()
         {
-            _localizationService = localizationService;
+            _logger = LogManager.GetLogger(typeof(ExpirationChangeDetails));
         }
 
         public IEnumerable<IContentChangeDetails> GetExpirationCommandChangeDetails(ChangeTaskViewModel model)
@@ -35,7 +35,7 @@ namespace AdvancedTask.Business.AdvancedTask
                     if (dictionary1.ContainsKey(interceptProperty))
                         contentChangeDetailsList.Add(new ContentChangeDetails()
                         {
-                            Name = _localizationService.GetString("/gadget/changeapproval/expirationdatesettingcommand/" + interceptProperty.ToLowerInvariant()),
+                            Name = GetExpirationDateSettingCommand(interceptProperty.ToLowerInvariant()),
                             OldValue = dictionary1[interceptProperty],
                             NewValue = dictionary2[interceptProperty]
                         });
@@ -43,9 +43,22 @@ namespace AdvancedTask.Business.AdvancedTask
             }
             catch (Exception ex)
             {
-                 //_logger.Error(ex.Message);
+                _logger.Error(ex.Message, ex);
             }
             return contentChangeDetailsList;
+        }
+
+        static string GetExpirationDateSettingCommand(string interceptProperty)
+        {
+            switch (interceptProperty.ToLowerInvariant())
+            {
+                case "pagearchivelink":
+                    return "Archive to";
+                case "pagestoppublish":
+                    return "Expiration date";
+                default:
+                    return "[Location is no longer available]";
+            }
         }
     }
 }

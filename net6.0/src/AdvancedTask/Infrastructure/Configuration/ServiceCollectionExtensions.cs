@@ -1,5 +1,10 @@
 using System;
 using System.Linq;
+using AdvancedTask.Business.AdvancedTask;
+using AdvancedTask.Business.AdvancedTask.Command;
+using AdvancedTask.Business.AdvancedTask.Interface;
+using AdvancedTask.Business.AdvancedTask.Mapper;
+using AdvancedTask.Helper;
 using EPiServer.Authorization;
 using EPiServer.Shell.Modules;
 using Microsoft.AspNetCore.Authorization;
@@ -21,9 +26,17 @@ namespace AdvancedTask.Infrastructure.Configuration
             this IServiceCollection services,
             Action<AuthorizationPolicyBuilder> configurePolicy)
         {
-            //services.AddTransient<ITagService, TagService>();
-            //services.AddTransient<ITagRepository, TagRepository>();
-            //services.AddTransient<ITagEngine, TagEngine>();
+            services.AddTransient<IUIHelper, UIHelper>();
+            services.AddTransient<IChangeTaskHelper, ChangeTaskHelper>();
+            services.AddTransient<IExpirationChangeDetails, ExpirationChangeDetails>();
+            services.AddTransient<ICommandMetaDataRepository, DefaultCommandMetaDataRepository>();
+            services.AddTransient<ILanguageChangeDetails, LanguageChangeDetails>();
+            services.AddTransient<IApprovalCommandMapper, ApprovalCommandMapper>();
+            services.AddTransient<IMovingChangeDetail, MovingChangeDetail>();
+            services.AddTransient<ISecurityChangeDetail, SecurityChangeDetail>();
+            services.AddTransient<IApprovalCommandService, ApprovalCommandService>();
+            services.AddTransient<IApprovalCommandRepositoryBase, ApprovalCommandRepositoryBase>();
+            
             //services.AddSingleton<Func<ITagService>>(x => x.GetRequiredService<ITagService>);
             //services.AddSingleton<TagsInitializer>();
             //services.AddTransient<TagsExporter>();

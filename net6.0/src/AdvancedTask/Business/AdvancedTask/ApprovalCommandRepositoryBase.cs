@@ -4,7 +4,12 @@ using AdvancedTask.Business.AdvancedTask.Command;
 
 namespace AdvancedTask.Business.AdvancedTask
 {
-    public class ApprovalCommandRepositoryBase
+    public interface IApprovalCommandRepositoryBase
+    {
+        ApprovalCommandBase GetByCommandId<T>(Guid id, string type) where T : ApprovalCommandBase;
+    }
+
+    public class ApprovalCommandRepositoryBase : IApprovalCommandRepositoryBase
     {
         private readonly ChangeApprovalDynamicDataStoreFactory _changeApprovalDynamicDataStoreFactory;
 

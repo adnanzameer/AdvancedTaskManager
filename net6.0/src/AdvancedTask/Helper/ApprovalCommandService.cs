@@ -21,9 +21,9 @@ namespace AdvancedTask.Helper
     public class ApprovalCommandService : IApprovalCommandService
     {
         private readonly ICommandMetaDataRepository _commandMetaDataRepository;
-        private readonly ApprovalCommandRepositoryBase _approvalCommandRepositoryBase;
+        private readonly IApprovalCommandRepositoryBase _approvalCommandRepositoryBase;
 
-        public ApprovalCommandService(ICommandMetaDataRepository cmdRepository, ApprovalCommandRepositoryBase approvalCommandRepositoryBase)
+        public ApprovalCommandService(ICommandMetaDataRepository cmdRepository, IApprovalCommandRepositoryBase approvalCommandRepositoryBase)
         {
             _commandMetaDataRepository = cmdRepository;
             _approvalCommandRepositoryBase = approvalCommandRepositoryBase;

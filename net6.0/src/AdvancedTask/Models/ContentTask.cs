@@ -13,7 +13,7 @@ namespace AdvancedTask.Models
             ContentType = "";
             Type = "";
             DateTime = "";
-            Deadline = "";
+            Deadline = " - ";
             StartedBy = "";
             WarningColor = "";
             Details = new List<IContentChangeDetails>();
@@ -23,10 +23,13 @@ namespace AdvancedTask.Models
         public int ApprovalId { get; set; }
         public ContentReference ContentReference { get; set; }
         public string ContentName { get; set; }
+        public string ContentIcon { get; set; }
         public string ContentType { get; set; }
         public string Type { get; set; }
         public string DateTime { get; set; }
+        public string DateTimeUserFriendly { get; set; }
         public string Deadline { get; set; }
+        public string DeadlineUserFriendly { get; set; }
         public string StartedBy { get; set; }
         public string WarningColor { get; set; }
         public bool NotificationUnread { get; set; }

@@ -17,33 +17,38 @@ namespace AdvancedTask.Business
         private const string ContentApprovalDeadlinePropertyName = "ATM_ContentApprovalDeadline";
 
         private static readonly object Lock = new();
-        private Injected<IContentTypeRepository> _contentTypeRepository;
-        private Injected<ITabDefinitionRepository> _tabDefinitionRepository;
-        private Injected<IPropertyDefinitionRepository> _propertyDefinitionRepository;
-        private Injected<IPropertyDefinitionTypeRepository> _propertyDefinitionTypeRepository;
-        private Injected<IConfiguration> _configuration;
-		public void Initialize(InitializationEngine context)
+        private IContentTypeRepository _contentTypeRepository;
+        private ITabDefinitionRepository _tabDefinitionRepository;
+        private IPropertyDefinitionRepository _propertyDefinitionRepository;
+        private IPropertyDefinitionTypeRepository _propertyDefinitionTypeRepository;
+        public void Initialize(InitializationEngine context)
         {
-            var enableContentApprovalDeadline = _configuration.Service.GetValue<bool>("ATM:EnableContentApprovalDeadline:True");
+            _contentTypeRepository = context.Locate.Advanced.GetInstance<IContentTypeRepository>();
+            _tabDefinitionRepository = context.Locate.Advanced.GetInstance<ITabDefinitionRepository>();
+            _propertyDefinitionRepository = context.Locate.Advanced.GetInstance<IPropertyDefinitionRepository>();
+            _propertyDefinitionTypeRepository = context.Locate.Advanced.GetInstance<IPropertyDefinitionTypeRepository>();
+            
+            var configuration = context.Locate.Advanced.GetInstance<IConfiguration>();
 
-			if (enableContentApprovalDeadline)
+            var enableContentApprovalDeadline = configuration.GetValue<bool>("ATM:EnableContentApprovalDeadline:True");
+
+            if (enableContentApprovalDeadline)
             {
                 SetupMappingProperties();
             }
             else
             {
-                var deleteContentApprovalDeadlineProperty = _configuration.Service.GetValue<bool>("ATM:DeleteContentApprovalDeadlineProperty:True");
+                var deleteContentApprovalDeadlineProperty = configuration.GetValue<bool>("ATM:DeleteContentApprovalDeadlineProperty:True");
                 if (deleteContentApprovalDeadlineProperty)
                     DeleteMappingProperties();
             }
-
         }
 
         private void SetupMappingProperties()
         {
             CreateOrDeleteTab("Content Approval", true);
 
-            foreach (var contentType in _contentTypeRepository.Service.List().Where(x => x.IsAvailable))
+            foreach (var contentType in _contentTypeRepository.List().Where(x => x.IsAvailable))
                 CreateUpdatePropertyDefinition(
                     contentType,
                     ContentApprovalDeadlinePropertyName,
@@ -54,7 +59,7 @@ namespace AdvancedTask.Business
 
         private void DeleteMappingProperties()
         {
-            foreach (var contentType in _contentTypeRepository.Service.List().Where(x => x.IsAvailable))
+            foreach (var contentType in _contentTypeRepository.List().Where(x => x.IsAvailable))
                 DeletePropertyDefinition(
                     contentType,
                     ContentApprovalDeadlinePropertyName);
@@ -65,7 +70,7 @@ namespace AdvancedTask.Business
             var obj2 = Lock;
             lock (obj2)
             {
-                var tabDefinition = this._tabDefinitionRepository.Service.Load(tabName);
+                var tabDefinition = this._tabDefinitionRepository.Load(tabName);
                 if (createNew)
                 {
                     if (tabDefinition != null)
@@ -77,11 +82,11 @@ namespace AdvancedTask.Business
                         SortIndex = 300,
                         RequiredAccess = AccessLevel.Edit
                     };
-                    _tabDefinitionRepository.Service.Save(tabDefinition);
+                    _tabDefinitionRepository.Save(tabDefinition);
                 }
                 else if (tabDefinition != null)
                 {
-                    _tabDefinitionRepository.Service.Delete(tabDefinition);
+                    _tabDefinitionRepository.Delete(tabDefinition);
                 }
             }
         }
@@ -108,26 +113,26 @@ namespace AdvancedTask.Business
             if (editCaption != null)
                 propertyDefinition.EditCaption = editCaption;
             if (propertyDefinitionType != null)
-                propertyDefinition.Type = this._propertyDefinitionTypeRepository.Service.Load(propertyDefinitionType);
+                propertyDefinition.Type = this._propertyDefinitionTypeRepository.Load(propertyDefinitionType);
             if (tabName != null)
             {
                 var obj2 = Lock;
                 lock (obj2)
                 {
-                    propertyDefinition.Tab = _tabDefinitionRepository.Service.Load(tabName);
+                    propertyDefinition.Tab = _tabDefinitionRepository.Load(tabName);
                 }
             }
 
             if (propertyOrder.HasValue)
                 propertyDefinition.FieldOrder = propertyOrder.Value;
-            _propertyDefinitionRepository.Service.Save(propertyDefinition);
+            _propertyDefinitionRepository.Save(propertyDefinition);
         }
 
         private void DeletePropertyDefinition(ContentType contentType, string propertyDefinitionName)
         {
             var propertyDefinition = GetPropertyDefinition(contentType, propertyDefinitionName);
 
-            if (propertyDefinition != null) _propertyDefinitionRepository.Service.Delete(propertyDefinition);
+            if (propertyDefinition != null) _propertyDefinitionRepository.Delete(propertyDefinition);
         }
 
         private PropertyDefinition GetPropertyDefinition(ContentType contentType, string propertyName, Type propertyDefinitionType = null)

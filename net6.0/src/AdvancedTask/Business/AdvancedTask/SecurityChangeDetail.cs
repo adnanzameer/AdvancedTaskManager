@@ -2,17 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using AdvancedTask.Business.AdvancedTask;
 using AdvancedTask.Business.AdvancedTask.Command;
 using AdvancedTask.Business.AdvancedTask.Interface;
-using AdvancedTask.Business.AdvancedTask.Mapper;
 using AdvancedTask.Helper;
-using AdvancedTask.Models;
-using EPiServer;
-using EPiServer.Cms.Shell.Service.Internal;
-using EPiServer.Core;
-using EPiServer.DataAbstraction;
-using EPiServer.Framework.Localization;
+using EPiServer.Logging;
 using EPiServer.Security;
 using EPiServer.Shell.Web;
 using Newtonsoft.Json;
@@ -27,8 +20,8 @@ namespace AdvancedTask.Business.AdvancedTask
 
     public class SecurityChangeDetail : ISecurityChangeDetail
     {
-        private readonly ApprovalCommandService _generalCommandService;
-        private readonly LocalizationService _localizationService;
+        private readonly IApprovalCommandService _generalCommandService;
+        private readonly ILogger _logger;
 
         private static readonly List<AccessLevel> KnownAccessLevels = new List<AccessLevel>()
         {
@@ -40,10 +33,10 @@ namespace AdvancedTask.Business.AdvancedTask
             AccessLevel.Administer
         };
 
-        public SecurityChangeDetail(LocalizationService localizationService, ApprovalCommandService generalCommandService)
+        public SecurityChangeDetail(IApprovalCommandService generalCommandService)
         {
-            _localizationService = localizationService;
             _generalCommandService = generalCommandService;
+            _logger = LogManager.GetLogger(typeof(SecurityChangeDetail));
         }
 
 
@@ -53,8 +46,8 @@ namespace AdvancedTask.Business.AdvancedTask
         {
             var byCommandId = _generalCommandService.GetCommandById(command);
             var contentChangeDetailsList = new List<IContentChangeDetails>();
-            var str1 = _localizationService.GetString("/gadget/changeapproval/securitysettingcommand/yes");
-            var str2 = _localizationService.GetString("/gadget/changeapproval/securitysettingcommand/no");
+            var str1 = "Yes";
+            var str2 = "No";
             if (byCommandId == null)
                 return null;
             var accessControlList1 = GetContentAccessControlList(byCommandId.CurrentSettingsJson);
@@ -64,40 +57,39 @@ namespace AdvancedTask.Business.AdvancedTask
             if (accessControlList1.IsInherited != accessControlList2.IsInherited)
             {
                 var contentChangeDetails = (IContentChangeDetails)new ContentChangeDetails();
-                contentChangeDetails.Name = _localizationService.GetString("/gadget/changeapproval/securitysettingcommand/inheritsettingsfromtheparentpage");
+                contentChangeDetails.Name = "Inherit settings";
                 contentChangeDetails.OldValue = accessControlList1.IsInherited ? str1 : str2;
                 contentChangeDetails.NewValue = accessControlList2.IsInherited ? str1 : str2;
                 contentChangeDetailsList.Add(contentChangeDetails);
             }
 
-            var secCommand = byCommandId as SecuritySettingCommand;
-            if (secCommand != null && (secCommand.SecuritySaveType == SecuritySaveType.MergeChildPermissions || secCommand.SecuritySaveType == SecuritySaveType.ReplaceChildPermissions))
+            if (byCommandId is SecuritySettingCommand secCommand && (secCommand.SecuritySaveType == SecuritySaveType.MergeChildPermissions || secCommand.SecuritySaveType == SecuritySaveType.ReplaceChildPermissions))
             {
                 var contentChangeDetails = (IContentChangeDetails)new ContentChangeDetails();
-                contentChangeDetails.Name = _localizationService.GetString("/gadget/changeapproval/securitysettingcommand/applytosubitems");
+                contentChangeDetails.Name = "Applied to all sub-items";
                 contentChangeDetails.OldValue = string.Empty;
                 contentChangeDetails.NewValue = str1;
                 contentChangeDetailsList.Add(contentChangeDetails);
             }
             var contentChangeDetails1 = (IContentChangeDetails)new ContentChangeDetails();
-            contentChangeDetails1.NewValue ="";
+            contentChangeDetails1.NewValue = "";
             contentChangeDetails1.OldValue = "";
 
-            contentChangeDetails1.Name = _localizationService.GetString("/gadget/changeapproval/securitysettingcommand/accessrolecontrol");
-            var source1 = accessControlList1.Entries.OrderBy<AccessControlEntry, string>((Func<AccessControlEntry, string>)(e => e.Name));
-            var source2 = accessControlList2.Entries.OrderBy<AccessControlEntry, string>((Func<AccessControlEntry, string>)(e => e.Name));
+            contentChangeDetails1.Name = "Access Control List";
+            var source1 = accessControlList1.Entries.OrderBy(e => e.Name).ToList();
+            var source2 = accessControlList2.Entries.OrderBy(e => e.Name).ToList();
 
             foreach (var accessControlEntry1 in source1)
             {
                 var currentAccessControlItem = accessControlEntry1;
-                var accessControlEntry2 = source2.FirstOrDefault<AccessControlEntry>((Func<AccessControlEntry, bool>)(e => e.Name.Equals(currentAccessControlItem.Name, StringComparison.OrdinalIgnoreCase))) ?? new AccessControlEntry(currentAccessControlItem.Name, AccessLevel.Undefined);
+                var accessControlEntry2 = source2.FirstOrDefault(e => e.Name.Equals(currentAccessControlItem.Name, StringComparison.OrdinalIgnoreCase)) ?? new AccessControlEntry(currentAccessControlItem.Name, AccessLevel.Undefined);
                 contentChangeDetails1.OldValue = contentChangeDetails1.OldValue + LocalizeCurrentAccessLevel(WebUtility.HtmlEncode(currentAccessControlItem.Name), currentAccessControlItem.Access, accessControlEntry2.Access) + "</br>";
             }
 
-            foreach (var accessControlEntry1 in (IEnumerable<AccessControlEntry>)source2)
+            foreach (var accessControlEntry1 in source2)
             {
                 var newAccessControlItem = accessControlEntry1;
-                var accessControlEntry2 = source1.FirstOrDefault<AccessControlEntry>((Func<AccessControlEntry, bool>)(e => e.Name.Equals(newAccessControlItem.Name, StringComparison.OrdinalIgnoreCase))) ?? new AccessControlEntry(newAccessControlItem.Name, AccessLevel.Undefined);
+                var accessControlEntry2 = source1.FirstOrDefault(e => e.Name.Equals(newAccessControlItem.Name, StringComparison.OrdinalIgnoreCase)) ?? new AccessControlEntry(newAccessControlItem.Name, AccessLevel.Undefined);
                 contentChangeDetails1.NewValue = contentChangeDetails1.NewValue + LocalizeNewAccessLevel(WebUtility.HtmlEncode(newAccessControlItem.Name), accessControlEntry2.Access, newAccessControlItem.Access) + "</br>";
             }
             contentChangeDetails1.OldValue = contentChangeDetails1.OldValue == null ? string.Empty : contentChangeDetails1.OldValue.ToString().TrimEnd("</br>");
@@ -108,18 +100,18 @@ namespace AdvancedTask.Business.AdvancedTask
 
         private string LocalizeCurrentAccessLevel(string accessLevelName, AccessLevel currentAccessLevel, AccessLevel newAccessLevel)
         {
-            var str = string.Format("{0}: ", accessLevelName);
+            var str = $"{accessLevelName}: ";
             string text;
             if (currentAccessLevel == AccessLevel.NoAccess || currentAccessLevel == AccessLevel.Undefined)
             {
-                text = _localizationService.GetString("/gadget/changeapproval/accesslevels/" + currentAccessLevel);
+                text = GetAccessLevelDescription(currentAccessLevel);
             }
             else
             {
                 foreach (var knownAccessLevel in KnownAccessLevels)
                 {
-                    if (currentAccessLevel.HasFlag((System.Enum)knownAccessLevel))
-                        str = str + _localizationService.GetString("/gadget/changeapproval/accesslevels/" + knownAccessLevel) + ", ";
+                    if (currentAccessLevel.HasFlag(knownAccessLevel))
+                        str = str + GetAccessLevelDescription(knownAccessLevel) + ", ";
                 }
                 text = str.TrimEnd(", ");
             }
@@ -130,22 +122,22 @@ namespace AdvancedTask.Business.AdvancedTask
 
         private string LocalizeNewAccessLevel(string accessLevelName, AccessLevel currentAccessLevel, AccessLevel newAccessLevel)
         {
-            var str = string.Format("{0}: ", accessLevelName);
+            var str = $"{accessLevelName}: ";
             string text1;
             if ((newAccessLevel == AccessLevel.NoAccess || newAccessLevel == AccessLevel.Undefined) && newAccessLevel == currentAccessLevel)
             {
-                text1 = _localizationService.GetString("/gadget/changeapproval/accesslevels/" + newAccessLevel);
+                text1 = GetAccessLevelDescription(newAccessLevel);
             }
             else
             {
                 foreach (var knownAccessLevel in KnownAccessLevels)
                 {
-                    if (currentAccessLevel.HasFlag((System.Enum)knownAccessLevel) || newAccessLevel.HasFlag((System.Enum)knownAccessLevel))
+                    if (currentAccessLevel.HasFlag(knownAccessLevel) || newAccessLevel.HasFlag(knownAccessLevel))
                     {
-                        var text2 = _localizationService.GetString("/gadget/changeapproval/accesslevels/" + knownAccessLevel);
-                        if (currentAccessLevel.HasFlag((System.Enum)knownAccessLevel) && !newAccessLevel.HasFlag((System.Enum)knownAccessLevel))
+                        var text2 = GetAccessLevelDescription(knownAccessLevel);
+                        if (currentAccessLevel.HasFlag(knownAccessLevel) && !newAccessLevel.HasFlag(knownAccessLevel))
                             text2 = text2.Strikethrough();
-                        else if (!currentAccessLevel.HasFlag((System.Enum)knownAccessLevel) && newAccessLevel.HasFlag((System.Enum)knownAccessLevel))
+                        else if (!currentAccessLevel.HasFlag(knownAccessLevel) && newAccessLevel.HasFlag(knownAccessLevel))
                             text2 = text2.Bold();
                         str = str + text2 + ", ";
                     }
@@ -159,12 +151,15 @@ namespace AdvancedTask.Business.AdvancedTask
         private ContentACL GetContentAccessControlList(string json)
         {
             if (string.IsNullOrEmpty(json))
-                return (ContentACL)null;
-            var jobject = JsonConvert.DeserializeObject<JObject>(json);
-            return new ContentACL()
+                return null;
+            var jObject = JsonConvert.DeserializeObject<JObject>(json);
+
+            var isInherited = jObject["IsInherited"]?.ToString() ?? "";
+
+            return new ContentACL
             {
-                IsInherited = jobject["IsInherited"].ToString().Equals(bool.TrueString, StringComparison.OrdinalIgnoreCase),
-                Entries = (IEnumerable<AccessControlEntry>)GetAccessControlListFromJsonArray(jobject["Entries"])
+                IsInherited = isInherited.Equals(bool.TrueString, StringComparison.OrdinalIgnoreCase),
+                Entries = GetAccessControlListFromJsonArray(jObject["Entries"])
             };
         }
         private List<AccessControlEntry> GetAccessControlListFromJsonArray(JToken entriesArray)
@@ -172,18 +167,52 @@ namespace AdvancedTask.Business.AdvancedTask
             var accessControlEntryList = new List<AccessControlEntry>();
             try
             {
-                foreach (var entries in (IEnumerable<JToken>)entriesArray)
-                {
-                    var accessControlEntry = new AccessControlEntry(entries["Name"].ToString(), (AccessLevel)int.Parse(entries["Access"].ToString()), (SecurityEntityType)int.Parse(entries["EntityType"].ToString()));
-                    accessControlEntryList.Add(accessControlEntry);
-                }
+                if (entriesArray != null)
+                    foreach (var entries in entriesArray)
+                    {
+                        var name = entries["Name"]?.ToString() ?? "";
+                        int.TryParse(entries["Access"]?.ToString(), out var access);
+                        int.TryParse(entries["EntityType"]?.ToString(), out var entry);
+
+                        var accessControlEntry =
+                            new AccessControlEntry(name, (AccessLevel)access, (SecurityEntityType)entry);
+                        accessControlEntryList.Add(accessControlEntry);
+                    }
             }
             catch (Exception ex)
             {
-                //_logger.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
             return accessControlEntryList;
         }
+
+        static string GetAccessLevelDescription(AccessLevel accessLevel)
+        {
+            switch (accessLevel)
+            {
+                case AccessLevel.NoAccess:
+                    return "No Access";
+                case AccessLevel.Read:
+                    return "Read";
+                case AccessLevel.Create:
+                    return "Create";
+                case AccessLevel.Edit:
+                    return "Change";
+                case AccessLevel.Delete:
+                    return "Delete";
+                case AccessLevel.Publish:
+                    return "Publish";
+                case AccessLevel.Administer:
+                    return "Administer";
+                case AccessLevel.FullAccess:
+                    return "Full Access";
+                case AccessLevel.Undefined:
+                    return "Undefined";
+                default:
+                    return "Undefined";
+            }
+        }
+
         #endregion
     }
 }
