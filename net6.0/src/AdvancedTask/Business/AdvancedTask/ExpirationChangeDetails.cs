@@ -33,12 +33,23 @@ namespace AdvancedTask.Business.AdvancedTask
                 foreach (var interceptProperty in interceptPropertyList)
                 {
                     if (dictionary1.ContainsKey(interceptProperty))
-                        contentChangeDetailsList.Add(new ContentChangeDetails()
+                    {
+                        var oldValue = dictionary1[interceptProperty];
+                        var newValue = dictionary2[interceptProperty];
+
+                        var item = new ContentChangeDetails
                         {
                             Name = GetExpirationDateSettingCommand(interceptProperty.ToLowerInvariant()),
-                            OldValue = dictionary1[interceptProperty],
-                            NewValue = dictionary2[interceptProperty]
-                        });
+                            OldValue = oldValue is DateTime oldValueDateTime
+                                ? oldValueDateTime.ToString("MMM dd, yyyy, h:mm:ss tt")
+                                : oldValue,
+                            NewValue = newValue is DateTime newValueDateTime
+                                ? newValueDateTime.ToString("MMM dd, yyyy, h:mm:ss tt")
+                                : newValue
+                        };
+
+                        contentChangeDetailsList.Add(item);
+                    }
                 }
             }
             catch (Exception ex)

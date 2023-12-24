@@ -1,19 +1,38 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Web;
+using EPiServer.DataAbstraction;
 
 namespace AdvancedTask.Models
 {
     public class AdvancedTaskIndexViewData
     {
-        public AdvancedTaskIndexViewData()
+        public AdvancedTaskIndexViewData(List<LanguageBranchOption> languageBranchList)
         {
+            LanguageBranchList = languageBranchList;
+            SelectedLanguageText = "Select";
+
+            if (languageBranchList != null && languageBranchList.Any())
+            {
+                var selectedLanguage = languageBranchList.FirstOrDefault(x => x.Selected);
+
+                if (selectedLanguage?.Language != null)
+                {
+                    SelectedLanguageText = selectedLanguage.Language.Name;
+                }
+            }
+
             HasPublishAccess = false;
             ContentTaskList = new List<ContentTask>();
-            //ChangeApproval = false;
-            //ShowChangeApprovalTab = false;
             PageNumber = 1;
-            EnableContentApprovalDeadline = true; // bool.Parse(ConfigurationManager<>.AppSettings["ATM:EnableContentApprovalDeadline"] ?? "false");
+            EnableContentApprovalDeadline = false; // bool.Parse(ConfigurationManager<>.AppSettings["ATM:EnableContentApprovalDeadline"] ?? "false");
         }
+
+        public readonly string DateTimeFormat = "yyyy-MM-dd HH:mm";
+
+        public readonly string DateTimeFormatUserFriendly = "MMM dd, yyyy, h:mm:ss tt";
+        
+        public const int DefaultPageSize = 50;
 
         public IEnumerable<int> Pages
         {
@@ -43,7 +62,9 @@ namespace AdvancedTask.Models
                 return list;
             }
         }
+        
         public int TotalPagesCount => (TotalItemsCount - 1) / PageSize + 1;
+        
         public int MaxIndexOfItem
         {
             get
@@ -70,14 +91,20 @@ namespace AdvancedTask.Models
             }
         }
 
-        public readonly int PageSize = 30;
+        
+        
+        public int PageSize { get; set; } = DefaultPageSize;
+        
         public int PageNumber { get; set; }
+       
         public List<ContentTask> ContentTaskList { get; set; }
+       
         public int TotalItemsCount { get; set; }
+        
         public bool HasPublishAccess { get; set; }
-        //public bool ChangeApproval { get; set; }
-        //public bool ShowChangeApprovalTab { get; set; }
+        
         public string TaskValues { get; set; }
+        
         public string QueryString { get; set; }
 
         public string PageUrl(int page)
@@ -87,6 +114,25 @@ namespace AdvancedTask.Models
             return $"?{qs}";
         }
 
+        public string LanguageUrl(string language)
+        {
+            var qs = HttpUtility.ParseQueryString(QueryString);
+            qs["language"] = language;
+            return $"?{qs}";
+        }
+
         public bool EnableContentApprovalDeadline { get; set; }
+
+
+
+        public List<LanguageBranchOption> LanguageBranchList { get; set; }
+        
+        public string  SelectedLanguageText { get; set; }
+    }
+
+    public class LanguageBranchOption
+    {
+        public LanguageBranch Language { get; set; }
+        public bool Selected { get; set; }
     }
 }

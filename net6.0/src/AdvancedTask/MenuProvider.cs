@@ -13,7 +13,7 @@ namespace AdvancedTask
             var url = Paths.ToResource("Advanced Task", "container");
 
             var link = new UrlMenuItem(
-                "Advanced Task Manager",
+                "Adv. Task Manager",
                 MenuPaths.Global + "/cms/advancedtask",
                 url)
             {

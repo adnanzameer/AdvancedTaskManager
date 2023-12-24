@@ -65,18 +65,56 @@
     }
 
     .notification-unread {
-        background-color: #FFF9C4;
+        background-color: #e6ebff;
     }
 
     a {
         text-decoration: none;
     }
 
+    .atm-tooltip {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        padding: 8px;
+        border-radius: 4px;
+    }
+
+    .atm-editButton {
+        border: none;
+        background: white;
+    }
 </style>
 
 <div class="col-sm-12">
-    <div class="table-responsive mt-3">
 
+    <div class="card">
+        <div class="card-body">
+            <nav class="navbar">
+                <div class="col-sm-5 col-md-4 me-0 px-3">
+                    @Html.Raw($"Currently, there are <strong>{Model.TotalItemsCount}</strong> content approval tasks awaiting review")
+                </div>
+
+                <div class="d-grid gap-2 d-md-flex">
+                    <div class="dropdown">
+                        <button class="btn btn-sm dropdown-toggle" type="button" id="languageDropdownMenuButton" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            @Html.Raw("<span style=\"font-size: 11px;\">Language</span> <br>" + Model.SelectedLanguageText)
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="languageDropdownMenuButton">
+                            @foreach (var language in Model.LanguageBranchList)
+                            {
+                                <a class="dropdown-item @(language.Selected ? "active" : "")" href="@Model.LanguageUrl(language.Language.LanguageID)">@language.Language.Name</a>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+            </nav>
+        </div>
+    </div>
+
+    <div class="table-responsive mt-3">
         <table class="table table-hover" id="sortable-table">
             <thead>
                 <tr>
@@ -90,6 +128,7 @@
                     {
                         <th scope="col">Deadline</th>
                     }
+                    <th scopre="col">&nbsp;</th>
                 </tr>
             </thead>
             <tbody>
@@ -100,7 +139,7 @@
                         <tr class="@(contentTask.NotificationUnread ? "notification-unread" : "")">
                             <td>@Html.CheckBox(contentTask.ApprovalId.ToString(), false, new { onchange = "selectionChanged(this)", @class = "checkbox" })</td>
                             <td>
-                                
+
                                 @if (!ContentReference.IsNullOrEmpty(contentTask.ContentReference))
                                 {
                                     if (!contentTask.CanUserPublish)
@@ -138,15 +177,24 @@
                             <td>
                                 @contentTask.Type
                             </td>
-                            <td data-original-title="@contentTask.DateTimeUserFriendly" data-container="body" data-toggle="tooltip" data-placement="bottom" title="@contentTask.DateTimeUserFriendly">@contentTask.DateTime</td>
+                            <td data-original-title="@contentTask.DateTime?.ToString(Model.DateTimeFormatUserFriendly)" data-container="body" data-toggle="tooltip" data-placement="bottom" title="@contentTask.DateTime?.ToString(Model.DateTimeFormatUserFriendly)">@contentTask.DateTime?.ToString(Model.DateTimeFormat)</td>
                             <td>
                                 @contentTask.StartedBy
                             </td>
 
                             @if (Model.EnableContentApprovalDeadline)
                             {
-                                <td class="@contentTask.WarningColor" data-original-title="@contentTask.DeadlineUserFriendly" data-container="body" data-toggle="tooltip" data-placement="bottom" title="@contentTask.DeadlineUserFriendly">@contentTask.Deadline</td>
+                                <td class="@contentTask.WarningColor" data-original-title="@contentTask.Deadline?.ToString(Model.DateTimeFormatUserFriendly)" data-container="body" data-toggle="tooltip" data-placement="bottom" title="@contentTask.Deadline?.ToString(Model.DateTimeFormatUserFriendly)">@(contentTask.Deadline != null ? contentTask.Deadline.Value.ToString(Model.DateTimeFormat) : " - ")</td>
                             }
+                            <td>
+                                @if (!ContentReference.IsNullOrEmpty(contentTask.ContentReference))
+                                {
+                                    <a href="#" class="atm-more"><span data-feather="more-horizontal"></span></a>
+                                    <div class="atm-tooltip">
+                                        <button class="atm-editButton" data-url="@contentTask.URL">Edit</button>
+                                    </div>
+                                }
+                            </td>
                         </tr>
                     }
                 }
@@ -514,6 +562,30 @@
 
     $(function () {
         $("[data-toggle='tooltip']").tooltip();
+    });
+
+    $(document).ready(function () {
+        $('.atm-more').click(function (e) {
+            e.stopPropagation(); // Prevent the click event from reaching the document
+
+            var tooltip = $(this).siblings('.atm-tooltip');
+            $('.atm-tooltip').not(tooltip).hide(); // Hide other tooltips
+            tooltip.show();
+        });
+
+        $('.atm-editButton').click(function (e) {
+            e.stopPropagation(); // Prevent the click event from reaching the document
+            var url = $(this).data('url');
+            window.open(url, '_blank');
+            $('.atm-tooltip').hide();
+        });
+
+        // Handle clicks outside of tooltips to hide them
+        $(document).click(function () {
+            $('.atm-tooltip').hide();
+        });
+
+        $('.dropdown-toggle').dropdown();
     });
 
 </script>

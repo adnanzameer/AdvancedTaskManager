@@ -4,10 +4,6 @@
     ViewBag.Title = "Advanced Task Manager";
     ViewBag.Info = "Administration of Awaiting Review Tasks of Content Approval and Change Approval.";
 }
-@*@{
-    await Html.RenderPartialAsync("Menu", "ChangeApproval");
-}
-*@
 <style>
     .inner-table {
         border-collapse: collapse !important;
@@ -46,9 +42,34 @@
         background-color: #212529;
         border-color: #32383e;
     }
+
+    .atm-tooltip {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        padding: 8px;
+        border-radius: 4px;
+    }
+
+    .atm-editButton {
+        border: none;
+        background: white;
+    }
+
+    .notification-unread {
+        background-color: #e6ebff;
+    }
 </style>
 
 <div class="col-sm-12">
+
+    <div class="card">
+        <div class="card-body">
+            @Html.Raw($"Currently, there are <strong>{Model.TotalItemsCount}</strong> change approval tasks awaiting review")
+        </div>
+    </div>
+
     <div class="table-responsive mt-3">
         <table class="table table-hover" id="sortable-table">
             <thead>
@@ -58,6 +79,7 @@
                     <th scope="col">Type</th>
                     <th scope="col">Submitted (UTC)</th>
                     <th scope="col">Started by</th>
+                    <th scope="col">&nbsp;</th>
                 </tr>
             </thead>
 
@@ -65,7 +87,7 @@
             {
                 foreach (var contentTask in Model.ContentTaskList)
                 {
-                    <tr @(contentTask.NotificationUnread ? "style=\"background-color: #FFF9C4;cursor: pointer;\"" : "cursor: pointer") class="parent" title="Click to expand/collapse" id="@contentTask.ApprovalId">
+                    <tr style="cursor: pointer;" class="parent @(contentTask.NotificationUnread ? "notification-unread" : "")" title="Click to expand/collapse" id="@contentTask.ApprovalId">
                         <td>
                             @if (!string.IsNullOrEmpty(contentTask.ContentIcon))
                             {
@@ -75,8 +97,18 @@
                         </td>
                         <td>@contentTask.ContentType</td>
                         <td>@contentTask.Type</td>
-                        <td data-original-title="@contentTask.DateTimeUserFriendly" data-container="body" data-toggle="tooltip" data-placement="bottom" title="@contentTask.DateTimeUserFriendly">@contentTask.DateTime</td>
+                        <td data-original-title="@contentTask.DateTime?.ToString(Model.DateTimeFormatUserFriendly)" data-container="body" data-toggle="tooltip" data-placement="bottom" title="@contentTask.DateTime?.ToString(Model.DateTimeFormatUserFriendly)">@contentTask.DateTime?.ToString(Model.DateTimeFormat)</td>
                         <td>@contentTask.StartedBy</td>
+
+                        <td>
+                            @if (!string.IsNullOrEmpty(@contentTask.URL))
+                            {
+                                <a href="#" class="atm-more"><span data-feather="more-horizontal"></span></a>
+                                <div class="atm-tooltip">
+                                    <button class="atm-editButton" data-url="@contentTask.URL">Edit</button>
+                                </div>
+                            }
+                        </td>
                     </tr>
                     if (contentTask.Details != null && contentTask.Details.Any())
                     {
@@ -157,5 +189,28 @@
 
     $(function () {
         $("[data-toggle='tooltip']").tooltip();
+    });
+
+
+    $(document).ready(function () {
+        $('.atm-more').click(function (e) {
+            e.stopPropagation(); // Prevent the click event from reaching the document
+
+            var tooltip = $(this).siblings('.atm-tooltip');
+            $('.atm-tooltip').not(tooltip).hide(); // Hide other tooltips
+            tooltip.show();
+        });
+
+        $('.atm-editButton').click(function (e) {
+            e.stopPropagation(); // Prevent the click event from reaching the document
+            var url = $(this).data('url');
+            window.open(url, '_blank');
+            $('.atm-tooltip').hide();
+        });
+
+        // Handle clicks outside of tooltips to hide them
+        $(document).click(function () {
+            $('.atm-tooltip').hide();
+        });
     });
 </script>
