@@ -1,4 +1,5 @@
 using Alloy.Extensions;
+using EPiServer.Authorization;
 using EPiServer.Cms.Shell;
 using EPiServer.Cms.UI.AspNetIdentity;
 using EPiServer.Scheduler;
@@ -29,7 +30,11 @@ public class Startup
             .AddCmsAspNetIdentity<ApplicationUser>()
             .AddCms()
             .AddAlloy()
-            .AddAdminUserRegistration()
+              .AddAdminUserRegistration(opt =>
+            {
+                opt.Behavior = EPiServer.Cms.Shell.UI.RegisterAdminUserBehaviors.Enabled;
+                opt.Roles = new List<string>() { Roles.Administrators, Roles.CmsAdmins, Roles.WebAdmins };
+            })
             .AddEmbeddedLocalization<Startup>();
 
         // Required by Wangkanai.Detection
