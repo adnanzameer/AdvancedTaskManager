@@ -17,6 +17,7 @@
 	<PackageReleaseNotes>https://github.com/adnanzameer/AdvancedTaskManager/blob/master/CHANGELOG.md</PackageReleaseNotes>
 	<PackageTags></PackageTags>
 	<StaticWebAssetBasePath>/_content/</StaticWebAssetBasePath>
+	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
@@ -31,22 +32,18 @@
   </ItemGroup>
 
   <ItemGroup>
-	<Content Remove="module\module.config" />
+	<None Include="..\..\images\icon.png" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup>
-	<None Include="module\module.config" />
-	<None Include="msbuild\Main.proj" />
-  </ItemGroup>
-
-  <ItemGroup>
-	<None Include="..\..\images\icon.png">
+	<Content Remove="module.config" />
+	<_ContentIncludedByDefault Remove="msbuild\CopyModule.targets" />
+	<None Include="module.config">
 	  <Pack>true</Pack>
-	  <PackagePath>\</PackagePath>
-	  <Link>icon.png</Link>
+	  <PackageCopyToOutput>true</PackageCopyToOutput>
+	  <BuildAction>None</BuildAction>
+	  <PackagePath>contentFiles\any\any\modules\_protected\Advanced.Task.Manager</PackagePath>
 	</None>
   </ItemGroup>
-
-  <Import Project="msbuild\Main.proj" />
 
 </Project>

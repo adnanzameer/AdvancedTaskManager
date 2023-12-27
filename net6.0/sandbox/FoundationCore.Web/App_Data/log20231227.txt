@@ -1,0 +1,306 @@
+2023-12-27 18:44:19.482 +00:00 [WRN] Unable to create a PropertyData instance of Type: 'Geta.Optimizely.Sitemaps.SpecializedProperties.PropertySEOSitemaps' Assembly: 'Geta.Optimizely.Sitemaps'. Will fallback using the data type instead.
+2023-12-27 18:44:19.928 +00:00 [ERR] An unhandled exception has occurred while executing the request.
+System.InvalidOperationException: Unable to resolve service for type 'FoundationCore.Web.Models.Interface.ISocialMediaSharingService' while attempting to activate 'FoundationCore.Web.Business.PageContextActionFilter'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.GetService(IServiceProvider sp, Type type, Type requiredBy, Boolean isDefaultParameterRequired)
+   at lambda_method210(Closure , IServiceProvider , Object[] )
+   at Microsoft.AspNetCore.Mvc.TypeFilterAttribute.CreateInstance(IServiceProvider serviceProvider)
+   at Microsoft.AspNetCore.Mvc.Filters.DefaultFilterProvider.ProvideFilter(FilterProviderContext context, FilterItem filterItem)
+   at Microsoft.AspNetCore.Mvc.Filters.DefaultFilterProvider.OnProvidersExecuting(FilterProviderContext context)
+   at Microsoft.AspNetCore.Mvc.Filters.FilterFactory.CreateUncachedFiltersCore(IFilterProvider[] filterProviders, ActionContext actionContext, List`1 filterItems)
+   at Microsoft.AspNetCore.Mvc.Filters.FilterFactory.GetAllFilters(IFilterProvider[] filterProviders, ActionContext actionContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvokerCache.GetCachedResult(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Routing.ControllerRequestDelegateFactory.<>c__DisplayClass12_0.<CreateRequestDelegate>b__0(HttpContext context)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authorization.Policy.AuthorizationMiddlewareResultHandler.HandleAsync(RequestDelegate next, HttpContext context, AuthorizationPolicy policy, PolicyAuthorizationResult authorizeResult)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)
+2023-12-27 18:45:11.942 +00:00 [WRN] Unable to create a PropertyData instance of Type: 'Geta.Optimizely.Sitemaps.SpecializedProperties.PropertySEOSitemaps' Assembly: 'Geta.Optimizely.Sitemaps'. Will fallback using the data type instead.
+2023-12-27 18:46:45.283 +00:00 [WRN] Unable to create a PropertyData instance of Type: 'Geta.Optimizely.Sitemaps.SpecializedProperties.PropertySEOSitemaps' Assembly: 'Geta.Optimizely.Sitemaps'. Will fallback using the data type instead.
+2023-12-27 18:46:46.562 +00:00 [ERR] An unhandled exception has occurred while executing the request.
+System.InvalidOperationException: The partial view 'SocialMediaSharing' was not found. The following locations were searched:
+Views/ElementBlocks/SocialMediaSharing.cshtml
+/CmsDefault/Views/ElementBlocks/SocialMediaSharing.cshtml
+~/Views/Shared/ElementBlocks/SocialMediaSharing.cshtml
+/CmsDefault/Views/Shared/ElementBlocks/SocialMediaSharing.cshtml
+/FormsViews/Views/ElementBlocks/SocialMediaSharing.cshtml
+/CmsDefault/FormsViews/Views/ElementBlocks/SocialMediaSharing.cshtml
+/Views/StartPage/SocialMediaSharing.cshtml
+/CmsDefault/Views/StartPage/SocialMediaSharing.cshtml
+/Views/Shared/SocialMediaSharing.cshtml
+/CmsDefault/Views/Shared/SocialMediaSharing.cshtml
+/Pages/Shared/SocialMediaSharing.cshtml
+/CmsDefault/Pages/Shared/SocialMediaSharing.cshtml
+/Util
+/CmsDefault/Util
+~/Views/Shared/Blocks/SocialMediaSharing.cshtml
+/CmsDefault/Views/Shared/Blocks/SocialMediaSharing.cshtml
+~/Views/Shared/PagePartials/SocialMediaSharing.cshtml
+/CmsDefault/Views/Shared/PagePartials/SocialMediaSharing.cshtml
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.HtmlHelper.RenderPartialCoreAsync(String partialViewName, Object model, ViewDataDictionary viewData, TextWriter writer)
+   at AspNetCoreGeneratedDocument.Views_Shared_Layouts__Root.<ExecuteAsync>b__8_0() in C:\Projects\adnanzameer\AdvancedTaskManager\net6.0\sandbox\FoundationCore.Web\Views\Shared\Layouts\_Root.cshtml:line 38
+   at Microsoft.AspNetCore.Razor.Runtime.TagHelpers.TagHelperExecutionContext.SetOutputContentAsync()
+   at AspNetCoreGeneratedDocument.Views_Shared_Layouts__Root.ExecuteAsync() in C:\Projects\adnanzameer\AdvancedTaskManager\net6.0\sandbox\FoundationCore.Web\Views\Shared\Layouts\_Root.cshtml:line 7
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageCoreAsync(IRazorPage page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageAsync(IRazorPage page, ViewContext context, Boolean invokeViewStarts)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderLayoutAsync(ViewContext context, ViewBufferTextWriter bodyWriter)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderAsync(ViewContext context)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ActionContext actionContext, IView view, ViewDataDictionary viewData, ITempDataDictionary tempData, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|30_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeFilterPipelineAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authorization.Policy.AuthorizationMiddlewareResultHandler.HandleAsync(RequestDelegate next, HttpContext context, AuthorizationPolicy policy, PolicyAuthorizationResult authorizeResult)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)
+2023-12-27 18:47:50.881 +00:00 [WRN] Unable to create a PropertyData instance of Type: 'Geta.Optimizely.Sitemaps.SpecializedProperties.PropertySEOSitemaps' Assembly: 'Geta.Optimizely.Sitemaps'. Will fallback using the data type instead.
+2023-12-27 18:48:17.078 +00:00 [WRN] One or more of the following response headers have been removed because they are invalid for HTTP/2 and HTTP/3 responses: 'Connection', 'Transfer-Encoding', 'Keep-Alive', 'Upgrade' and 'Proxy-Connection'.
+2023-12-27 18:48:17.078 +00:00 [WRN] One or more of the following response headers have been removed because they are invalid for HTTP/2 and HTTP/3 responses: 'Connection', 'Transfer-Encoding', 'Keep-Alive', 'Upgrade' and 'Proxy-Connection'.
+2023-12-27 18:48:17.078 +00:00 [WRN] One or more of the following response headers have been removed because they are invalid for HTTP/2 and HTTP/3 responses: 'Connection', 'Transfer-Encoding', 'Keep-Alive', 'Upgrade' and 'Proxy-Connection'.
+2023-12-27 18:49:25.474 +00:00 [WRN] One or more of the following response headers have been removed because they are invalid for HTTP/2 and HTTP/3 responses: 'Connection', 'Transfer-Encoding', 'Keep-Alive', 'Upgrade' and 'Proxy-Connection'.
+2023-12-27 18:49:25.474 +00:00 [WRN] One or more of the following response headers have been removed because they are invalid for HTTP/2 and HTTP/3 responses: 'Connection', 'Transfer-Encoding', 'Keep-Alive', 'Upgrade' and 'Proxy-Connection'.
+2023-12-27 18:49:25.599 +00:00 [WRN] One or more of the following response headers have been removed because they are invalid for HTTP/2 and HTTP/3 responses: 'Connection', 'Transfer-Encoding', 'Keep-Alive', 'Upgrade' and 'Proxy-Connection'.
+2023-12-27 18:49:25.743 +00:00 [WRN] One or more of the following response headers have been removed because they are invalid for HTTP/2 and HTTP/3 responses: 'Connection', 'Transfer-Encoding', 'Keep-Alive', 'Upgrade' and 'Proxy-Connection'.
+2023-12-27 18:49:25.805 +00:00 [WRN] One or more of the following response headers have been removed because they are invalid for HTTP/2 and HTTP/3 responses: 'Connection', 'Transfer-Encoding', 'Keep-Alive', 'Upgrade' and 'Proxy-Connection'.
+2023-12-27 18:49:25.824 +00:00 [WRN] One or more of the following response headers have been removed because they are invalid for HTTP/2 and HTTP/3 responses: 'Connection', 'Transfer-Encoding', 'Keep-Alive', 'Upgrade' and 'Proxy-Connection'.
+2023-12-27 18:49:25.848 +00:00 [WRN] One or more of the following response headers have been removed because they are invalid for HTTP/2 and HTTP/3 responses: 'Connection', 'Transfer-Encoding', 'Keep-Alive', 'Upgrade' and 'Proxy-Connection'.
+2023-12-27 18:53:27.127 +00:00 [WRN] The modules finder couldn't find a directory at '~/EPiServer/Advanced.Task.Manager'
+2023-12-27 18:53:27.169 +00:00 [WRN] The modules finder couldn't find a directory at '/EPiServer/Advanced.Task.Manager'
+2023-12-27 18:53:28.446 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.447 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.450 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.450 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.451 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.452 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.453 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.453 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.454 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.454 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.455 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.456 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.457 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.457 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.458 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.458 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.459 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.459 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.460 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.460 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.462 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.462 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.463 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.463 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.464 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.464 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.465 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.466 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.467 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.467 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.468 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.468 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.469 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.469 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.470 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.470 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.472 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.472 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.473 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.473 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.474 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.474 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.475 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.475 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.477 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.477 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.478 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.478 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.479 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.479 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.480 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.480 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.481 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.481 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.482 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.482 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.483 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.483 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.485 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.485 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.486 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.486 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.488 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.488 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.489 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.489 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.491 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.491 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.494 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.494 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.496 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.496 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.497 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.498 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.499 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.499 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.500 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.500 +00:00 [WRN] Cache cleared
+2023-12-27 18:53:28.818 +00:00 [WRN] The modules finder couldn't find a directory at '~/EPiServer/Advanced.Task.Manager'
+2023-12-27 18:53:28.819 +00:00 [WRN] The modules finder couldn't find a directory at '/EPiServer/Advanced.Task.Manager'
+2023-12-27 18:53:32.769 +00:00 [WRN] Unable to create a PropertyData instance of Type: 'Geta.Optimizely.Sitemaps.SpecializedProperties.PropertySEOSitemaps' Assembly: 'Geta.Optimizely.Sitemaps'. Will fallback using the data type instead.
+2023-12-27 18:53:57.965 +00:00 [WRN] The modules finder couldn't find a directory at '~/EPiServer/Advanced.Task.Manager'
+2023-12-27 18:53:57.966 +00:00 [WRN] The modules finder couldn't find a directory at '/EPiServer/Advanced.Task.Manager'
+2023-12-27 18:54:00.511 +00:00 [WRN] One or more of the following response headers have been removed because they are invalid for HTTP/2 and HTTP/3 responses: 'Connection', 'Transfer-Encoding', 'Keep-Alive', 'Upgrade' and 'Proxy-Connection'.
+2023-12-27 18:54:00.511 +00:00 [WRN] One or more of the following response headers have been removed because they are invalid for HTTP/2 and HTTP/3 responses: 'Connection', 'Transfer-Encoding', 'Keep-Alive', 'Upgrade' and 'Proxy-Connection'.
+2023-12-27 18:54:00.511 +00:00 [WRN] One or more of the following response headers have been removed because they are invalid for HTTP/2 and HTTP/3 responses: 'Connection', 'Transfer-Encoding', 'Keep-Alive', 'Upgrade' and 'Proxy-Connection'.
+2023-12-27 18:55:19.892 +00:00 [WRN] Could not load personalized component with definition 'Geta.Optimizely.Categories.CategoryTreeComponent' and view '/episerver/cms/home'.
+2023-12-27 18:55:20.689 +00:00 [WRN] Could not load personalized component with definition 'Geta.Optimizely.Categories.CategoryTreeComponent' and view '/episerver/cms/home'.
+2023-12-27 18:55:21.578 +00:00 [WRN] Could not load personalized component with definition 'Geta.Optimizely.Categories.CategoryTreeComponent' and view '/episerver/cms/home'.
+2023-12-27 18:56:43.464 +00:00 [WRN] The modules finder couldn't find a directory at '~/EPiServer/Advanced.Task.Manager'
+2023-12-27 18:56:43.505 +00:00 [WRN] The modules finder couldn't find a directory at '/EPiServer/Advanced.Task.Manager'
+2023-12-27 18:56:45.076 +00:00 [WRN] The modules finder couldn't find a directory at '~/EPiServer/Advanced.Task.Manager'
+2023-12-27 18:56:45.076 +00:00 [WRN] The modules finder couldn't find a directory at '/EPiServer/Advanced.Task.Manager'
+2023-12-27 18:56:48.981 +00:00 [WRN] Unable to create a PropertyData instance of Type: 'Geta.Optimizely.Sitemaps.SpecializedProperties.PropertySEOSitemaps' Assembly: 'Geta.Optimizely.Sitemaps'. Will fallback using the data type instead.
+2023-12-27 18:57:07.481 +00:00 [ERR] An unhandled exception has occurred while executing the request.
+System.ArgumentException: Unable to find a module by assembly 'Advanced.Task.Manager, Version=3.0.1.0, Culture=neutral, PublicKeyToken=null' (Parameter 'moduleAssembly')
+   at EPiServer.Shell.Paths.ToResource(Assembly moduleAssembly, String moduleRelativeResourcePath)
+   at Advanced.Task.Manager.Infrastructure.Cms.MenuProvider.GetMenuItems() in C:\Projects\adnanzameer\AdvancedTaskManager\net6.0\src\Advanced.Task.Manager\Infrastructure\Cms\MenuProvider.cs:line 12
+   at EPiServer.Shell.Navigation.MenuAssembler.<>c.<GetMenuItems>b__8_1(IMenuProvider m)
+   at System.Linq.Enumerable.SelectManySingleSelectorIterator`2.MoveNext()
+   at EPiServer.Shell.Navigation.MenuAssembler.GetMenuItems(String parentPath, Int32 relativeDepth)
+   at EPiServer.Shell.Navigation.MenuAssembler.GetMenuHierarchy(String rootPath, Int32 relativeDepth, String selectionPath)
+   at EPiServer.Shell.Web.Internal.NavigationService.GetCurrentProduct()
+   at EPiServer.Shell.Web.Internal.NavigationService.GetCurrentProductId()
+   at EPiServer.Shell.Navigation.MenuHelper.CreateMenuRootElement()
+   at EPiServer.Shell.Navigation.MenuHelper.CreatePlatformNavigationMenu()
+   at AspNetCoreGeneratedDocument.Find_Views_Views_Shared_FindBootstrapper.<ExecuteAsync>b__0_3()
+   at Microsoft.AspNetCore.Mvc.Razor.RazorPage.RenderSectionAsyncCore(String sectionName, Boolean required)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorPage.RenderSection(String name, Boolean required)
+   at AspNetCoreGeneratedDocument.Find_Views_Views_Shared_Find.<ExecuteAsync>b__9_1()
+   at Microsoft.AspNetCore.Razor.Runtime.TagHelpers.TagHelperExecutionContext.SetOutputContentAsync()
+   at AspNetCoreGeneratedDocument.Find_Views_Views_Shared_Find.ExecuteAsync()
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageCoreAsync(IRazorPage page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageAsync(IRazorPage page, ViewContext context, Boolean invokeViewStarts)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderLayoutAsync(ViewContext context, ViewBufferTextWriter bodyWriter)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderAsync(ViewContext context)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ActionContext actionContext, IView view, ViewDataDictionary viewData, ITempDataDictionary tempData, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|30_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeFilterPipelineAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authorization.Policy.AuthorizationMiddlewareResultHandler.HandleAsync(RequestDelegate next, HttpContext context, AuthorizationPolicy policy, PolicyAuthorizationResult authorizeResult)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)
+2023-12-27 19:01:39.045 +00:00 [WRN] The modules finder couldn't find a directory at '~/EPiServer/Advanced.Task.Manager'
+2023-12-27 19:01:39.094 +00:00 [WRN] The modules finder couldn't find a directory at '/EPiServer/Advanced.Task.Manager'
+2023-12-27 19:01:40.687 +00:00 [WRN] The modules finder couldn't find a directory at '~/EPiServer/Advanced.Task.Manager'
+2023-12-27 19:01:40.687 +00:00 [WRN] The modules finder couldn't find a directory at '/EPiServer/Advanced.Task.Manager'
+2023-12-27 19:01:44.460 +00:00 [WRN] Unable to create a PropertyData instance of Type: 'Geta.Optimizely.Sitemaps.SpecializedProperties.PropertySEOSitemaps' Assembly: 'Geta.Optimizely.Sitemaps'. Will fallback using the data type instead.
+2023-12-27 19:02:02.705 +00:00 [WRN] The modules finder couldn't find a directory at '~/EPiServer/Advanced.Task.Manager'
+2023-12-27 19:02:02.705 +00:00 [WRN] The modules finder couldn't find a directory at '/EPiServer/Advanced.Task.Manager'
+2023-12-27 19:02:05.186 +00:00 [WRN] One or more of the following response headers have been removed because they are invalid for HTTP/2 and HTTP/3 responses: 'Connection', 'Transfer-Encoding', 'Keep-Alive', 'Upgrade' and 'Proxy-Connection'.
+2023-12-27 19:02:05.186 +00:00 [WRN] One or more of the following response headers have been removed because they are invalid for HTTP/2 and HTTP/3 responses: 'Connection', 'Transfer-Encoding', 'Keep-Alive', 'Upgrade' and 'Proxy-Connection'.
+2023-12-27 19:02:05.186 +00:00 [WRN] One or more of the following response headers have been removed because they are invalid for HTTP/2 and HTTP/3 responses: 'Connection', 'Transfer-Encoding', 'Keep-Alive', 'Upgrade' and 'Proxy-Connection'.
+2023-12-27 19:24:34.524 +00:00 [WRN] The modules finder couldn't find a directory at '~/EPiServer/Advanced.Task.Manager'
+2023-12-27 19:24:34.570 +00:00 [WRN] The modules finder couldn't find a directory at '/EPiServer/Advanced.Task.Manager'
+2023-12-27 19:24:36.146 +00:00 [WRN] The modules finder couldn't find a directory at '~/EPiServer/Advanced.Task.Manager'
+2023-12-27 19:24:36.146 +00:00 [WRN] The modules finder couldn't find a directory at '/EPiServer/Advanced.Task.Manager'
+2023-12-27 19:24:38.289 +00:00 [WRN] Unable to create a PropertyData instance of Type: 'Geta.Optimizely.Sitemaps.SpecializedProperties.PropertySEOSitemaps' Assembly: 'Geta.Optimizely.Sitemaps'. Will fallback using the data type instead.
+2023-12-27 19:26:13.658 +00:00 [ERR] An unhandled exception has occurred while executing the request.
+System.ArgumentException: Unable to find a module by assembly 'Advanced.Task.Manager, Version=3.0.1.0, Culture=neutral, PublicKeyToken=null' (Parameter 'moduleAssembly')
+   at EPiServer.Shell.Paths.ToResource(Assembly moduleAssembly, String moduleRelativeResourcePath)
+   at Advanced.Task.Manager.Infrastructure.Cms.MenuProvider.GetMenuItems() in C:\Projects\adnanzameer\AdvancedTaskManager\net6.0\src\Advanced.Task.Manager\Infrastructure\Cms\MenuProvider.cs:line 12
+   at EPiServer.Shell.Navigation.MenuAssembler.<>c.<GetMenuItems>b__8_1(IMenuProvider m)
+   at System.Linq.Enumerable.SelectManySingleSelectorIterator`2.MoveNext()
+   at EPiServer.Shell.Navigation.MenuAssembler.GetMenuItems(String parentPath, Int32 relativeDepth)
+   at EPiServer.Shell.Navigation.MenuAssembler.GetMenuHierarchy(String rootPath, Int32 relativeDepth, String selectionPath)
+   at EPiServer.Shell.Web.Internal.NavigationService.GetCurrentProduct()
+   at EPiServer.Shell.Web.Internal.NavigationService.GetCurrentProductId()
+   at EPiServer.Shell.Navigation.MenuHelper.CreateMenuRootElement()
+   at EPiServer.Shell.Navigation.MenuHelper.CreatePlatformNavigationMenu()
+   at AspNetCoreGeneratedDocument.Find_Views_Views_Shared_FindBootstrapper.<ExecuteAsync>b__0_3()
+   at Microsoft.AspNetCore.Mvc.Razor.RazorPage.RenderSectionAsyncCore(String sectionName, Boolean required)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorPage.RenderSection(String name, Boolean required)
+   at AspNetCoreGeneratedDocument.Find_Views_Views_Shared_Find.<ExecuteAsync>b__9_1()
+   at Microsoft.AspNetCore.Razor.Runtime.TagHelpers.TagHelperExecutionContext.SetOutputContentAsync()
+   at AspNetCoreGeneratedDocument.Find_Views_Views_Shared_Find.ExecuteAsync()
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageCoreAsync(IRazorPage page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageAsync(IRazorPage page, ViewContext context, Boolean invokeViewStarts)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderLayoutAsync(ViewContext context, ViewBufferTextWriter bodyWriter)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderAsync(ViewContext context)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ActionContext actionContext, IView view, ViewDataDictionary viewData, ITempDataDictionary tempData, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|30_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeFilterPipelineAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authorization.Policy.AuthorizationMiddlewareResultHandler.HandleAsync(RequestDelegate next, HttpContext context, AuthorizationPolicy policy, PolicyAuthorizationResult authorizeResult)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)
+2023-12-27 19:31:41.141 +00:00 [WRN] The modules finder couldn't find a directory at '~/EPiServer/Advanced.Task.Manager'
+2023-12-27 19:31:41.199 +00:00 [WRN] The modules finder couldn't find a directory at '/EPiServer/Advanced.Task.Manager'
+2023-12-27 19:31:42.835 +00:00 [WRN] The modules finder couldn't find a directory at '~/EPiServer/Advanced.Task.Manager'
+2023-12-27 19:31:42.835 +00:00 [WRN] The modules finder couldn't find a directory at '/EPiServer/Advanced.Task.Manager'
+2023-12-27 19:31:45.403 +00:00 [WRN] Unable to create a PropertyData instance of Type: 'Geta.Optimizely.Sitemaps.SpecializedProperties.PropertySEOSitemaps' Assembly: 'Geta.Optimizely.Sitemaps'. Will fallback using the data type instead.
+2023-12-27 19:32:14.521 +00:00 [WRN] The modules finder couldn't find a directory at '~/EPiServer/Advanced.Task.Manager'
+2023-12-27 19:32:14.522 +00:00 [WRN] The modules finder couldn't find a directory at '/EPiServer/Advanced.Task.Manager'
+2023-12-27 19:32:17.149 +00:00 [WRN] One or more of the following response headers have been removed because they are invalid for HTTP/2 and HTTP/3 responses: 'Connection', 'Transfer-Encoding', 'Keep-Alive', 'Upgrade' and 'Proxy-Connection'.
+2023-12-27 19:32:17.149 +00:00 [WRN] One or more of the following response headers have been removed because they are invalid for HTTP/2 and HTTP/3 responses: 'Connection', 'Transfer-Encoding', 'Keep-Alive', 'Upgrade' and 'Proxy-Connection'.
+2023-12-27 19:32:17.149 +00:00 [WRN] One or more of the following response headers have been removed because they are invalid for HTTP/2 and HTTP/3 responses: 'Connection', 'Transfer-Encoding', 'Keep-Alive', 'Upgrade' and 'Proxy-Connection'.
