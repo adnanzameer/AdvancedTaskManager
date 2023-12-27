@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using AdvancedTask.Features.AdvancedTask;
-using AdvancedTask.Features.Interface;
 using EPiServer;
 using EPiServer.Core;
 using EPiServer.Logging;

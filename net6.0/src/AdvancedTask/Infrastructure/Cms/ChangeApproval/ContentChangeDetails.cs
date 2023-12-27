@@ -1,6 +1,4 @@
-﻿using AdvancedTask.Features.Interface;
-
-namespace AdvancedTask.Infrastructure.Cms.ChangeApproval
+﻿namespace AdvancedTask.Infrastructure.Cms.ChangeApproval
 {
     public class ContentChangeDetails : IContentChangeDetails
     {

@@ -1,4 +1,4 @@
-﻿namespace AdvancedTask.Features.Interface
+﻿namespace AdvancedTask.Infrastructure.Cms.ChangeApproval
 {
     public interface ICultureSpecificApprovalCommand
     {

@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using AdvancedTask.Features.Interface;
+using AdvancedTask.Infrastructure.Cms.ChangeApproval;
 using EPiServer.Core;
 
 namespace AdvancedTask.Features.AdvancedTask

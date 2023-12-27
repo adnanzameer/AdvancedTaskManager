@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using AdvancedTask.Features.AdvancedTask;
-using AdvancedTask.Features.Interface;
 using EPiServer.Logging;
 using Newtonsoft.Json;
 

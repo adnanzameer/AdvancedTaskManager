@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
-using AdvancedTask.Features.Interface;
 using EPiServer.ServiceLocation;
 
 namespace AdvancedTask.Infrastructure.Cms.ChangeApproval

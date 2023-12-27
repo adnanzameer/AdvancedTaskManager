@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using AdvancedTask.Features.Interface;
+using AdvancedTask.Infrastructure.Cms.ChangeApproval;
 
 namespace AdvancedTask.Features.AdvancedTask
 {

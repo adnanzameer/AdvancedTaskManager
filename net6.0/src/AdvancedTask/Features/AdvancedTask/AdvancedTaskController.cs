@@ -148,7 +148,7 @@ namespace AdvancedTask.Features.AdvancedTask
                     approvalData.ApprovalComment = "Approved Through Advanced Task Manager";
                 }
 
-                //await ApproveContent(approvalData.TaskValues, approvalData.ApprovalComment, approvalData.PublishContent);
+                await ApproveContent(approvalData.TaskValues, approvalData.ApprovalComment, approvalData.PublishContent);
             }
             return Json("Ok");
         }
@@ -265,12 +265,6 @@ namespace AdvancedTask.Features.AdvancedTask
                                         }
                                     }
                                 }
-                                //else
-                                //{
-                                //    customTask.Deadline = DateTime.Now.AddDays(-7);
-                                //    customTask.WarningColor = "red";
-                                //    //customTask.WarningColor = "green";
-                                //}
                             }
                         }
 
