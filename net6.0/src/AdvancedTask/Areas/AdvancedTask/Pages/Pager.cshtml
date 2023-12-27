@@ -1,4 +1,4 @@
-﻿@model AdvancedTask.Models.AdvancedTaskIndexViewData
+﻿@model AdvancedTask.Features.AdvancedTask.AdvancedTaskIndexViewData
 
 @if (Model.TotalItemsCount > Model.PageSize)
 {
@@ -15,7 +15,7 @@
                     </a>
                 </li>
 
-                @foreach (int i in Model.Pages)
+                @foreach (var i in Model.Pages)
                 {
                     if (i == 0)
                     {

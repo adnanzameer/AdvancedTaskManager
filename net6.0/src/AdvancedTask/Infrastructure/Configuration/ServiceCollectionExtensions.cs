@@ -1,11 +1,9 @@
 using System;
 using System.Linq;
-using AdvancedTask.Business;
-using AdvancedTask.Business.AdvancedTask;
-using AdvancedTask.Business.AdvancedTask.Command;
-using AdvancedTask.Business.AdvancedTask.Interface;
-using AdvancedTask.Business.AdvancedTask.Mapper;
-using AdvancedTask.Helper;
+using AdvancedTask.Features.Interface;
+using AdvancedTask.Infrastructure.Cms.ChangeApproval;
+using AdvancedTask.Infrastructure.Helpers;
+using AdvancedTask.Infrastructure.Mapper;
 using EPiServer.Authorization;
 using EPiServer.Shell.Modules;
 using Microsoft.AspNetCore.Authorization;
@@ -14,10 +12,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace AdvancedTask.Infrastructure.Configuration
 {
-	public static class ServiceCollectionExtensions
+    public static class ServiceCollectionExtensions
 	{
-		private static readonly Action<AuthorizationPolicyBuilder> DefaultPolicy = p =>
-			p.RequireRole(Roles.Administrators, Roles.WebAdmins, Roles.CmsAdmins);
+		private static readonly Action<AuthorizationPolicyBuilder> DefaultPolicy = p => p.RequireRole(Roles.Administrators, Roles.WebAdmins, Roles.CmsAdmins);
 
 		public static IServiceCollection AddAdvancedTask(this IServiceCollection services, Action<AdvancedTaskManagerOptions> setupAction)
 		{
