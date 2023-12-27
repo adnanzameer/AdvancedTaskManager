@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,15 +12,11 @@ using EPiServer.Approvals.ContentApprovals;
 using EPiServer.Authorization;
 using EPiServer.Cms.Shell;
 using EPiServer.Core;
-using EPiServer.Data;
 using EPiServer.DataAbstraction;
 using EPiServer.DataAccess;
 using EPiServer.Framework.Localization;
 using EPiServer.Logging;
-using EPiServer.Notification;
-using EPiServer.Notification.Internal;
 using EPiServer.Security;
-using EPiServer.ServiceLocation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -37,7 +32,7 @@ namespace AdvancedTask.Features.AdvancedTask
         private readonly IUIHelper _helper;
         private readonly IContentRepository _contentRepository;
         private readonly IContentTypeRepository _contentTypeRepository;
-        private readonly IUserNotificationRepository _userNotificationRepository;
+        private readonly INotificationHandler _notificationHandler;
         private readonly IApprovalEngine _approvalEngine;
         private readonly LocalizationService _localizationService;
         private readonly IChangeTaskHelper _changeTaskHelper;
@@ -48,18 +43,18 @@ namespace AdvancedTask.Features.AdvancedTask
         private readonly ILogger _logger;
         private const string ContentApprovalDeadlinePropertyName = "ATM_ContentApprovalDeadline";
 
-        public AdvancedTaskController(IApprovalRepository approvalRepository, IContentRepository contentRepository, IContentTypeRepository contentTypeRepository, IUserNotificationRepository userNotificationRepository, IApprovalEngine approvalEngine, LocalizationService localizationService, IChangeTaskHelper changeTaskHelper, IUIHelper helper, IPrincipalAccessor principalAccessor, ILanguageBranchRepository languageBranchRepository, IOptions<AdvancedTaskManagerOptions> options)
+        public AdvancedTaskController(IApprovalRepository approvalRepository, IContentRepository contentRepository, IContentTypeRepository contentTypeRepository, IApprovalEngine approvalEngine, LocalizationService localizationService, IChangeTaskHelper changeTaskHelper, IUIHelper helper, IPrincipalAccessor principalAccessor, ILanguageBranchRepository languageBranchRepository, IOptions<AdvancedTaskManagerOptions> options, INotificationHandler notificationHandler)
         {
             _approvalRepository = approvalRepository;
             _contentRepository = contentRepository;
             _contentTypeRepository = contentTypeRepository;
-            _userNotificationRepository = userNotificationRepository;
             _approvalEngine = approvalEngine;
             _localizationService = localizationService;
             _changeTaskHelper = changeTaskHelper;
             _helper = helper;
             _principalAccessor = principalAccessor;
             _languageBranchRepository = languageBranchRepository;
+            _notificationHandler = notificationHandler;
             _configuration = options.Value;
             _logger = LogManager.GetLogger(typeof(AdvancedTaskController));
         }
@@ -269,7 +264,7 @@ namespace AdvancedTask.Features.AdvancedTask
                         }
 
                         //Get Notifications
-                        customTask = await GetNotifications(id, customTask, true);
+                        customTask = await _notificationHandler.GetNotifications(id, customTask, true);
 
                         taskList.Add(customTask);
                     }
@@ -416,7 +411,7 @@ namespace AdvancedTask.Features.AdvancedTask
                         customTask.ContentType = GetTypeContent(content);
                     }
 
-                    customTask = await GetNotifications(id, customTask, false);
+                    customTask = await _notificationHandler.GetNotifications(id, customTask, false);
 
                     taskList.Add(customTask);
                 }
@@ -430,30 +425,7 @@ namespace AdvancedTask.Features.AdvancedTask
             await _approvalEngine.AbortAsync(ids, _principalAccessor.Principal.Identity?.Name);
         }
 
-        private async Task<ContentTask> GetNotifications(string id, ContentTask customTask, bool isContentQuery)
-        {
-            if (_principalAccessor.Principal.Identity != null && !string.IsNullOrEmpty(_principalAccessor.Principal.Identity.Name))
-            {
-                var notifications = await GetNotifications(_principalAccessor.Principal.Identity.Name, id, isContentQuery);
 
-                if (notifications?.PagedResult != null && notifications.PagedResult.Any())
-                {
-                    //Mark Notification Read
-                    foreach (var notification in notifications.PagedResult)
-                    {
-                        await _userNotificationRepository.MarkUserNotificationAsReadAsync(new NotificationUser(_principalAccessor.Principal.Identity.Name), notification.ID);
-                    }
-
-                    customTask.NotificationUnread = true;
-                }
-                else
-                {
-                    customTask.NotificationUnread = false;
-                }
-            }
-
-            return customTask;
-        }
 
         private string GetTypeContent(IContent content)
         {
@@ -495,44 +467,7 @@ namespace AdvancedTask.Features.AdvancedTask
             return contentName;
         }
 
-        private async Task<PagedInternalNotificationMessageResult> GetNotifications(string user, string contentId, bool isContentQuery = true)
-        {
-            var db = ServiceLocator.Current.GetInstance<IAsyncDatabaseExecutor>();
-            return new PagedInternalNotificationMessageResult(await db.ExecuteAsync(async () =>
-            {
-                var entries = new List<InternalNotificationMessage>();
-                var query = "SELECT pkID AS ID, Recipient, Sender, Channel, [Type], [Subject], Content, Sent, SendAt, Saved, [Read], Category FROM [tblNotificationMessage] " +
-                                   $"WHERE Recipient = '{user}'";
 
-                if (isContentQuery)
-                {
-                    query = query + $"AND Content like '%\"contentLink\":\"{contentId}_%' " +
-                                    $"AND Content like '%status\":7%' " +
-                                    "AND Channel = 'epi-approval' ";
-                }
-                else
-                {
-                    query = query + $"AND Content like '%\"ApprovalID\": {contentId},%' " +
-                                    "AND Channel = 'epi-changeapproval' ";
-                }
-
-                query = query + "AND [Read] is NULL " +
-                                "order by Saved desc";
-
-                var command = db.CreateCommand();
-                command.CommandText = query;
-                command.CommandType = CommandType.Text;
-
-                await using (var reader = await command.ExecuteReaderAsync().ConfigureAwait(false))
-                {
-                    while (await reader.ReadAsync())
-                    {
-                        entries.Add(NotificationMessageFromReader.Create(reader));
-                    }
-                }
-                return (IList<InternalNotificationMessage>)entries;
-            }).ConfigureAwait(false), 0L);
-        }
 
         private List<LanguageBranchOption> LanguageBranches(string language)
         {

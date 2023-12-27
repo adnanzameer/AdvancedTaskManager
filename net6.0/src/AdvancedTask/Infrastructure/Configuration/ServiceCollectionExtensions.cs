@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using AdvancedTask.Features.AdvancedTask;
 using AdvancedTask.Infrastructure.Cms.ChangeApproval;
 using AdvancedTask.Infrastructure.Helpers;
 using AdvancedTask.Infrastructure.Mapper;
@@ -32,8 +33,9 @@ namespace AdvancedTask.Infrastructure.Configuration
 			services.AddTransient<ISecurityChangeDetail, SecurityChangeDetail>();
 			services.AddTransient<IApprovalCommandService, ApprovalCommandService>();
 			services.AddTransient<IApprovalCommandRepositoryBase, ApprovalCommandRepositoryBase>();
+            services.AddTransient<INotificationHandler, NotificationHandler>();
 
-			services.Configure<ProtectedModuleOptions>(
+            services.Configure<ProtectedModuleOptions>(
 				pm =>
 				{
 					if (!pm.Items.Any(i => i.Name.Equals(Constants.ModuleName, StringComparison.OrdinalIgnoreCase)))
