@@ -15,9 +15,7 @@ namespace AdvancedTask.Business.AdvancedTask.Command
     public class ExpirationDateSettingCommand : ApprovalCommandBase, ICultureSpecificApprovalCommand
     {
         private Injected<IContentLoader> _contentLoader;
-        public virtual string AppliedOnLanguageBranch { get; set; }
-
-        public virtual List<int> AffectedVersions { get; set; }
+        public string AppliedOnLanguageBranch { get; set; }
 
         private static readonly ILogger Logger = LogManager.GetLogger(typeof(ExpirationDateSettingCommand));
         public override bool IsValid()

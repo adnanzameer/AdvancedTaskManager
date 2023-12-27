@@ -4,176 +4,88 @@
     ViewBag.Title = "Advanced Task Manager";
     ViewBag.Info = "Administration of Awaiting Review Tasks of Content Approval and Change Approval.";
 }
-<style>
-    .inner-table {
-        border-collapse: collapse !important;
-        empty-cells: show !important;
-        width: 100% !important;
-        height: 100% !important;
-        border-bottom: 1pt solid #aeaeae;
-    }
 
-        .inner-table .short {
-            width: 20% !important;
-        }
+<div class="change-approval">
+    <div class="col-sm-12">
 
-        .inner-table td {
-            padding: 6px !important;
-        }
-
-        .inner-table .header {
-            border-bottom: 1pt solid #aeaeae !important;
-        }
-
-        .inner-table .header-right {
-            border-right: 1pt solid #aeaeae !important;
-        }
-
-        .inner-table .epi-changeapproval-faded {
-            color: #818181 !important;
-        }
-
-    .margin-top-15 {
-        margin-top: 15px !important;
-    }
-
-    .thead-dark {
-        color: #fff;
-        background-color: #212529;
-        border-color: #32383e;
-    }
-
-    .atm-tooltip {
-        display: none;
-        position: absolute;
-        background-color: #f9f9f9;
-        border: 1px solid #ccc;
-        padding: 8px;
-        border-radius: 4px;
-    }
-
-    .atm-editButton {
-        border: none;
-        background: white;
-    }
-
-    .notification-unread {
-        background-color: #e6ebff;
-    }
-</style>
-
-<div class="col-sm-12">
-
-    <div class="card">
-        <div class="card-body">
-            @Html.Raw($"Currently, there are <strong>{Model.TotalItemsCount}</strong> change approval tasks awaiting review")
+        <div class="card">
+            <div class="card-body">
+                @Html.Raw($"Currently, there are <strong>{Model.TotalItemsCount}</strong> change approval tasks awaiting review")
+            </div>
         </div>
-    </div>
 
-    <div class="table-responsive mt-3">
-        <table class="table table-hover" id="sortable-table">
-            <thead>
-                <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">Content type </th>
-                    <th scope="col">Type</th>
-                    <th scope="col">Submitted (UTC)</th>
-                    <th scope="col">Started by</th>
-                    <th scope="col">&nbsp;</th>
-                </tr>
-            </thead>
-
-            @if (Model.ContentTaskList.Count > 0)
-            {
-                foreach (var contentTask in Model.ContentTaskList)
-                {
-                    <tr style="cursor: pointer;" class="parent @(contentTask.NotificationUnread ? "notification-unread" : "")" title="Click to expand/collapse" id="@contentTask.ApprovalId">
-                        <td>
-                            @if (!string.IsNullOrEmpty(contentTask.ContentIcon))
-                            {
-                                <span data-feather="@contentTask.ContentIcon"></span>
-                            }
-                            @contentTask.ContentName
-                        </td>
-                        <td>@contentTask.ContentType</td>
-                        <td>@contentTask.Type</td>
-                        <td data-original-title="@contentTask.DateTime?.ToString(Model.DateTimeFormatUserFriendly)" data-container="body" data-toggle="tooltip" data-placement="bottom" title="@contentTask.DateTime?.ToString(Model.DateTimeFormatUserFriendly)">@contentTask.DateTime?.ToString(Model.DateTimeFormat)</td>
-                        <td>@contentTask.StartedBy</td>
-
-                        <td>
-                            @if (!string.IsNullOrEmpty(@contentTask.URL))
-                            {
-                                <a href="#" class="atm-more"><span data-feather="more-horizontal"></span></a>
-                                <div class="atm-tooltip">
-                                    <button class="atm-editButton" data-url="@contentTask.URL">Edit</button>
-                                </div>
-                            }
-                        </td>
+        <div class="table-responsive mt-3">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Content type </th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Submitted (UTC)</th>
+                        <th scope="col">Started by</th>
+                        <th scope="col">&nbsp;</th>
                     </tr>
-                    if (contentTask.Details != null && contentTask.Details.Any())
+                </thead>
+
+                @if (Model.ContentTaskList.Count > 0)
+                {
+                    foreach (var contentTask in Model.ContentTaskList)
                     {
-                        <tr class="child-@contentTask.ApprovalId" style="display: none;">
-                            <td class="changetask-detail" colspan="6">
-                                <table class="table inner-table table-striped">
-                                    <thead class="thead-dark">
-                                        <tr class="header">
-                                            <td class="short header-right"><strong>Name</strong></td>
-                                            <td class="header-right"><strong>Current version</strong></td>
-                                            <td><strong>Suggested version</strong></td>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach (var ct in contentTask.Details.ToList())
-                                        {
-                                            <tr>
-                                                <td class="short">@Html.Raw(ct.Name)</td>
-                                                <td>@Html.Raw(ct.OldValue)</td>
-                                                <td>@Html.Raw(ct.NewValue)</td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
-                                <p style="padding-top: 20px"><a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="@contentTask.URL" target="_blank">Go to the Change Details</a></p>
+                        <tr style="cursor: pointer;" class="parent @(contentTask.NotificationUnread ? "notification-unread" : "")" title="Click to expand/collapse" id="@contentTask.ApprovalId">
+                            <td>
+                                @if (!string.IsNullOrEmpty(contentTask.ContentIcon))
+                                {
+                                    <span data-feather="@contentTask.ContentIcon"></span>
+                                }
+                                @contentTask.ContentName
+                            </td>
+                            <td>@contentTask.ContentType</td>
+                            <td>@contentTask.Type</td>
+                            <td data-original-title="@contentTask.DateTime?.ToString(Model.DateTimeFormatUserFriendly)" data-container="body" data-toggle="tooltip" data-placement="bottom" title="@contentTask.DateTime?.ToString(Model.DateTimeFormatUserFriendly)">@contentTask.DateTime?.ToString(Model.DateTimeFormat)</td>
+                            <td>@contentTask.StartedBy</td>
+
+                            <td>
+                                @if (!string.IsNullOrEmpty(@contentTask.URL))
+                                {
+                                    <a href="#" class="atm-more"><span data-feather="more-horizontal"></span></a>
+                                    <div class="atm-tooltip">
+                                        <button class="atm-editButton" data-url="@contentTask.URL">Edit</button>
+                                    </div>
+                                }
                             </td>
                         </tr>
+                        if (contentTask.Details != null && contentTask.Details.Any())
+                        {
+                            <tr class="child-@contentTask.ApprovalId" style="display: none;">
+                                <td class="changetask-detail" colspan="6">
+                                    <table class="table inner-table table-striped">
+                                        <thead class="thead-dark">
+                                            <tr class="header">
+                                                <td class="short header-right"><strong>Name</strong></td>
+                                                <td class="header-right"><strong>Current version</strong></td>
+                                                <td><strong>Suggested version</strong></td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var ct in contentTask.Details.ToList())
+                                            {
+                                                <tr>
+                                                    <td class="short">@Html.Raw(ct.Name)</td>
+                                                    <td>@Html.Raw(ct.OldValue)</td>
+                                                    <td>@Html.Raw(ct.NewValue)</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                    <p style="padding-top: 20px"><a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="@contentTask.URL" target="_blank">Go to the Change Details</a></p>
+                                </td>
+                            </tr>
+                        }
                     }
                 }
-            }
-        </table>
-        @if (Model.TotalItemsCount > Model.PageSize)
-        {
-            <nav class="navbar">
-                <div class="col-sm-5 col-md-4 me-0 px-3">
-                    @($"Displaying tasks {Model.MinIndexOfItem}-{Model.MaxIndexOfItem} of {Model.TotalItemsCount}")
-                </div>
-                <div class="col-sm-7 col-md-8  mb-1 px-3">
-                    <ul class="pagination pagination-sm margin-top-15">
-
-                        <li class="page-item @(Model.PageNumber > 1 ? "" : "disabled")">
-                            <a class="page-link" href="@Model.PageUrl(Model.PageNumber - 1)" aria-label="Previous">
-                                <span aria-hidden="true"><strong>Previous</strong></span>
-                            </a>
-                        </li>
-
-                        @foreach (int i in Model.Pages)
-                        {
-                            if (i == 0)
-                            {
-                                <li>&nbsp; <span data-feather="more-horizontal"></span> &nbsp;</li>
-                                continue;
-                            }
-                            <li class="page-item  @(i == Model.PageNumber ? "active" : "")"><a class="page-link" href="@Model.PageUrl(i)">@i</a></li>
-                        }
-
-                        <li class="page-item @(Model.PageNumber < Model.TotalPagesCount ? "" : "disabled")">
-                            <a class="page-link" href="@Model.PageUrl(Model.PageNumber + 1)" aria-label="Next">
-                                <span aria-hidden="true"><strong>Next</strong></span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-        }
+            </table>
+            @await Html.PartialAsync("Pager", Model)
+        </div>
     </div>
 </div>
 
@@ -185,32 +97,5 @@
             .click(function () {
                 $(this).siblings('.child-' + this.id).toggle();
             });
-    });
-
-    $(function () {
-        $("[data-toggle='tooltip']").tooltip();
-    });
-
-
-    $(document).ready(function () {
-        $('.atm-more').click(function (e) {
-            e.stopPropagation(); // Prevent the click event from reaching the document
-
-            var tooltip = $(this).siblings('.atm-tooltip');
-            $('.atm-tooltip').not(tooltip).hide(); // Hide other tooltips
-            tooltip.show();
-        });
-
-        $('.atm-editButton').click(function (e) {
-            e.stopPropagation(); // Prevent the click event from reaching the document
-            var url = $(this).data('url');
-            window.open(url, '_blank');
-            $('.atm-tooltip').hide();
-        });
-
-        // Handle clicks outside of tooltips to hide them
-        $(document).click(function () {
-            $('.atm-tooltip').hide();
-        });
     });
 </script>

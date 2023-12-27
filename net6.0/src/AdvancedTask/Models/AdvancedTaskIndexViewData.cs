@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using AdvancedTask.Business;
 using EPiServer.DataAbstraction;
 
 namespace AdvancedTask.Models
 {
     public class AdvancedTaskIndexViewData
     {
-        public AdvancedTaskIndexViewData(List<LanguageBranchOption> languageBranchList)
+        public AdvancedTaskIndexViewData(List<LanguageBranchOption> languageBranchList, AdvancedTaskManagerOptions configuration)
         {
             LanguageBranchList = languageBranchList;
             SelectedLanguageText = "Select";
@@ -25,14 +26,15 @@ namespace AdvancedTask.Models
             HasPublishAccess = false;
             ContentTaskList = new List<ContentTask>();
             PageNumber = 1;
-            EnableContentApprovalDeadline = false; // bool.Parse(ConfigurationManager<>.AppSettings["ATM:EnableContentApprovalDeadline"] ?? "false");
+            
+           AddContentApprovalDeadlineProperty = !configuration.DeleteContentApprovalDeadlineProperty && configuration.AddContentApprovalDeadlineProperty;
         }
 
         public readonly string DateTimeFormat = "yyyy-MM-dd HH:mm";
 
         public readonly string DateTimeFormatUserFriendly = "MMM dd, yyyy, h:mm:ss tt";
         
-        public const int DefaultPageSize = 50;
+        public const int DefaultPageSize = 30;
 
         public IEnumerable<int> Pages
         {
@@ -90,8 +92,6 @@ namespace AdvancedTask.Models
                 return (PageNumber - 1) * PageSize + 1;
             }
         }
-
-        
         
         public int PageSize { get; set; } = DefaultPageSize;
         
@@ -121,9 +121,7 @@ namespace AdvancedTask.Models
             return $"?{qs}";
         }
 
-        public bool EnableContentApprovalDeadline { get; set; }
-
-
+        public bool AddContentApprovalDeadlineProperty { get; set; }
 
         public List<LanguageBranchOption> LanguageBranchList { get; set; }
         

@@ -1,41 +1,33 @@
-/* globals feather:false */
-
-(function() {
+(function () {
     'use strict';
 
     feather.replace();
 
+    $(function () {
+        $("[data-toggle='tooltip']").tooltip();
+    });
 
-    function clearInput() {
-        var initiators = document.querySelectorAll('[data-clear]');
-        initiators.forEach(function(initiator) {
-            initiator.addEventListener('click',
-                function(e) {
-                    var target = e.currentTarget;
-                    var selector = target.getAttribute('data-clear');
-                    var input = document.querySelector(selector);
-                    input.value = '';
-                });
+    $(document).ready(function () {
+        $('.atm-more').click(function (e) {
+            e.stopPropagation(); // Prevent the click event from reaching the document
+
+            var tooltip = $(this).siblings('.atm-tooltip');
+            $('.atm-tooltip').not(tooltip).hide(); // Hide other tooltips
+            tooltip.show();
         });
-    }
 
-    function confirmSubmit() {
-        var initiators = document.querySelectorAll('[data-confirm]');
-        initiators.forEach(function(initiator) {
-            var form = initiator.form;
-            form.addEventListener('submit',
-                function (e) {
-                    e.preventDefault();
-
-                    var message = initiator.getAttribute('data-confirm');
-                    if (confirm(message)) {
-                        form.action = initiator.formAction;
-                        form.submit();
-                    }
-                });
+        $('.atm-editButton').click(function (e) {
+            e.stopPropagation(); // Prevent the click event from reaching the document
+            var url = $(this).data('url');
+            window.open(url, '_blank');
+            $('.atm-tooltip').hide();
         });
-    }
 
-    clearInput();
-    confirmSubmit();
+        // Handle clicks outside of tooltips to hide them
+        $(document).click(function () {
+            $('.atm-tooltip').hide();
+        });
+
+        $('.dropdown-toggle').dropdown();
+    });
 })()

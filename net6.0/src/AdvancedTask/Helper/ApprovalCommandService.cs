@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Security.Principal;
-using System.Threading.Tasks;
 using AdvancedTask.Business.AdvancedTask;
 using AdvancedTask.Business.AdvancedTask.Command;
 using AdvancedTask.Business.AdvancedTask.Interface;
-using EPiServer;
-using EPiServer.Core;
-using EPiServer.Security;
 
 namespace AdvancedTask.Helper
 {
@@ -14,8 +9,6 @@ namespace AdvancedTask.Helper
     {
         ApprovalCommandBase GetCommandById(Guid commandId);
         ApprovalCommandBase GetCommandByApprovalId(int approvalId);
-        CommandMetaData GetCommandMetaDataByApprovalId(int approvalId);
-        ApprovalCommandBase GetApprovalCommand(string commandTypeName, Guid commandId);
     }
 
     public class ApprovalCommandService : IApprovalCommandService
@@ -29,21 +22,21 @@ namespace AdvancedTask.Helper
             _approvalCommandRepositoryBase = approvalCommandRepositoryBase;
         }
 
-        public virtual ApprovalCommandBase GetCommandById(Guid commandId)
+        public ApprovalCommandBase GetCommandById(Guid commandId)
         {
-            CommandMetaData byCommandId = _commandMetaDataRepository.GetByCommandId(commandId);
+            var byCommandId = _commandMetaDataRepository.GetByCommandId(commandId);
             return byCommandId == null ? null : GetApprovalCommand(byCommandId.Type, byCommandId.CommandId);
         }
 
 
-        public virtual ApprovalCommandBase GetCommandByApprovalId(int approvalId)
+        public ApprovalCommandBase GetCommandByApprovalId(int approvalId)
         {
             var byApprovalId = _commandMetaDataRepository.GetByApprovalId(approvalId);
             return byApprovalId == null ? null : GetApprovalCommand(byApprovalId.Type, byApprovalId.CommandId);
         }
 
 
-        public virtual CommandMetaData GetCommandMetaDataByApprovalId(int approvalId)
+        public CommandMetaData GetCommandMetaDataByApprovalId(int approvalId)
         {
             var byApprovalId = _commandMetaDataRepository.GetByApprovalId(approvalId);
             return byApprovalId;

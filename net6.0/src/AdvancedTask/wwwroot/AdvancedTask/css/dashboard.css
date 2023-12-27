@@ -1,265 +1,189 @@
-/*
- * Icons
- */
+﻿/* Colors */
+.red {
+    background-color: orangered !important;
+    color: white !important;
+}
 
+.green {
+    background-color: yellowgreen !important;
+    color: white !important;
+}
+
+.approvalComment {
+    font-size: 12px !important;
+}
+
+/* Collapsible */
+.collapsible {
+    color: Red;
+    cursor: pointer;
+    padding: 10px !important;
+    width: 520px;
+    border: none;
+    text-align: left;
+    outline: none !important;
+}
+
+    .active,
+    .collapsible:hover {
+        background-color: #ededed;
+    }
+
+.content {
+    color: Red;
+    width: 520px;
+    border: none;
+    padding: 10px 0 0 10px;
+    display: none;
+    overflow: hidden;
+}
+
+.error-span {
+    color: Red;
+}
+
+.errorMessage {
+    padding-bottom: 15px;
+}
+
+/* Content Approval */
+.content-approval th {
+    cursor: pointer;
+    user-select: none;
+}
+
+.content-approval a {
+    text-decoration: none;
+}
+
+/* Sorting Icons */
+.asc::after {
+    content: ' ↑';
+}
+
+.desc::after {
+    content: ' ↓';
+}
+
+/* Change Approval */
+.inner-table {
+    border-collapse: collapse !important;
+    empty-cells: show !important;
+    width: 100% !important;
+    height: 100% !important;
+    border-bottom: 1pt solid #aeaeae;
+}
+
+    .inner-table .short {
+        width: 20% !important;
+    }
+
+    .inner-table td {
+        padding: 6px !important;
+    }
+
+    .inner-table .header {
+        border-bottom: 1pt solid #aeaeae !important;
+    }
+
+    .inner-table .header-right {
+        border-right: 1pt solid #aeaeae !important;
+    }
+
+    .inner-table .epi-changeapproval-faded {
+        color: #818181 !important;
+    }
+
+.margin-top-15 {
+    margin-top: 15px !important;
+}
+
+.thead-dark {
+    color: #fff;
+    background-color: #212529;
+    border-color: #32383e;
+}
+
+/* Shared Styles */
+/* Icons */
 .feather {
     width: 16px;
     height: 16px;
     margin-bottom: 3px;
 }
 
-/*
- * Navbar
- */
-
-.geta-logo svg {
-    width: 60px;
+/* Sidebar Styles */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 100;
+    padding: 48px 0 0;
+    box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
 }
 
-.geta-logo-prefix {
-    color: white;
-    font-size: 12px;
-}
-
-.version {
-    color: white;
-    font-size: 0.6em;
-}
-
-/*
- * Search
- */
-
-.search-container {
-    margin-top: 15px;
-}
-
-    .search-container .search-button {
-        width: 120px;
+@media (max-width: 767.98px) {
+    .sidebar {
+        top: 5rem;
     }
-
-.task {
-    padding-left: 1.5em;
-    padding-right: 1.5em;
-    overflow: hidden;
-    font-family: Barlow, sans-serif;
 }
 
-.tasktable {
-    width: 80%;
-}
-
-
-.task-full {
-    width: 100%;
-}
-
-.task div.shorter {
-    text-align: center;
-    width: 13%;
-    word-break: normal;
-    float: left;
-}
-
-.task td.longer {
-    width: 45%;
-    word-break: break-all;
-    word-wrap: break-word;
-}
-
-.task td.shorter {
-    width: auto;
-    text-align: center;
-}
-
-    .task td.shorter a, input {
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-.task .task-longer {
-    width: 96%;
-    min-height: 20px;
-}
-
-
-.task .pager, .task .pagercenter, .task .pagerright {
-    display: inline-block;
-    white-space: nowrap;
-    width: 30%;
-}
-
-.task .pager {
-    float: left;
-}
-
-.task .pagercenter {
-    float: left;
-    text-align: center;
-    margin-left: 55px;
-}
-
-.task .pagerright {
-    float: right;
-    text-align: center;
-}
-
-.task .pagercenter span, .pagercenter a {
-    vertical-align: top;
-}
-
-.task .arrow img {
-    vertical-align: bottom;
-}
-
-.task .pagerright .refresh {
-    float: right;
-    width: 22px;
-    height: 22px;
-    background-color: #ededed;
-    background-image: url(/App_Themes/Default/Images/Tools/Refresh.gif);
-    background-repeat: no-repeat;
-    background-position: center;
+.sidebar-sticky {
     position: relative;
+    top: 0;
+    height: calc(100vh - 48px);
+    padding-top: .5rem;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
-.task .pagerright .refreshinput {
-    float: right;
-    width: 30px;
-    margin-right: 0.3em;
-    text-align: center;
-    height: 20px;
+.sidebar .nav-link {
+    font-weight: 500;
+    color: #333;
 }
 
-.task .pagerright .refreshlabel {
-    float: right;
-    margin-top: 3px;
+    .sidebar .nav-link .feather {
+        margin-right: 4px;
+        color: #727272;
+    }
+
+    .sidebar .nav-link.active {
+        color: #007bff;
+    }
+
+        .sidebar .nav-link:hover .feather,
+        .sidebar .nav-link.active .feather {
+            color: inherit;
+        }
+
+.sidebar-heading {
+    font-size: .75rem;
+    text-transform: uppercase;
 }
 
-.task .pagerwrapper {
-    margin-left: 2px;
-    margin-right: 2px;
-}
-
-.task .taskhidden {
+/* Tooltip */
+.atm-tooltip {
     display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    padding: 8px;
+    border-radius: 4px;
 }
 
-
-.task.hidden {
-    display: none;
+/* Edit Button */
+.atm-editButton {
+    border: none;
+    background: white;
 }
 
-
-.task button::-moz-focus-inner,
-[type="button"]::-moz-focus-inner {
-    padding: 0;
-    border: 0;
+/* Notifications */
+.notification-unread {
+    background-color: #e6ebff;
 }
 
-.task button {
-    padding: 3px 7px;
-    /*min-height: 20px;
-    padding: 14px;
-    padding-top: 5px !important;
-    padding-bottom: 5px !important;*/
-}
-
-.task.allreferers {
-    color: #398AC9;
-    font-weight: bold;
-}
-
-.task.epi-tabView {
-    margin-bottom: 0;
-}
-
-
-.task .ntab.selected, .task .ntab {
-    border: 1px solid gray;
-    color: #FFFFFF !important;
-    float: left;
-    font-size: 13px;
-    font-weight: normal;
-    text-shadow: none;
-}
-
-    .task .ntab a {
-        padding: 9px;
-        float: left;
-    }
-
-    .task .ntab.selected {
-        background: #555B64;
-    }
-
-.task .ntab {
-    border: 1px solid #DDDDDD;
-    background: #eee;
-}
-
-.task .selected.ntab a {
-    color: #FFFFFF !important;
-}
-
-.task ul.epi-tabView-navigation {
-    background: 0;
-}
-
-.task.row, .task.alt.header {
-    width: 49%;
-    float: left;
-    word-break: break-all;
-}
-
-    .task.row.right {
-        float: right;
-    }
-
-.task.alt.header {
-    padding-left: 10px;
-    border-left: solid 1px #eee;
-}
-
-.taskbutton {
-    background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #ebebeb) );
-    background: -moz-linear-gradient( center top, #ededed 5%, #ebebeb 100% );
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#ebebeb');
-    background-color: #ededed;
-    border: 2px solid #d1d1d1;
-    display: inline-block;
-    color: #050505;
-    font-family: Verdana;
-    font-size: 13px;
-    font-weight: normal;
-    padding: 6px 4px;
-    text-decoration: none;
-}
-
-    .taskbutton:hover {
-        background: none;
-        background-color: #c2ce00;
-        border-color: #a1a1a1;
-        cursor: pointer;
-    }
-
-    .taskbutton:active {
-        position: relative;
-        top: 1px;
-    }
-
-.task-search {
-    height: 21px;
-    padding-bottom: 4px;
-    margin: 0 0 0 5px;
-}
-
-.task .red {
-    background-color: orangered;
-    color: white;
-}
-
-.task .green {
-    background-color: yellowgreen;
-    color: white;
+.validation {
+    color: red;
+    margin-top: 20px;
 }

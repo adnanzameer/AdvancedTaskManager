@@ -1,52 +1,36 @@
-﻿@*@model AdvancedTask.Models.AdvancedTaskIndexViewData
-@using EPiServer.Shell.Web.Mvc.Html
+﻿@model AdvancedTask.Models.AdvancedTaskIndexViewData
 
-<div class="pagerwrapper">
-    <div class="pager">
-        @($"Displaying tasks {Model.MinIndexOfItem}-{Model.MaxIndexOfItem} of {Model.TotalItemsCount}")
-    </div>
-    <div class="pagercenter">
-        @if (Model.PageNumber > 1)
-        {
-            <a href="@Model.PageUrl(Model.PageNumber - 1,Model.PageSize)" class="arrow">
-                <img src="/App_Themes/Default/Images/Tools/ArrowLeft.gif" alt="Previous" />
-            </a>
-        }
+@if (Model.TotalItemsCount > Model.PageSize)
+{
+    <nav class="navbar">
+        <div class="col-sm-5 col-md-4 me-0 px-3">
+            @($"Displaying tasks {Model.MinIndexOfItem}-{Model.MaxIndexOfItem} of {Model.TotalItemsCount}")
+        </div>
+        <div class="col-sm-7 col-md-8  mb-1 px-3">
+            <ul class="pagination pagination-sm margin-top-15">
 
-        @foreach (int page in Model.Pages)
-        {
-            if (page == 0)
-            {
-                <span>...</span>
-                continue;
-            }
+                <li class="page-item @(Model.PageNumber > 1 ? "" : "disabled")">
+                    <a class="page-link" href="@Model.PageUrl(Model.PageNumber - 1)" aria-label="Previous">
+                        <span aria-hidden="true">Previous</span>
+                    </a>
+                </li>
 
-            if (page == Model.PageNumber)
-            {
-                if (Model.TotalPagesCount > 1)
+                @foreach (int i in Model.Pages)
                 {
-                    <span><b>@Model.PageNumber</b></span>
+                    if (i == 0)
+                    {
+                        <li>&nbsp; <span data-feather="more-horizontal"></span> &nbsp;</li>
+                        continue;
+                    }
+                    <li class="page-item  @(i == Model.PageNumber ? "active" : "")"><a class="page-link" href="@Model.PageUrl(i)">@i</a></li>
                 }
-                continue;
-            }
 
-            @*<a href="@Url.Action("Index", new { pageNumber = page, pageSize = Model.PageSize})">@page</a>*@
-      @*  }
-
-        @if (Model.PageNumber < Model.TotalPagesCount)
-        {
-            <a href="@Model.PageUrl(Model.PageNumber + 1,Model.PageSize)" class="arrow">
-                <img src="/App_Themes/Default/Images/Tools/ArrowRight.gif" alt="Next" />
-            </a>
-        }
-    </div>
-
-    <div class="pagerright">
-        @using (Html.BeginForm("Index"))
-        {
-            <input type="submit" class="refresh" value="" />
-            <input type="text" name="pageSize" class="refreshinput" value="@Model.PageSize" />
-            <label class="refreshlabel">Page size:</label>
-        }
-    </div>
-</div>*@
+                <li class="page-item @(Model.PageNumber < Model.TotalPagesCount ? "" : "disabled")">
+                    <a class="page-link" href="@Model.PageUrl(Model.PageNumber + 1)" aria-label="Next">
+                        <span aria-hidden="true">Next</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+}
