@@ -4,6 +4,7 @@
 	<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
 	<PackageId>AdvancedTaskManager</PackageId>
 	<Title>Advanced Task Manager</Title>
+	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	<version>3.0.1</version>
 	<Authors>Adnan Zameer</Authors>
 	<Company>Adnan Zameer</Company>
@@ -30,17 +31,26 @@
   </ItemGroup>
 
   <ItemGroup>
-	<None Include="module.config" />
-	<None Include="msbuild\Main.proj" />
+	<None Include="..\..\images\icon.png" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup>
-	<None Include="..\..\images\icon.png">
+	<Content Remove="module.config" />
+	<_ContentIncludedByDefault Remove="msbuild\CopyModule.targets" />
+	<None Include="module.config">
 	  <Pack>true</Pack>
-	  <PackagePath>\</PackagePath>
-	  <Link>icon.png</Link>
+	  <PackageCopyToOutput>true</PackageCopyToOutput>
+	  <BuildAction>None</BuildAction>
+	  <PackagePath>contentFiles\any\any\modules\_protected\Advanced.Task.Manager</PackagePath>
 	</None>
   </ItemGroup>
 
-  <Import Project="msbuild\Main.proj" />
+	<ItemGroup>
+		<Content Include=".\msbuild\CopyModule.targets">
+			<Pack>true</Pack>
+			<PackageCopyToOutput>true</PackageCopyToOutput>
+			<BuildAction>None</BuildAction>
+			<PackagePath>build\net6.0\$(MSBuildProjectName).targets</PackagePath>
+		</Content>
+	</ItemGroup>
 </Project>
