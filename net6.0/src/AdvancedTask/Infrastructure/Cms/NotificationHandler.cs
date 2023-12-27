@@ -4,12 +4,13 @@ using System.Data;
 using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
+using AdvancedTask.Features.AdvancedTask;
 using EPiServer.Data;
 using EPiServer.Notification;
 using EPiServer.Notification.Internal;
 using EPiServer.Security;
 
-namespace AdvancedTask.Features.AdvancedTask
+namespace AdvancedTask.Infrastructure.Cms
 {
     public interface INotificationHandler
     {
