@@ -28,13 +28,16 @@ namespace AdvancedTaskManager.Features.AdvancedTask
             PageNumber = 1;
 
             AddContentApprovalDeadlineProperty = !configuration.DeleteContentApprovalDeadlineProperty && configuration.AddContentApprovalDeadlineProperty;
+
+            if (configuration.PageSize > 1)
+                _defaultPageSize = configuration.PageSize;
         }
 
         public readonly string DateTimeFormat = "yyyy-MM-dd HH:mm";
 
         public readonly string DateTimeFormatUserFriendly = "MMM dd, yyyy, h:mm:ss tt";
 
-        public const int DefaultPageSize = 30;
+        private static int _defaultPageSize = 30;
 
         public IEnumerable<int> Pages
         {
@@ -93,7 +96,7 @@ namespace AdvancedTaskManager.Features.AdvancedTask
             }
         }
 
-        public int PageSize { get; set; } = DefaultPageSize;
+        public int PageSize { get; set; } = _defaultPageSize;
 
         public int PageNumber { get; set; }
 
