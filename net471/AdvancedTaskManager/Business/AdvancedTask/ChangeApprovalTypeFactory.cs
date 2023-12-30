@@ -15,29 +15,11 @@ namespace AdvancedTask.Business.AdvancedTask
             _approvalReferenceResolver = approvalReferenceResolver;
         }
 
-        public string ApprovalType
-        {
-            get
-            {
-                return ChangeApprovalType;
-            }
-        }
+        public string ApprovalType => ChangeApprovalType;
 
-        public IApprovalDefinitionReferenceResolver DefinitionReferenceResolver
-        {
-            get
-            {
-                return _approvalReferenceResolver;
-            }
-        }
+        public IApprovalDefinitionReferenceResolver DefinitionReferenceResolver => _approvalReferenceResolver;
 
-        public IApprovalLanguageResolver LanguageResolver
-        {
-            get
-            {
-                return null;
-            }
-        }
+        public IApprovalLanguageResolver LanguageResolver => null;
 
         public Approval CreateApproval(Uri reference)
         {

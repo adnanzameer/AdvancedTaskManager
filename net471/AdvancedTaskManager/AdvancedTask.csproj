@@ -307,10 +307,10 @@
   <PropertyGroup>
     <SolutionDir>$(ProjectDir)</SolutionDir>
   </PropertyGroup>
-  <PropertyGroup>
+  <!--<PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">16.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Microsoft\VisualStudio\v16.0</VSToolsPath>
-  </PropertyGroup>
+  </PropertyGroup>-->
   <PropertyGroup>
     <RestorePackages>true</RestorePackages>
   </PropertyGroup>
@@ -321,7 +321,7 @@
     </PostBuildEvent>
   </PropertyGroup>
   <ProjectExtensions />
-  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <!--<Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />-->
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
   <!-- Used below, so define it first -->
   <PropertyGroup>

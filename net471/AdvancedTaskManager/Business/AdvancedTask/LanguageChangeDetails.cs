@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using AdvancedTask.Business.AdvancedTask.Interface;
-using AdvancedTask.Business.AdvancedTask.Mapper;
 using AdvancedTask.Helper;
 using AdvancedTask.Models;
 using EPiServer;
-using EPiServer.Cms.Shell.Service.Internal;
 using EPiServer.Core;
 using EPiServer.DataAbstraction;
 using EPiServer.Framework.Localization;
@@ -19,8 +17,8 @@ namespace AdvancedTask.Business.AdvancedTask
     {
         private readonly LocalizationService _localizationService;
 
-        private readonly string ArrowSeparator = " > ";
-        private readonly string CommaSeparator = ", ";
+        private const string ArrowSeparator = " > ";
+        private const string CommaSeparator = ", ";
         private readonly ILanguageBranchRepository _languageBranchRepository;
         private readonly IContentLanguageSettingsHandler _contentLanguageSettingsHandler;
         private readonly IContentRepository _contentRepository;
@@ -48,24 +46,28 @@ namespace AdvancedTask.Business.AdvancedTask
             {
                 var str1 = _localizationService.GetString("/gadget/changeapproval/languagesettingcommand/yes");
                 var str2 = _localizationService.GetString("/gadget/changeapproval/languagesettingcommand/no");
-                contentChangeDetailsList.Add((IContentChangeDetails)new ContentChangeDetails()
+                contentChangeDetailsList.Add(new ContentChangeDetails
                 {
                     Name = _localizationService.GetString("/gadget/changeapproval/languagesettingcommand/inheritsettingsfromtheparentpage"),
-                    OldValue = settingsFromJson1.Values.Any((Func<ContentLanguageSetting, bool>)(st => st.DefinedOnContent.CompareToIgnoreWorkID(command.AppliedOnContentLink))) ? str2 : str1,
-                    NewValue = dictionary.Values.Any((Func<ContentLanguageSetting, bool>)(st => st.DefinedOnContent.CompareToIgnoreWorkID(command.AppliedOnContentLink))) ? str2 : str1
+                    OldValue = settingsFromJson1.Values.Any(st => st.DefinedOnContent.CompareToIgnoreWorkID(command.AppliedOnContentLink)) ? str2 : str1,
+                    NewValue = dictionary != null && dictionary.Values.Any(st => st.DefinedOnContent.CompareToIgnoreWorkID(command.AppliedOnContentLink)) ? str2 : str1
                 });
             }
-            var currentLangs = settingsFromJson1.Where<KeyValuePair<string, ContentLanguageSetting>>((Func<KeyValuePair<string, ContentLanguageSetting>, bool>)(s => s.Value.IsActive)).Select<KeyValuePair<string, ContentLanguageSetting>, string>((Func<KeyValuePair<string, ContentLanguageSetting>, string>)(s => s.Value.LanguageBranch));
-            var newLangs = dictionary.Where((Func<KeyValuePair<string, ContentLanguageSetting>, bool>)(s => s.Value.IsActive)).Select<KeyValuePair<string, ContentLanguageSetting>, string>((Func<KeyValuePair<string, ContentLanguageSetting>, string>)(s => s.Value.LanguageBranch));
-            contentChangeDetailsList.Add(new ContentChangeDetails()
+            var currentLangs = settingsFromJson1.Where(s => s.Value.IsActive).Select(s => s.Value.LanguageBranch).ToList();
+            if (dictionary != null)
             {
-                Name = _localizationService.GetString("/gadget/changeapproval/languagesettingcommand/availableLanguages"),
-                OldValue = FormatLanguageSettingsChange(currentLangs, newLangs, true),
-                NewValue = FormatLanguageSettingsChange(currentLangs, newLangs, false)
-            });
+                var newLangs = dictionary.Where(s => s.Value.IsActive).Select(s => s.Value.LanguageBranch).ToList();
+                contentChangeDetailsList.Add(new ContentChangeDetails
+                {
+                    Name = _localizationService.GetString("/gadget/changeapproval/languagesettingcommand/availableLanguages"),
+                    OldValue = FormatLanguageSettingsChange(currentLangs, newLangs, true),
+                    NewValue = FormatLanguageSettingsChange(currentLangs, newLangs, false)
+                });
+            }
+
             var str3 = OldFallbackLanguagesToString(settingsFromJson1, dictionary);
             var str4 = NewFallbackLanguagesToString(settingsFromJson1, dictionary);
-            contentChangeDetailsList.Add((IContentChangeDetails)new ContentChangeDetails()
+            contentChangeDetailsList.Add(new ContentChangeDetails
             {
                 Name = _localizationService.GetString("/gadget/changeapproval/languagesettingcommand/fallbacklanguages"),
                 OldValue = str3,
@@ -73,7 +75,7 @@ namespace AdvancedTask.Business.AdvancedTask
             });
             var str5 = OldReplacementLanguagesToString(settingsFromJson1, dictionary);
             var str6 = NewReplacementLanguagesToString(settingsFromJson1, dictionary);
-            contentChangeDetailsList.Add(new ContentChangeDetails()
+            contentChangeDetailsList.Add(new ContentChangeDetails
             {
                 Name = _localizationService.GetString("/gadget/changeapproval/languagesettingcommand/replacementlanguages"),
                 OldValue = str5,
@@ -101,16 +103,15 @@ namespace AdvancedTask.Business.AdvancedTask
 
         private string StringifyLanguages(IEnumerable<string> languages, string separator)
         {
-            return languages.Aggregate<string, string>(string.Empty, (Func<string, string, string>)((workingStr, next) => string.Format("{0}{1}{2}", workingStr, separator, GetLanguageName(next)))).TrimStart(separator.ToCharArray());
+            return languages.Aggregate(string.Empty, (workingStr, next) =>
+                $"{workingStr}{separator}{GetLanguageName(next)}").TrimStart(separator.ToCharArray());
         }
 
-        private string FormatLanguageSettingsChange(
-          IEnumerable<string> currentLangs,
-          IEnumerable<string> newLangs,
+        private string FormatLanguageSettingsChange(List<string> currentLangs, List<string> newLangs,
           bool original)
         {
             var str = string.Empty;
-            if (!currentLangs.Except<string>(newLangs).Any<string>() && !newLangs.Except<string>(currentLangs).Any<string>())
+            if (!currentLangs.Except(newLangs).Any() && !newLangs.Except(currentLangs).Any())
                 str = StringifyLanguages(currentLangs, CommaSeparator).Fade();
             else if (original)
             {
@@ -122,14 +123,16 @@ namespace AdvancedTask.Business.AdvancedTask
                 {
                     var item = currentLang;
                     var languageName = GetLanguageName(item);
-                    str = newLangs.Any<string>((Func<string, bool>)(lang => lang.Equals(item, StringComparison.InvariantCultureIgnoreCase))) ? str + string.Format("{0}{1}", languageName, CommaSeparator) : str + string.Format("{0}{1}", languageName.Strikethrough(), CommaSeparator);
+                    str = newLangs.Any(lang => lang.Equals(item, StringComparison.InvariantCultureIgnoreCase)) ? str +
+                        $"{languageName}{CommaSeparator}"
+                        : str + $"{languageName.Strikethrough()}{CommaSeparator}";
                 }
                 foreach (var newLang in newLangs)
                 {
                     var item = newLang;
                     var languageName = GetLanguageName(item);
-                    if (!string.IsNullOrWhiteSpace(languageName) && !currentLangs.Any<string>((Func<string, bool>)(lang => lang.Equals(item, StringComparison.InvariantCultureIgnoreCase))))
-                        str += string.Format("{0}{1}", languageName.Bold(), CommaSeparator);
+                    if (!string.IsNullOrWhiteSpace(languageName) && !currentLangs.Any(lang => lang.Equals(item, StringComparison.InvariantCultureIgnoreCase)))
+                        str += $"{languageName.Bold()}{CommaSeparator}";
                 }
             }
             return str.TrimEnd(CommaSeparator);
@@ -139,7 +142,7 @@ namespace AdvancedTask.Business.AdvancedTask
           string visitorLanguage,
           IDictionary<string, ContentLanguageSetting> settings)
         {
-            return settings == null || !settings.ContainsKey(visitorLanguage) || settings[visitorLanguage].LanguageBranchFallback == null ? ((IEnumerable<string>)new string[0]).ToList<string>() : ((IEnumerable<string>)settings[visitorLanguage].LanguageBranchFallback).ToList<string>();
+            return settings == null || !settings.ContainsKey(visitorLanguage) || settings[visitorLanguage].LanguageBranchFallback == null ? Array.Empty<string>().ToList() : settings[visitorLanguage].LanguageBranchFallback.ToList();
         }
 
         private string OldFallbackLanguagesToString(
@@ -147,21 +150,23 @@ namespace AdvancedTask.Business.AdvancedTask
           IDictionary<string, ContentLanguageSetting> newSettings)
         {
             var stringBuilder = new StringBuilder();
-            foreach (var key in (IEnumerable<string>)oldSettings.Keys)
+            foreach (var key in oldSettings.Keys)
             {
                 var fallbackLanguages1 = GetFallbackLanguages(key, oldSettings);
                 var fallbackLanguages2 = GetFallbackLanguages(key, newSettings);
-                if ((fallbackLanguages1.Count != 0 || fallbackLanguages2.Count != 0) && (fallbackLanguages1.Any<string>((Func<string, bool>)(item => !string.IsNullOrWhiteSpace(GetLanguageName(item)))) || fallbackLanguages2.Any<string>((Func<string, bool>)(item => !string.IsNullOrWhiteSpace(GetLanguageName(item))))))
+                if ((fallbackLanguages1.Count != 0 || fallbackLanguages2.Count != 0) && (fallbackLanguages1.Any(item => !string.IsNullOrWhiteSpace(GetLanguageName(item))) || fallbackLanguages2.Any(item => !string.IsNullOrWhiteSpace(GetLanguageName(item)))))
                 {
                     var languageName = GetLanguageName(key);
                     if (fallbackLanguages1.Count > 0)
                     {
-                        var str1 = StringifyLanguages((IEnumerable<string>)fallbackLanguages1, ArrowSeparator);
-                        var str2 = fallbackLanguages1.SequenceEqual<string>((IEnumerable<string>)fallbackLanguages2) ? string.Format("{0}{1}{2}", languageName, ArrowSeparator, str1).Fade() : string.Format("{0}{1}{2}", languageName, ArrowSeparator, str1);
+                        var str1 = StringifyLanguages(fallbackLanguages1, ArrowSeparator);
+                        var str2 = fallbackLanguages1.SequenceEqual(fallbackLanguages2) ? $"{languageName}{ArrowSeparator}{str1}"
+                            .Fade() : $"{languageName}{ArrowSeparator}{str1}";
                         stringBuilder.Append(str2);
                     }
                     else
-                        stringBuilder.Append(string.Format("{0}{1}{2}", languageName, ArrowSeparator, _localizationService.GetString("/gadget/changeapproval/languagesettingcommand/none")));
+                        stringBuilder.Append(
+                            $"{languageName}{ArrowSeparator}{_localizationService.GetString("/gadget/changeapproval/languagesettingcommand/none")}");
                     stringBuilder.Append("</br>");
                 }
             }
@@ -173,7 +178,7 @@ namespace AdvancedTask.Business.AdvancedTask
           IDictionary<string, ContentLanguageSetting> newSettings)
         {
             var stringBuilder = new StringBuilder();
-            foreach (var key in (IEnumerable<string>)newSettings.Keys)
+            foreach (var key in newSettings.Keys)
             {
                 var fallbackLanguages1 = GetFallbackLanguages(key, newSettings);
                 var fallbackLanguages2 = GetFallbackLanguages(key, oldSettings);
@@ -182,24 +187,25 @@ namespace AdvancedTask.Business.AdvancedTask
                     var languageName1 = GetLanguageName(key);
                     if (!string.IsNullOrWhiteSpace(languageName1))
                     {
-                        if (fallbackLanguages1.SequenceEqual<string>((IEnumerable<string>)fallbackLanguages2))
+                        if (fallbackLanguages1.SequenceEqual(fallbackLanguages2))
                         {
-                            var str = StringifyLanguages((IEnumerable<string>)fallbackLanguages1, ArrowSeparator);
-                            stringBuilder.Append(string.Format("{0}{1}{2}", languageName1, ArrowSeparator, str).Fade());
+                            var str = StringifyLanguages(fallbackLanguages1, ArrowSeparator);
+                            stringBuilder.Append($"{languageName1}{ArrowSeparator}{str}".Fade());
                         }
                         else if (fallbackLanguages1.Count == 0 && fallbackLanguages2.Count > 0)
                         {
-                            var str = StringifyLanguages((IEnumerable<string>)fallbackLanguages2, ArrowSeparator);
-                            stringBuilder.Append(string.Format("{0}{1}{2}", languageName1, ArrowSeparator, str).Strikethrough());
+                            var str = StringifyLanguages(fallbackLanguages2, ArrowSeparator);
+                            stringBuilder.Append($"{languageName1}{ArrowSeparator}{str}".Strikethrough());
                         }
                         else if (fallbackLanguages1.Count > 0)
                         {
-                            if ((fallbackLanguages2.Count != 0 || fallbackLanguages1.Count != 0) && (fallbackLanguages2.Any<string>((Func<string, bool>)(item => !string.IsNullOrWhiteSpace(GetLanguageName(item)))) || fallbackLanguages1.Any<string>((Func<string, bool>)(item => !string.IsNullOrWhiteSpace(GetLanguageName(item))))))
+                            if ((fallbackLanguages2.Count != 0 || fallbackLanguages1.Count != 0) && (fallbackLanguages2.Any(item => !string.IsNullOrWhiteSpace(GetLanguageName(item))) || fallbackLanguages1.Any(item => !string.IsNullOrWhiteSpace(GetLanguageName(item)))))
                             {
                                 stringBuilder.Append(languageName1);
                                 foreach (var languageCode in fallbackLanguages2)
                                 {
-                                    var str = fallbackLanguages1.Contains(languageCode) ? string.Format("{0}{1}", ArrowSeparator, GetLanguageName(languageCode)) : string.Format("{0}{1}", ArrowSeparator, GetLanguageName(languageCode).Strikethrough());
+                                    var str = fallbackLanguages1.Contains(languageCode) ? $"{ArrowSeparator}{GetLanguageName(languageCode)}"
+                                        : $"{ArrowSeparator}{GetLanguageName(languageCode).Strikethrough()}";
                                     stringBuilder.Append(str);
                                 }
                                 foreach (var languageCode in fallbackLanguages1)
@@ -231,7 +237,7 @@ namespace AdvancedTask.Business.AdvancedTask
           IDictionary<string, ContentLanguageSetting> newSettings)
         {
             var stringBuilder = new StringBuilder();
-            foreach (var key in (IEnumerable<string>)oldSettings.Keys)
+            foreach (var key in oldSettings.Keys)
             {
                 var replacementLanguage1 = GetReplacementLanguage(key, oldSettings);
                 var replacementLanguage2 = GetReplacementLanguage(key, newSettings);
@@ -251,7 +257,7 @@ namespace AdvancedTask.Business.AdvancedTask
           IDictionary<string, ContentLanguageSetting> newSettings)
         {
             var stringBuilder = new StringBuilder();
-            foreach (var key in (IEnumerable<string>)newSettings.Keys)
+            foreach (var key in newSettings.Keys)
             {
                 var replacementLanguage1 = GetReplacementLanguage(key, newSettings);
                 var replacementLanguage2 = GetReplacementLanguage(key, oldSettings);
@@ -261,11 +267,11 @@ namespace AdvancedTask.Business.AdvancedTask
                     if (!string.IsNullOrWhiteSpace(languageName))
                     {
                         if (replacementLanguage1 != null && replacementLanguage1.Equals(replacementLanguage2))
-                            stringBuilder.Append(string.Format("{0}{1}{2}", languageName, ArrowSeparator, replacementLanguage1).Fade());
+                            stringBuilder.Append($"{languageName}{ArrowSeparator}{replacementLanguage1}".Fade());
                         else if (string.IsNullOrEmpty(replacementLanguage1))
-                            stringBuilder.Append(string.Format("{0}{1}{2}", languageName, ArrowSeparator, replacementLanguage2).Strikethrough());
+                            stringBuilder.Append($"{languageName}{ArrowSeparator}{replacementLanguage2}".Strikethrough());
                         else
-                            stringBuilder.Append(string.Format("{0}{1}{2}", languageName, ArrowSeparator, replacementLanguage1.Bold()));
+                            stringBuilder.Append($"{languageName}{ArrowSeparator}{replacementLanguage1.Bold()}");
                     }
                     stringBuilder.Append("</br>");
                 }
@@ -276,7 +282,7 @@ namespace AdvancedTask.Business.AdvancedTask
         private IDictionary<string, ContentLanguageSetting> GetContentLanguageSettingsFromJson(
           string json)
         {
-            return string.IsNullOrEmpty(json) ? (IDictionary<string, ContentLanguageSetting>)new Dictionary<string, ContentLanguageSetting>() : json.ToObject<IDictionary<string, ContentLanguageSetting>>();
+            return string.IsNullOrEmpty(json) ? new Dictionary<string, ContentLanguageSetting>() : json.ToObject<IDictionary<string, ContentLanguageSetting>>();
         }
 
         private IDictionary<string, ContentLanguageSetting> GetLanguageSettings(
@@ -284,12 +290,12 @@ namespace AdvancedTask.Business.AdvancedTask
         {
             var dictionary = new Dictionary<string, ContentLanguageSetting>();
             var languageBranchList = _languageBranchRepository.ListEnabled();
-            var source = _contentLanguageSettingsHandler.Get(contentLink);
-            if (source.Any<ContentLanguageSetting>())
+            var source = _contentLanguageSettingsHandler.Get(contentLink).ToList();
+            if (source.Any())
             {
                 foreach (var contentLanguageSetting in source)
                 {
-                    foreach (var languageBranch in (IEnumerable<LanguageBranch>)languageBranchList)
+                    foreach (var languageBranch in languageBranchList)
                     {
                         if (string.Compare(contentLanguageSetting.LanguageBranch, languageBranch.LanguageID, StringComparison.OrdinalIgnoreCase) == 0)
                         {

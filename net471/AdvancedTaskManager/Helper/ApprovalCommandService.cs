@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Security.Principal;
-using System.Threading.Tasks;
 using AdvancedTask.Business.AdvancedTask;
 using AdvancedTask.Business.AdvancedTask.Command;
 using AdvancedTask.Business.AdvancedTask.Interface;
-using EPiServer;
-using EPiServer.Core;
-using EPiServer.Security;
 
 namespace AdvancedTask.Helper
 {
@@ -23,8 +18,8 @@ namespace AdvancedTask.Helper
 
         public virtual ApprovalCommandBase GetCommandById(Guid commandId)
         {
-            CommandMetaData byCommandId = _commandMetaDataRepository.GetByCommandId(commandId);
-            return byCommandId == null ? (ApprovalCommandBase)null : this.GetApprovalCommand(byCommandId.Type, byCommandId.CommandId);
+            var byCommandId = _commandMetaDataRepository.GetByCommandId(commandId);
+            return byCommandId == null ? null : GetApprovalCommand(byCommandId.Type, byCommandId.CommandId);
         }
 
 
