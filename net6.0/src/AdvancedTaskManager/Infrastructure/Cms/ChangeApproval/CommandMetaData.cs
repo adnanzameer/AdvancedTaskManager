@@ -35,9 +35,7 @@ namespace AdvancedTaskManager.Infrastructure.Cms.ChangeApproval
         public bool IsReadOnly
         {
             get => _isReadOnly;
-            protected set
-            {
-            }
+            protected set => _isReadOnly = value;
         }
 
         public void MakeReadOnly()

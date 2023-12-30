@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using AdvancedTask.Business.AdvancedTask.Interface;
 using AdvancedTask.Models;
-using EPiServer.Cms.Shell.Service.Internal;
+using EPiServer;
 using EPiServer.Core;
 using EPiServer.Framework.Localization;
 using EPiServer.Logging;
-using EPiServer.Security;
 using Newtonsoft.Json;
+using ILogger = EPiServer.Logging.ILogger;
 
 namespace AdvancedTask.Business.AdvancedTask
 {
@@ -17,11 +17,11 @@ namespace AdvancedTask.Business.AdvancedTask
         private readonly string _baseLanguagePath = "/gadget/changeapproval/movingcontentcommand";
         private static readonly ILogger Logger = LogManager.GetLogger(typeof(MovingChangeDetail));
 
-        private readonly ContentLoaderService _contentLoaderService;
+        private readonly IContentLoader _contentLoader;
 
-        public MovingChangeDetail(ContentLoaderService contentLoaderService, LocalizationService localizationService)
+        public MovingChangeDetail(IContentLoader contentLoader, LocalizationService localizationService)
         {
-            _contentLoaderService = contentLoaderService;
+            _contentLoader = contentLoader;
             _localizationService = localizationService;
         }
 
@@ -38,13 +38,14 @@ namespace AdvancedTask.Business.AdvancedTask
             {
                 var movingPayLoad1 = JsonConvert.DeserializeObject<MovingPayLoad>(byCommandId.CurrentSettingsJson);
                 var movingPayLoad2 = JsonConvert.DeserializeObject<MovingPayLoad>(byCommandId.NewSettingsJson);
-                var content1 = _contentLoaderService.Get<IContent>(movingPayLoad1.Destination, AccessLevel.Read);
-                var content2 = _contentLoaderService.Get<IContent>(movingPayLoad2.Destination, AccessLevel.Read);
+
+                var content1 = GetContentPathString(movingPayLoad1.Destination);
+                var content2 = GetContentPathString(movingPayLoad2.Destination);
                 contentChangeDetailsList.Add(new ContentChangeDetails()
                 {
-                    Name = _localizationService.GetString(string.Format("{0}/path", _baseLanguagePath)),
-                    OldValue = content1?.Name,
-                    NewValue = content2?.Name
+                    Name = _localizationService.GetString($"{_baseLanguagePath}/path"),
+                    OldValue = content1,
+                    NewValue = content2
                 });
             }
             catch (Exception ex)
@@ -52,6 +53,37 @@ namespace AdvancedTask.Business.AdvancedTask
                 Logger.Error(ex.Message, ex);
             }
             return contentChangeDetailsList;
+        }
+
+        private string GetContentPathString(ContentReference contentReference)
+        {
+            // Retrieve the content
+            var content = _contentLoader.Get<IContent>(contentReference);
+
+            // Get the content path including all its parents
+            var contentPath = GetContentPath(content);
+
+            return contentPath;
+        }
+
+        private string GetContentPath(IContent content)
+        {
+            // Use the ContentLoader to get the content path
+            var parentReference = content.ParentLink;
+
+            var path = content.Name; // Start with the current content's name
+
+            while (parentReference.ID != ContentReference.RootPage.ID)
+            {
+                var parentContent = _contentLoader.Get<IContent>(parentReference);
+
+                path = $"{parentContent.Name} > {path}";
+
+                // Move up to the parent
+                parentReference = parentContent.ParentLink;
+            }
+
+            return path + " >";
         }
 
         #endregion

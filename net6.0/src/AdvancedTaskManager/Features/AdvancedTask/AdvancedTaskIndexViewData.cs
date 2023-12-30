@@ -31,25 +31,25 @@ namespace AdvancedTaskManager.Features.AdvancedTask
 
             AddContentApprovalDeadlineProperty = !configuration.DeleteContentApprovalDeadlineProperty && configuration.AddContentApprovalDeadlineProperty;
 
-            if (configuration.PageSize is > 1 and <= 200)
-                _defaultPageSize = configuration.PageSize;
+            PageSize = configuration.PageSize is > 1 and <= 200 ? configuration.PageSize : 30;
 
-            if (!string.IsNullOrEmpty(configuration.DateTimeFormat) && DateTime.TryParseExact(DateTime.UtcNow.ToString(CultureInfo.InvariantCulture), configuration.DateTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out var dateTime))
-            {
-                DateTimeFormat = configuration.DateTimeFormat;
-            }
+                DateTimeFormat = !string.IsNullOrEmpty(configuration.DateTimeFormat) && DateTime.TryParseExact(
+                DateTime.UtcNow.ToString(CultureInfo.InvariantCulture), configuration.DateTimeFormat,
+                CultureInfo.InvariantCulture, DateTimeStyles.None, out var dateTime)
+                ? configuration.DateTimeFormat
+                : "yyyy-MM-dd HH:mm";
 
-            if (!string.IsNullOrEmpty(configuration.DateTimeFormatUserFriendly) && DateTime.TryParseExact(DateTime.UtcNow.ToString(CultureInfo.InvariantCulture), configuration.DateTimeFormatUserFriendly, CultureInfo.InvariantCulture, DateTimeStyles.None, out var dateTimeFriendly))
-            {
-                DateTimeFormatUserFriendly = configuration.DateTimeFormatUserFriendly;
-            }
+            DateTimeFormatUserFriendly = !string.IsNullOrEmpty(configuration.DateTimeFormatUserFriendly) &&
+                                         DateTime.TryParseExact(DateTime.UtcNow.ToString(CultureInfo.InvariantCulture),
+                                             configuration.DateTimeFormatUserFriendly, CultureInfo.InvariantCulture,
+                                             DateTimeStyles.None, out var dateTimeFriendly)
+                ? configuration.DateTimeFormatUserFriendly
+                : "MMM dd, yyyy, h:mm:ss tt";
         }
 
-        public readonly string DateTimeFormat = "yyyy-MM-dd HH:mm";
+        public string DateTimeFormat { get; set; }
 
-        public readonly string DateTimeFormatUserFriendly = "MMM dd, yyyy, h:mm:ss tt";
-
-        private static int _defaultPageSize = 30;
+        public string DateTimeFormatUserFriendly { get; set; }
 
         public IEnumerable<int> Pages
         {
@@ -108,7 +108,7 @@ namespace AdvancedTaskManager.Features.AdvancedTask
             }
         }
 
-        public int PageSize { get; set; } = _defaultPageSize;
+        public int PageSize { get; set; }
 
         public int PageNumber { get; set; }
 

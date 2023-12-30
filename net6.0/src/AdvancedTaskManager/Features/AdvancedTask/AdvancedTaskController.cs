@@ -141,7 +141,7 @@ namespace AdvancedTaskManager.Features.AdvancedTask
                     approvalData.ApprovalComment = "Approved Through Advanced Task Manager";
                 }
 
-                //await ApproveContent(approvalData.TaskValues, approvalData.ApprovalComment, approvalData.PublishContent);
+                await ApproveContent(approvalData.TaskValues, approvalData.ApprovalComment, approvalData.PublishContent);
             }
             return Json("Ok");
         }
@@ -389,17 +389,14 @@ namespace AdvancedTaskManager.Features.AdvancedTask
                         customTask.Details = taskDetails.Details;
                     }
 
-                    if (task.Reference != null)
+                    if (task.Reference != null && !string.IsNullOrEmpty(task.Reference.AbsolutePath))
                     {
-                        if (!string.IsNullOrEmpty(task.Reference.AbsolutePath))
-                        {
-                            var pageId = task.Reference.AbsolutePath.Replace("/", "");
+                        var pageId = task.Reference.AbsolutePath.Replace("/", "");
 
-                            int.TryParse(pageId, out var contentId);
-                            if (contentId != 0)
-                            {
-                                _contentRepository.TryGet(new ContentReference(contentId), out content);
-                            }
+                        int.TryParse(pageId, out var contentId);
+                        if (contentId != 0)
+                        {
+                            _contentRepository.TryGet(new ContentReference(contentId), out content);
                         }
                     }
 
@@ -422,8 +419,6 @@ namespace AdvancedTaskManager.Features.AdvancedTask
         {
             await _approvalEngine.AbortAsync(ids, _principalAccessor.Principal.Identity?.Name);
         }
-
-
 
         private string GetTypeContent(IContent content)
         {
@@ -464,8 +459,6 @@ namespace AdvancedTaskManager.Features.AdvancedTask
 
             return contentName;
         }
-
-
 
         private List<LanguageBranchOption> LanguageBranches(string language)
         {

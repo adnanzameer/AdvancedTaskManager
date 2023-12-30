@@ -19,14 +19,8 @@ namespace AdvancedTaskManager.Infrastructure.Cms.ChangeApproval
         [Ignore]
         public ContentReference AppliedOnContentLink
         {
-            get
-            {
-                return ContentReference.TryParse(AppliedOnContent, out var result) ? result : ContentReference.EmptyReference;
-            }
-            set
-            {
-                AppliedOnContent = ContentReference.IsNullOrEmpty(value) ? string.Empty : value.ToReferenceWithoutVersion().ToString();
-            }
+            get => ContentReference.TryParse(AppliedOnContent, out var result) ? result : ContentReference.EmptyReference;
+            set => AppliedOnContent = ContentReference.IsNullOrEmpty(value) ? string.Empty : value.ToReferenceWithoutVersion().ToString();
         }
 
         public virtual string AppliedOnContent { get; set; }
