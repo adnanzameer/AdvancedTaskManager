@@ -187,3 +187,9 @@
     color: red;
     margin-top: 20px;
 }
+
+.version {
+    color: white;
+    font-size: 0.6em;
+    padding-left: 20px;
+}

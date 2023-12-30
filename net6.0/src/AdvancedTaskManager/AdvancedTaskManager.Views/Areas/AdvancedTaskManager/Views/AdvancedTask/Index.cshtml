@@ -1,8 +1,10 @@
 ﻿@using EPiServer.Core
+@using EPiServer.Shell
 @model AdvancedTaskManager.Features.AdvancedTask.AdvancedTaskIndexViewData
 @{
     ViewBag.Title = "Advanced Task Manager";
     ViewBag.Info = "Administration of Awaiting Review Tasks of Content Approval and Change Approval.";
+    var url = Paths.ToResource(GetType(), "AdvancedTask");
 }
 <div class="content-approval">
     <div class="col-sm-12">
@@ -287,7 +289,7 @@
         var comment = document.getElementById("approvalComment").value;
 
         // Make AJAX call
-        fetch('/advancedtask/approvecontent', {
+        fetch('@url/approvecontenttasks', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

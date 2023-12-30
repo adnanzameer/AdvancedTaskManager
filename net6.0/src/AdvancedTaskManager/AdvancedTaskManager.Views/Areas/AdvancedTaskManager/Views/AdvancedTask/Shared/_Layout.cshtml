@@ -1,9 +1,11 @@
 ﻿@using System.Reflection
+@using EPiServer.Shell
 @{
     var version = GetType().Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
     version = version == null ? string.Empty : $"v{version}";
 
     bool.TryParse(ViewData["ChangeApproval"]?.ToString(), out var contentApprovalEnabled);
+    var url = Paths.ToResource(GetType(), "AdvancedTask");
 }
 
 <!DOCTYPE html>
@@ -48,13 +50,13 @@
                     <div class="position-sticky pt-5">
                         <ul class="nav flex-column">
                             <li class="nav-item">
-                                <a class="nav-link @Active("ContentApproval")" href="/AdvancedTask">
+                                <a class="nav-link @Active("ContentApproval")" href="@url">
                                     <span data-feather="edit"></span>
                                     Content Approval
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link @Active("ChangeApproval")" href="/AdvancedTask/changeapproval">
+                                <a class="nav-link @Active("ChangeApproval")" href="@url/changeapproval">
                                     <span data-feather="repeat"></span>
                                     Change Approval
                                 </a>

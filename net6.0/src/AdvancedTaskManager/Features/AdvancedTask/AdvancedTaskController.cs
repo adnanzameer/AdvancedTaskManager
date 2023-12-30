@@ -96,8 +96,6 @@ namespace AdvancedTaskManager.Features.AdvancedTask
         }
 
         [HttpGet]
-        [Route("/advancedtask/changeapproval")]
-
         public async Task<IActionResult> ChangeApproval(int? page)
         {
             var viewModel = new AdvancedTaskIndexViewData(LanguageBranches(string.Empty), _configuration)
@@ -133,7 +131,6 @@ namespace AdvancedTaskManager.Features.AdvancedTask
         }
 
         [HttpPost]
-        [Route("/advancedtask/approvecontent")]
         public async Task<IActionResult> ApproveContentTasks([FromBody] ApprovalData approvalData)
         {
             ViewBag.Page = "contentapproval";
@@ -144,7 +141,7 @@ namespace AdvancedTaskManager.Features.AdvancedTask
                     approvalData.ApprovalComment = "Approved Through Advanced Task Manager";
                 }
 
-                await ApproveContent(approvalData.TaskValues, approvalData.ApprovalComment, approvalData.PublishContent);
+                //await ApproveContent(approvalData.TaskValues, approvalData.ApprovalComment, approvalData.PublishContent);
             }
             return Json("Ok");
         }
