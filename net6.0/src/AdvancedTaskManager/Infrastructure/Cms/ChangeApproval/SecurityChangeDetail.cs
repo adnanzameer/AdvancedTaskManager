@@ -21,7 +21,7 @@ namespace AdvancedTaskManager.Infrastructure.Cms.ChangeApproval
         private readonly IApprovalCommandService _generalCommandService;
         private readonly ILogger _logger;
 
-        private static readonly List<AccessLevel> KnownAccessLevels = new List<AccessLevel>()
+        private static readonly List<AccessLevel> KnownAccessLevels = new()
         {
             AccessLevel.Read,
             AccessLevel.Create,

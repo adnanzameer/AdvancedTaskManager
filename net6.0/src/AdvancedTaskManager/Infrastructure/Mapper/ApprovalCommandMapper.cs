@@ -16,7 +16,7 @@ namespace AdvancedTaskManager.Infrastructure.Mapper
 
     public class ApprovalCommandMapper : IApprovalCommandMapper
     {
-        private readonly ViewModelMapper _mapper = new ViewModelMapper();
+        private readonly ViewModelMapper _mapper = new();
         private readonly IContentRepository _contentRepository;
         private readonly IUIHelper _uiHelper;
 

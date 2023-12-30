@@ -15,7 +15,7 @@ namespace AdvancedTaskManager.Infrastructure.Mapper
             return Add((Action<TSource, TModel>)null);
         }
 
-        public ViewModelMapper Add<TSource, TModel>(Action<TSource, TModel> afterMapAction) where TSource : class where TModel : class, new()
+        private ViewModelMapper Add<TSource, TModel>(Action<TSource, TModel> afterMapAction) where TSource : class where TModel : class, new()
         {
             _typeMappings.Add(typeof(TSource), new Mapping<TSource, TModel>()
             {

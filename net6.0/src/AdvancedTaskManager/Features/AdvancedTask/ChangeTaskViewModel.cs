@@ -13,11 +13,7 @@ namespace AdvancedTaskManager.Features.AdvancedTask
 
         public ContentReference AppliedOnContentLink
         {
-            get
-            {
-                ContentReference result;
-                return ContentReference.TryParse(AppliedOnContent, out result) ? result : ContentReference.EmptyReference;
-            }
+            get => ContentReference.TryParse(AppliedOnContent, out var result) ? result : ContentReference.EmptyReference;
             set => AppliedOnContent = ContentReference.IsNullOrEmpty(value) ? string.Empty : value.ToReferenceWithoutVersion().ToString();
         }
 

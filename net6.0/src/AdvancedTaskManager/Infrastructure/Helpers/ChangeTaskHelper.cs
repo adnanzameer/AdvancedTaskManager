@@ -19,9 +19,8 @@ namespace AdvancedTaskManager.Infrastructure.Helpers
         private readonly IMovingChangeDetail _movingChangeDetail;
         private readonly ISecurityChangeDetail _securityChangeDetail;
         private readonly IExpirationChangeDetails _expirationChangeDetails;
-        private readonly IPrincipalAccessor _principalAccessor;
 
-        public ChangeTaskHelper(IApprovalCommandService generalCommandService, IApprovalCommandMapper approvalCommandMapper, ILanguageChangeDetails languageChangeDetails, IMovingChangeDetail movingChangeDetail, ISecurityChangeDetail securityChangeDetail, IExpirationChangeDetails expirationChangeDetails, IPrincipalAccessor principalAccessor)
+        public ChangeTaskHelper(IApprovalCommandService generalCommandService, IApprovalCommandMapper approvalCommandMapper, ILanguageChangeDetails languageChangeDetails, IMovingChangeDetail movingChangeDetail, ISecurityChangeDetail securityChangeDetail, IExpirationChangeDetails expirationChangeDetails)
         {
             _generalCommandService = generalCommandService;
             _approvalCommandMapper = approvalCommandMapper;
@@ -29,14 +28,13 @@ namespace AdvancedTaskManager.Infrastructure.Helpers
             _movingChangeDetail = movingChangeDetail;
             _securityChangeDetail = securityChangeDetail;
             _expirationChangeDetails = expirationChangeDetails;
-            _principalAccessor = principalAccessor;
         }
 
 
         public ChangeTaskDetail GetData(int id)
         {
             var commandByApprovalId = _generalCommandService.GetCommandByApprovalId(id);
-            var taskDetails = commandByApprovalId != null ? _approvalCommandMapper.Map(commandByApprovalId, _principalAccessor.Principal) : null;
+            var taskDetails = commandByApprovalId != null ? _approvalCommandMapper.Map(commandByApprovalId, PrincipalAccessor.Current) : null;
             if (taskDetails != null)
             {
                 var customTask = new ChangeTaskDetail();

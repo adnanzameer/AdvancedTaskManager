@@ -12,9 +12,9 @@ namespace AdvancedTaskManager.Infrastructure.Cms.ChangeApproval
 
         public virtual Identity Id { get; set; }
 
-        public virtual int ApprovalID { get; set; }
+        public int ApprovalID { get; set; }
 
-        public virtual int LastApprovalStepIndex { get; set; }
+        public int LastApprovalStepIndex { get; set; }
 
         [Ignore]
         public ContentReference AppliedOnContentLink
@@ -23,31 +23,26 @@ namespace AdvancedTaskManager.Infrastructure.Cms.ChangeApproval
             set => AppliedOnContent = ContentReference.IsNullOrEmpty(value) ? string.Empty : value.ToReferenceWithoutVersion().ToString();
         }
 
-        public virtual string AppliedOnContent { get; set; }
+        public string AppliedOnContent { get; set; }
 
-        public virtual string CurrentSettingsJson { get; set; }
+        public string CurrentSettingsJson { get; set; }
 
-        public virtual string NewSettingsJson { get; set; }
+        public string NewSettingsJson { get; set; }
 
-        public virtual CommandMetaData.ChangeTaskApprovalStatus CommandStatus { get; set; }
+        public CommandMetaData.ChangeTaskApprovalStatus CommandStatus { get; set; }
 
-        public virtual string CreatedBy { get; set; }
+        public string CreatedBy { get; set; }
 
-        public virtual string ChangedBy { get; set; }
+        public string ChangedBy { get; set; }
 
-        public virtual DateTime CreatedTime { get; set; }
+        public DateTime CreatedTime { get; set; }
 
-        public virtual DateTime Saved { get; set; }
+        public DateTime Saved { get; set; }
 
-        public virtual bool IsReadOnly
+        public bool IsReadOnly
         {
-            get
-            {
-                return _isReadOnly;
-            }
-            protected set
-            {
-            }
+            get => _isReadOnly;
+            protected set => _isReadOnly = value;
         }
 
         public virtual bool IsValid()
@@ -55,7 +50,7 @@ namespace AdvancedTaskManager.Infrastructure.Cms.ChangeApproval
             return true;
         }
 
-        public virtual object CreateWritableClone()
+        public object CreateWritableClone()
         {
             var approvalCommandBase = (ApprovalCommandBase)MemberwiseClone();
             approvalCommandBase._isReadOnly = false;

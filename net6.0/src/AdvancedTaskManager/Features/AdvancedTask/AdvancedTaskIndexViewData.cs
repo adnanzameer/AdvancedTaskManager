@@ -35,14 +35,14 @@ namespace AdvancedTaskManager.Features.AdvancedTask
 
                 DateTimeFormat = !string.IsNullOrEmpty(configuration.DateTimeFormat) && DateTime.TryParseExact(
                 DateTime.UtcNow.ToString(CultureInfo.InvariantCulture), configuration.DateTimeFormat,
-                CultureInfo.InvariantCulture, DateTimeStyles.None, out var dateTime)
+                CultureInfo.InvariantCulture, DateTimeStyles.None, out _)
                 ? configuration.DateTimeFormat
                 : "yyyy-MM-dd HH:mm";
 
             DateTimeFormatUserFriendly = !string.IsNullOrEmpty(configuration.DateTimeFormatUserFriendly) &&
                                          DateTime.TryParseExact(DateTime.UtcNow.ToString(CultureInfo.InvariantCulture),
                                              configuration.DateTimeFormatUserFriendly, CultureInfo.InvariantCulture,
-                                             DateTimeStyles.None, out var dateTimeFriendly)
+                                             DateTimeStyles.None, out _)
                 ? configuration.DateTimeFormatUserFriendly
                 : "MMM dd, yyyy, h:mm:ss tt";
         }

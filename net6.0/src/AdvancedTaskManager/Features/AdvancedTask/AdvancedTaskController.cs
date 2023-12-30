@@ -37,14 +37,14 @@ namespace AdvancedTaskManager.Features.AdvancedTask
         private readonly IApprovalEngine _approvalEngine;
         private readonly LocalizationService _localizationService;
         private readonly IChangeTaskHelper _changeTaskHelper;
-        private readonly IPrincipalAccessor _principalAccessor;
+        
         private readonly ILanguageBranchRepository _languageBranchRepository;
         private readonly AdvancedTaskManagerOptions _configuration;
 
         private readonly ILogger _logger;
         private const string ContentApprovalDeadlinePropertyName = "ATM_ContentApprovalDeadline";
 
-        public AdvancedTaskController(IApprovalRepository approvalRepository, IContentRepository contentRepository, IContentTypeRepository contentTypeRepository, IApprovalEngine approvalEngine, LocalizationService localizationService, IChangeTaskHelper changeTaskHelper, IUIHelper helper, IPrincipalAccessor principalAccessor, ILanguageBranchRepository languageBranchRepository, IOptions<AdvancedTaskManagerOptions> options, INotificationHandler notificationHandler)
+        public AdvancedTaskController(IApprovalRepository approvalRepository, IContentRepository contentRepository, IContentTypeRepository contentTypeRepository, IApprovalEngine approvalEngine, LocalizationService localizationService, IChangeTaskHelper changeTaskHelper, IUIHelper helper, ILanguageBranchRepository languageBranchRepository, IOptions<AdvancedTaskManagerOptions> options, INotificationHandler notificationHandler)
         {
             _approvalRepository = approvalRepository;
             _contentRepository = contentRepository;
@@ -53,7 +53,7 @@ namespace AdvancedTaskManager.Features.AdvancedTask
             _localizationService = localizationService;
             _changeTaskHelper = changeTaskHelper;
             _helper = helper;
-            _principalAccessor = principalAccessor;
+
             _languageBranchRepository = languageBranchRepository;
             _notificationHandler = notificationHandler;
             _configuration = options.Value;
@@ -165,7 +165,7 @@ namespace AdvancedTaskManager.Features.AdvancedTask
                 if (!roles.Contains(Roles.Administrators) && !roles.Contains(Roles.WebAdmins) &&
                     !roles.Contains(Roles.CmsAdmins))
                 {
-                    query.Username = _principalAccessor.Principal.Identity?.Name;
+                    query.Username = PrincipalAccessor.Current.Identity?.Name;
                 }
 
                 var list = await _approvalRepository.ListAsync(query, (model.PageNumber - 1) * model.PageSize, model.PageSize);
@@ -288,7 +288,7 @@ namespace AdvancedTaskManager.Features.AdvancedTask
                         try
                         {
                             var approval = await _approvalRepository.GetAsync(approvalId);
-                            await _approvalEngine.ForceApproveAsync(approvalId, _principalAccessor.Principal.Identity?.Name, approvalComment);
+                            await _approvalEngine.ForceApproveAsync(approvalId, PrincipalAccessor.Current.Identity?.Name, approvalComment);
 
                             if (approval is ContentApproval contentApproval)
                             {
@@ -356,7 +356,7 @@ namespace AdvancedTaskManager.Features.AdvancedTask
             if (!roles.Contains(Roles.Administrators) && !roles.Contains(Roles.WebAdmins) &&
                 !roles.Contains(Roles.CmsAdmins))
             {
-                query.Username = _principalAccessor.Principal.Identity?.Name;
+                query.Username = PrincipalAccessor.Current.Identity?.Name;
             }
 
             var list = await _approvalRepository.ListAsync(query, (model.PageNumber - 1) * model.PageSize, model.PageSize);
@@ -417,7 +417,7 @@ namespace AdvancedTaskManager.Features.AdvancedTask
 
         private async Task AbortTasks(List<int> ids)
         {
-            await _approvalEngine.AbortAsync(ids, _principalAccessor.Principal.Identity?.Name);
+            await _approvalEngine.AbortAsync(ids, PrincipalAccessor.Current.Identity?.Name);
         }
 
         private string GetTypeContent(IContent content)

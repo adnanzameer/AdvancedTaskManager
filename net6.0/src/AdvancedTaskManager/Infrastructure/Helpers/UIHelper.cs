@@ -18,12 +18,10 @@ namespace AdvancedTaskManager.Infrastructure.Helpers
     public class UIHelper : IUIHelper
     {
         private readonly QueryableNotificationUserService _queryableNotificationUserService;
-        private readonly IPrincipalAccessor _principalAccessor;
         private readonly SecurityEntityProvider _securityEntityProvider;
-        public UIHelper(QueryableNotificationUserService queryableNotificationUserService, IPrincipalAccessor principalAccessor, SecurityEntityProvider securityEntityProvider)
+        public UIHelper(QueryableNotificationUserService queryableNotificationUserService, SecurityEntityProvider securityEntityProvider)
         {
             _queryableNotificationUserService = queryableNotificationUserService;
-            _principalAccessor = principalAccessor;
             _securityEntityProvider = securityEntityProvider;
         }
 
@@ -36,9 +34,9 @@ namespace AdvancedTaskManager.Infrastructure.Helpers
             if (result == null)
                 return null;
 
-            if (_principalAccessor.Principal.Identity != null)
+            if (PrincipalAccessor.Current.Identity != null)
             {
-                var name = _principalAccessor.Principal.Identity.Name;
+                var name = PrincipalAccessor.Current.Identity.Name;
                 if (result.UserName.Equals(name, StringComparison.OrdinalIgnoreCase))
                     return "You";
             }
@@ -48,9 +46,9 @@ namespace AdvancedTaskManager.Infrastructure.Helpers
 
         public async Task<List<string>> GetUserRoles()
         {
-            if (_principalAccessor.Principal.Identity != null)
+            if (PrincipalAccessor.Current.Identity != null)
             {
-                var name = _principalAccessor.Principal.Identity.Name;
+                var name = PrincipalAccessor.Current.Identity.Name;
                 var roles = await _securityEntityProvider.GetRolesForUserAsync(name);
                 return roles.ToList();
             }
@@ -61,12 +59,11 @@ namespace AdvancedTaskManager.Infrastructure.Helpers
 
         public bool CanUserPublish<T>(T content) where T : IContent
         {
-            var securedContent = content as ISecurable;
-            if (securedContent != null)
+            if (content is ISecurable securedContent)
             {
                 var descriptor = securedContent.GetSecurityDescriptor();
 
-                return descriptor.HasAccess(_principalAccessor.Principal, AccessLevel.Publish);
+                return descriptor.HasAccess(PrincipalAccessor.Current, AccessLevel.Publish);
             }
             return false;
         }

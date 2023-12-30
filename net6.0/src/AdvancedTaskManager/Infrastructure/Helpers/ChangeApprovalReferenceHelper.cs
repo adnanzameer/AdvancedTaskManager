@@ -23,7 +23,7 @@ namespace AdvancedTaskManager.Infrastructure.Helpers
             if (key == null || !key.Scheme.Equals(ChangeApprovalTypeFactory.ChangeApprovalType))
                 return null;
             var list = key.Segments.Select(x => x.Replace("/", "")).ToList();
-            if (list.Count() < 2 || list.Count > 3)
+            if (list.Count < 2 || list.Count > 3)
                 return null;
             var providerName = string.IsNullOrEmpty(list[0]) ? null : list[0];
             if (!int.TryParse(list[1], out var result1))

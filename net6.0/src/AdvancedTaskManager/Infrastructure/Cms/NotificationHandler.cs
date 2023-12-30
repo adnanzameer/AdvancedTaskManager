@@ -19,27 +19,25 @@ namespace AdvancedTaskManager.Infrastructure.Cms
 
     public class NotificationHandler : INotificationHandler
     {
-        private readonly IPrincipalAccessor _principalAccessor;
         private readonly IUserNotificationRepository _userNotificationRepository;
         private readonly IAsyncDatabaseExecutor _databaseExecutor;
-        public NotificationHandler(IPrincipalAccessor principalAccessor, IUserNotificationRepository userNotificationRepository, IAsyncDatabaseExecutor databaseExecutor)
+        public NotificationHandler(IUserNotificationRepository userNotificationRepository, IAsyncDatabaseExecutor databaseExecutor)
         {
-            _principalAccessor = principalAccessor;
             _userNotificationRepository = userNotificationRepository;
             _databaseExecutor = databaseExecutor;
         }
         public async Task<ContentTask> GetNotifications(string id, ContentTask customTask, bool isContentQuery)
         {
-            if (_principalAccessor.Principal.Identity != null && !string.IsNullOrEmpty(_principalAccessor.Principal.Identity.Name))
+            if (PrincipalAccessor.Current.Identity != null && !string.IsNullOrEmpty(PrincipalAccessor.Current.Identity.Name))
             {
-                var notifications = await GetNotifications(_principalAccessor.Principal.Identity.Name, id, isContentQuery);
+                var notifications = await GetNotifications(PrincipalAccessor.Current.Identity.Name, id, isContentQuery);
 
                 if (notifications?.PagedResult != null && notifications.PagedResult.Any())
                 {
                     //Mark Notification Read
                     foreach (var notification in notifications.PagedResult)
                     {
-                        await _userNotificationRepository.MarkUserNotificationAsReadAsync(new NotificationUser(_principalAccessor.Principal.Identity.Name), notification.ID);
+                        await _userNotificationRepository.MarkUserNotificationAsReadAsync(new NotificationUser(PrincipalAccessor.Current.Identity.Name), notification.ID);
                     }
 
                     customTask.NotificationUnread = true;
@@ -55,7 +53,6 @@ namespace AdvancedTaskManager.Infrastructure.Cms
 
         private async Task<PagedInternalNotificationMessageResult> GetNotifications(string user, string contentId, bool isContentQuery = true)
         {
-            //var db = ServiceLocator.Current.GetInstance<IAsyncDatabaseExecutor>();
             return new PagedInternalNotificationMessageResult(await _databaseExecutor.ExecuteAsync(async () =>
             {
                 var entries = new List<InternalNotificationMessage>();
@@ -65,7 +62,7 @@ namespace AdvancedTaskManager.Infrastructure.Cms
                 if (isContentQuery)
                 {
                     query = query + $"AND Content like '%\"contentLink\":\"{contentId}_%' " +
-                            $"AND Content like '%status\":7%' " +
+                            "AND Content like '%status\":7%' " +
                             "AND Channel = 'epi-approval' ";
                 }
                 else
