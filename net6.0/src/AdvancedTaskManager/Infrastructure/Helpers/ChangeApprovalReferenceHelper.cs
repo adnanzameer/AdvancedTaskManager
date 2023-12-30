@@ -9,11 +9,12 @@ namespace AdvancedTaskManager.Infrastructure.Helpers
     {
         public static Uri GetUri(ContentReference contentLink, bool ignoreVersion)
         {
-            if (contentLink == null)
+            if (ContentReference.IsNullOrEmpty(contentLink))
                 return null;
-            var uriString = string.Format("{0}:{1}/{2}/", ChangeApprovalTypeFactory.ChangeApprovalType, contentLink.ProviderName ?? "", contentLink.ID);
+            var uriString =
+                $"{ChangeApprovalTypeFactory.ChangeApprovalType}:{contentLink.ProviderName ?? ""}/{contentLink.ID}/";
             if (!ignoreVersion && contentLink.WorkID != 0)
-                uriString = uriString + contentLink.WorkID.ToString() + "/";
+                uriString = uriString + contentLink.WorkID + "/";
             return new Uri(uriString);
         }
 
@@ -25,8 +26,7 @@ namespace AdvancedTaskManager.Infrastructure.Helpers
             if (list.Count() < 2 || list.Count > 3)
                 return null;
             var providerName = string.IsNullOrEmpty(list[0]) ? null : list[0];
-            int result1;
-            if (!int.TryParse(list[1], out result1))
+            if (!int.TryParse(list[1], out var result1))
                 return null;
             var result2 = 0;
             return list.Count > 2 && list[2] != string.Empty && !int.TryParse(list[2], out result2) ? null : new ContentReference(result1, result2, providerName);

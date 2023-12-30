@@ -232,7 +232,8 @@ namespace AdvancedTaskManager.Infrastructure.Cms.ChangeApproval
                 if (!string.IsNullOrEmpty(replacementLanguage1) || !string.IsNullOrEmpty(replacementLanguage2))
                 {
                     var languageName = GetLanguageName(key);
-                    var str = replacementLanguage1 != null && replacementLanguage1.Equals(replacementLanguage2) ? string.Format("{0}{1}{2}", languageName, ArrowSeparator, replacementLanguage1).Fade() : $"{languageName}{ArrowSeparator}{(!string.IsNullOrEmpty(replacementLanguage1) ? replacementLanguage1 : "None")}";
+                    var str = replacementLanguage1 != null && replacementLanguage1.Equals(replacementLanguage2) ? $"{languageName}{ArrowSeparator}{replacementLanguage1}"
+                        .Fade() : $"{languageName}{ArrowSeparator}{(!string.IsNullOrEmpty(replacementLanguage1) ? replacementLanguage1 : "None")}";
                     stringBuilder.Append(str);
                     stringBuilder.Append("</br>");
                 }

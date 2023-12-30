@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using EPiServer.Core;
 using EPiServer.Notification;
 using EPiServer.Security;
-using EPiServer.Shell.Profile.Internal;
 
 namespace AdvancedTaskManager.Infrastructure.Helpers
 {
@@ -19,13 +18,11 @@ namespace AdvancedTaskManager.Infrastructure.Helpers
     public class UIHelper : IUIHelper
     {
         private readonly QueryableNotificationUserService _queryableNotificationUserService;
-        private readonly ICurrentUiCulture _currentUiCulture;
         private readonly IPrincipalAccessor _principalAccessor;
         private readonly SecurityEntityProvider _securityEntityProvider;
-        public UIHelper(QueryableNotificationUserService queryableNotificationUserService, ICurrentUiCulture currentUiCulture, IPrincipalAccessor principalAccessor, SecurityEntityProvider securityEntityProvider)
+        public UIHelper(QueryableNotificationUserService queryableNotificationUserService, IPrincipalAccessor principalAccessor, SecurityEntityProvider securityEntityProvider)
         {
             _queryableNotificationUserService = queryableNotificationUserService;
-            _currentUiCulture = currentUiCulture;
             _principalAccessor = principalAccessor;
             _securityEntityProvider = securityEntityProvider;
         }
@@ -42,7 +39,6 @@ namespace AdvancedTaskManager.Infrastructure.Helpers
             if (_principalAccessor.Principal.Identity != null)
             {
                 var name = _principalAccessor.Principal.Identity.Name;
-                var culture = _currentUiCulture.Get(name);
                 if (result.UserName.Equals(name, StringComparison.OrdinalIgnoreCase))
                     return "You";
             }

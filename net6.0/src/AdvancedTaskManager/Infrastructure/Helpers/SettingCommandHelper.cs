@@ -4,17 +4,17 @@
     {
         public static string Fade(this string text)
         {
-            return !string.IsNullOrEmpty(text) ? string.Format("<span class='epi-changeapproval-faded'>{0}</span>", text) : "";
+            return !string.IsNullOrEmpty(text) ? $"<span class='epi-changeapproval-faded'>{text}</span>" : "";
         }
 
         public static string Bold(this string text)
         {
-            return !string.IsNullOrEmpty(text) ? string.Format("<strong>{0}</strong>", text) : "";
+            return !string.IsNullOrEmpty(text) ? $"<strong>{text}</strong>" : "";
         }
 
         public static string Strikethrough(this string text)
         {
-            return !string.IsNullOrEmpty(text) ? string.Format("<del>{0}</del>", text) : "";
+            return !string.IsNullOrEmpty(text) ? $"<del>{text}</del>" : "";
         }
     }
 }
