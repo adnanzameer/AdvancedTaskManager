@@ -7,5 +7,7 @@
         public bool DeleteChangeApprovalTasks { get; set; } = true;
         public bool DeleteContentApprovalDeadlineProperty { get; set; } = false;
         public bool AddContentApprovalDeadlineProperty { get; set; } = false;
+        public string DateTimeFormat { get; set; } = "yyyy-MM-dd HH:mm";
+        public string DateTimeFormatUserFriendly { get; set; } = "MMM dd, yyyy, h:mm:ss tt";
     }
 }

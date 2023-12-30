@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Web;
 using AdvancedTaskManager.Infrastructure.Configuration;
@@ -29,8 +31,18 @@ namespace AdvancedTaskManager.Features.AdvancedTask
 
             AddContentApprovalDeadlineProperty = !configuration.DeleteContentApprovalDeadlineProperty && configuration.AddContentApprovalDeadlineProperty;
 
-            if (configuration.PageSize > 1)
+            if (configuration.PageSize is > 1 and <= 200)
                 _defaultPageSize = configuration.PageSize;
+
+            if (!string.IsNullOrEmpty(configuration.DateTimeFormat) && DateTime.TryParseExact(DateTime.UtcNow.ToString(CultureInfo.InvariantCulture), configuration.DateTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out var dateTime))
+            {
+                DateTimeFormat = configuration.DateTimeFormat;
+            }
+
+            if (!string.IsNullOrEmpty(configuration.DateTimeFormatUserFriendly) && DateTime.TryParseExact(DateTime.UtcNow.ToString(CultureInfo.InvariantCulture), configuration.DateTimeFormatUserFriendly, CultureInfo.InvariantCulture, DateTimeStyles.None, out var dateTimeFriendly))
+            {
+                DateTimeFormatUserFriendly = configuration.DateTimeFormatUserFriendly;
+            }
         }
 
         public readonly string DateTimeFormat = "yyyy-MM-dd HH:mm";
