@@ -41,7 +41,7 @@
 	  <Pack>true</Pack>
 	  <PackageCopyToOutput>true</PackageCopyToOutput>
 	  <BuildAction>None</BuildAction>
-	  <PackagePath>contentFiles\any\any\modules\_protected\Advanced.Task.Manager</PackagePath>
+	  <PackagePath>contentFiles\any\any\modules\_protected\AdvancedTaskManager</PackagePath>
 	</None>
   </ItemGroup>
 
