@@ -1,8 +1,7 @@
-﻿@using System.Reflection
+﻿@using AdvancedTaskManager.Infrastructure.Helpers
 @using EPiServer.Shell
 @{
-    var version = GetType().Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
-    version = version == null ? string.Empty : $"v{version}";
+    var version = Extensions.GetApplicationVersion();
 
     bool.TryParse(ViewData["ChangeApproval"]?.ToString(), out var contentApprovalEnabled);
     var url = Paths.ToResource(GetType(), "AdvancedTask");

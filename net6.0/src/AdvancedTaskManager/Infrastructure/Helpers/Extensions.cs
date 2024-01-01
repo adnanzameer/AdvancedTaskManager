@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using EPiServer.Core;
 using EPiServer.Framework.Modules.Internal;
 using Newtonsoft.Json;
@@ -60,6 +61,16 @@ namespace AdvancedTaskManager.Infrastructure.Helpers
                        CultureInfo.InvariantCulture, DateTimeStyles.None, out _)
                 ? customFormat
                 : null;
+        }
+
+        public static string GetApplicationVersion()
+        {
+            var assembly = Assembly.GetAssembly(typeof(Extensions));
+            var assemblyName = assembly?.GetName();
+
+            var version = $"{assemblyName?.Version}";
+
+            return !string.IsNullOrEmpty(version) ? "v" + version : string.Empty;
         }
     }
 }

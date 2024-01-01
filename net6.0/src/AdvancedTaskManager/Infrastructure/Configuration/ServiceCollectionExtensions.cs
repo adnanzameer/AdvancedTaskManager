@@ -16,14 +16,19 @@ namespace AdvancedTaskManager.Infrastructure.Configuration
     {
         private static readonly Action<AuthorizationPolicyBuilder> DefaultPolicy = p => p.RequireRole(Roles.Administrators, Roles.WebAdmins, Roles.CmsAdmins, Roles.WebEditors, Roles.CmsEditors);
 
-        public static IServiceCollection AddAdvancedTask(this IServiceCollection services, Action<AdvancedTaskManagerOptions> setupAction)
+        public static IServiceCollection AddAdvancedTaskManager(this IServiceCollection services)
+        {
+            return AddAdvancedTaskManager(services, _ => { }, DefaultPolicy);
+        }
+
+        public static IServiceCollection AddAdvancedTaskManager(this IServiceCollection services, Action<AdvancedTaskManagerOptions> setupAction)
         {
             return AddAdvancedTaskManager(services, setupAction, DefaultPolicy);
         }
 
-        public static IServiceCollection AddAdvancedTask(this IServiceCollection services)
+        public static IServiceCollection AddAdvancedTaskManager(this IServiceCollection services, Action<AuthorizationPolicyBuilder> configurePolicy)
         {
-            return AddAdvancedTaskManager(services, _ => { }, DefaultPolicy);
+            return AddAdvancedTaskManager(services, _ => { }, configurePolicy);
         }
 
         public static IServiceCollection AddAdvancedTaskManager(this IServiceCollection services, Action<AdvancedTaskManagerOptions> setupAction, Action<AuthorizationPolicyBuilder> configurePolicy)
