@@ -18,15 +18,15 @@ namespace AdvancedTaskManager.Infrastructure.Configuration
 
         public static IServiceCollection AddAdvancedTask(this IServiceCollection services, Action<AdvancedTaskManagerOptions> setupAction)
         {
-            return AddAdvancedTask(services, setupAction, DefaultPolicy);
+            return AddAdvancedTaskManager(services, setupAction, DefaultPolicy);
         }
 
         public static IServiceCollection AddAdvancedTask(this IServiceCollection services)
         {
-            return AddAdvancedTask(services, _ => { }, DefaultPolicy);
+            return AddAdvancedTaskManager(services, _ => { }, DefaultPolicy);
         }
 
-        public static IServiceCollection AddAdvancedTask(this IServiceCollection services, Action<AdvancedTaskManagerOptions> setupAction, Action<AuthorizationPolicyBuilder> configurePolicy)
+        public static IServiceCollection AddAdvancedTaskManager(this IServiceCollection services, Action<AdvancedTaskManagerOptions> setupAction, Action<AuthorizationPolicyBuilder> configurePolicy)
         {
             services.AddTransient<IUIHelper, UIHelper>();
             services.AddTransient<IChangeTaskHelper, ChangeTaskHelper>();
