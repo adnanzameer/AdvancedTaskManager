@@ -9,7 +9,7 @@ namespace AdvancedTaskManager.Infrastructure.Cms
     {
         public IEnumerable<MenuItem> GetMenuItems()
         {
-            var url = Extensions.PathsToResource("container");
+            var url = Extensions.ContainerControllerActionPathsToResource;
 
             var link = new UrlMenuItem(
                 "Adv. Task Manager",

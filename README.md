@@ -1,5 +1,10 @@
 # Advanced Task Manager
- 
+
+While Advanced Task Manager is a freely available module, if you'd like to express your support, consider treating me to a coffee on Ko-fi:
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/U7U2STV29)
+
+ ## Description
 Currently, the User notification and Tasks (Awaiting Review) are disconnected and provide very basic information to the editors.
 
 ![Tasks pane](assets/docsimages/image001.png)

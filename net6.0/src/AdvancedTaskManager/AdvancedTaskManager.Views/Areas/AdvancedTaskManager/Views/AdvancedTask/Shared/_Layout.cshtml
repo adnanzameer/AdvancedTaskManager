@@ -3,7 +3,7 @@
     var version = Extensions.GetApplicationVersion();
 
     bool.TryParse(ViewData["ChangeApproval"]?.ToString(), out var contentApprovalEnabled);
-    var url = Extensions.PathsToResource("AdvancedTask");
+    var url = Extensions.AdvancedTaskControllerActionPathsToResource;
 }
 
 <!DOCTYPE html>

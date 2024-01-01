@@ -74,7 +74,11 @@ namespace AdvancedTaskManager.Infrastructure.Helpers
             return !string.IsNullOrEmpty(version) ? "v" + version : string.Empty;
         }
 
-        public static string PathsToResource(string moduleRelativeResourcePath)
+        public static string AdvancedTaskControllerActionPathsToResource => PathsToResource("AdvancedTask");
+
+        public static string ContainerControllerActionPathsToResource => PathsToResource("container");
+
+        private static string PathsToResource(string moduleRelativeResourcePath)
         {
             var assembly = Assembly.GetAssembly(typeof(Extensions));
             return Paths.ToResource(assembly, moduleRelativeResourcePath);
