@@ -40,20 +40,27 @@ namespace AdvancedTaskManager.Infrastructure.Helpers
             return byApprovalId;
         }
 
-        public ApprovalCommandBase GetApprovalCommand(string commandTypeName, Guid commandId)
+        private ApprovalCommandBase GetApprovalCommand(string commandTypeName, Guid commandId)
         {
             ApprovalCommandBase byCommandId = null;
 
             if (commandTypeName.EndsWith("MovingContentCommand"))
+            {
                 byCommandId = _approvalCommandRepositoryBase.GetByCommandId<MovingContentCommand>(commandId, commandTypeName);
-            else
-            if (commandTypeName.EndsWith("ExpirationDateSettingCommand"))
+            }
+            else if (commandTypeName.EndsWith("ExpirationDateSettingCommand"))
+            {
                 byCommandId = _approvalCommandRepositoryBase.GetByCommandId<ExpirationDateSettingCommand>(commandId, commandTypeName);
-            else
-            if (commandTypeName.EndsWith("LanguageSettingCommand"))
+            }
+            else if (commandTypeName.EndsWith("LanguageSettingCommand"))
+            {
                 byCommandId = _approvalCommandRepositoryBase.GetByCommandId<LanguageSettingCommand>(commandId, commandTypeName);
-            else
-            if (commandTypeName.EndsWith("SecuritySettingCommand")) byCommandId = _approvalCommandRepositoryBase.GetByCommandId<SecuritySettingCommand>(commandId, commandTypeName);
+            }
+            else if (commandTypeName.EndsWith("SecuritySettingCommand"))
+            {
+                byCommandId = _approvalCommandRepositoryBase.GetByCommandId<SecuritySettingCommand>(commandId, commandTypeName);
+            }
+
             return byCommandId;
         }
 

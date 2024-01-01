@@ -23,21 +23,18 @@ namespace AdvancedTaskManager.Infrastructure.Cms.ChangeApproval
             {
                 var dictionary = JsonConvert.DeserializeObject<IDictionary<string, object>>(NewSettingsJson);
                 var versionable = (string.IsNullOrEmpty(AppliedOnLanguageBranch) ? _contentLoader.Service.Get<IContent>(AppliedOnContentLink) : _contentLoader.Service.Get<IContent>(AppliedOnContentLink, new CultureInfo(AppliedOnLanguageBranch))) as IVersionable;
-                if (dictionary.TryGetValue("PageStopPublish", out var obj))
+                if (dictionary.TryGetValue("PageStopPublish", out var obj) && obj is DateTime nullable && versionable != null)
                 {
-                    if (obj is DateTime nullable && versionable != null)
+                    var startPublish = versionable.StartPublish;
+                    if (startPublish.HasValue)
                     {
-                        var startPublish = versionable.StartPublish;
-                        if (startPublish.HasValue)
+                        ref var local2 = ref nullable;
+                        startPublish = versionable.StartPublish;
+                        if (startPublish != null)
                         {
-                            ref var local2 = ref nullable;
-                            startPublish = versionable.StartPublish;
-                            if (startPublish != null)
-                            {
-                                var dateTime2 = startPublish.Value;
-                                if (local2.CompareTo(dateTime2) < 0)
-                                    return false;
-                            }
+                            var dateTime2 = startPublish.Value;
+                            if (local2.CompareTo(dateTime2) < 0)
+                                return false;
                         }
                     }
                 }

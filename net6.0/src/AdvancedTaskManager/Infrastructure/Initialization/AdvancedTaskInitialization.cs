@@ -122,7 +122,7 @@ namespace AdvancedTaskManager.Infrastructure.Initialization
             if (propertyDefinition != null) _propertyDefinitionRepository.Delete(propertyDefinition);
         }
 
-        private PropertyDefinition GetPropertyDefinition(ContentType contentType, string propertyName, Type propertyDefinitionType = null)
+        private static PropertyDefinition GetPropertyDefinition(ContentType contentType, string propertyName, Type propertyDefinitionType = null)
         {
             var source = from pd in contentType.PropertyDefinitions
                          where pd.Name.Equals(propertyName, StringComparison.OrdinalIgnoreCase)
@@ -135,6 +135,9 @@ namespace AdvancedTaskManager.Infrastructure.Initialization
         }
 
 
-        public void Uninitialize(InitializationEngine context) { }
+        public void Uninitialize(InitializationEngine context)
+        {
+            //Required
+        }
     }
 }

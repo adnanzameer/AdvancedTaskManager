@@ -118,7 +118,7 @@ namespace AdvancedTaskManager.Infrastructure.Cms.ChangeApproval
             return text;
         }
 
-        private string LocalizeNewAccessLevel(string accessLevelName, AccessLevel currentAccessLevel, AccessLevel newAccessLevel)
+        private static string LocalizeNewAccessLevel(string accessLevelName, AccessLevel currentAccessLevel, AccessLevel newAccessLevel)
         {
             var str = $"{accessLevelName}: ";
             string text1;
@@ -134,9 +134,14 @@ namespace AdvancedTaskManager.Infrastructure.Cms.ChangeApproval
                     {
                         var text2 = GetAccessLevelDescription(knownAccessLevel);
                         if (currentAccessLevel.HasFlag(knownAccessLevel) && !newAccessLevel.HasFlag(knownAccessLevel))
+                        {
                             text2 = text2.Strikethrough();
+                        }
                         else if (!currentAccessLevel.HasFlag(knownAccessLevel) && newAccessLevel.HasFlag(knownAccessLevel))
+                        {
                             text2 = text2.Bold();
+                        }
+
                         str = str + text2 + ", ";
                     }
                 }

@@ -37,7 +37,7 @@ namespace AdvancedTaskManager.Features.AdvancedTask
         private readonly IApprovalEngine _approvalEngine;
         private readonly LocalizationService _localizationService;
         private readonly IChangeTaskHelper _changeTaskHelper;
-        
+
         private readonly ILanguageBranchRepository _languageBranchRepository;
         private readonly AdvancedTaskManagerOptions _configuration;
 
@@ -152,8 +152,6 @@ namespace AdvancedTaskManager.Features.AdvancedTask
 
             if (selectedLanguage?.Language != null)
             {
-                var roles = await _helper.GetUserRoles();
-
                 var query = new ApprovalQuery
                 {
                     Status = ApprovalStatus.InReview,
@@ -162,6 +160,7 @@ namespace AdvancedTaskManager.Features.AdvancedTask
                 };
 
 
+                var roles = await _helper.GetUserRoles();
                 if (!roles.Contains(Roles.Administrators) && !roles.Contains(Roles.WebAdmins) &&
                     !roles.Contains(Roles.CmsAdmins))
                 {
@@ -345,14 +344,13 @@ namespace AdvancedTaskManager.Features.AdvancedTask
 
         private async Task<List<ContentTask>> GetChangeApprovalTasks(AdvancedTaskIndexViewData model)
         {
-            var roles = await _helper.GetUserRoles();
-
             var query = new ApprovalQuery
             {
                 Status = ApprovalStatus.InReview,
                 Reference = new Uri("changeapproval:")
             };
 
+            var roles = await _helper.GetUserRoles();
             if (!roles.Contains(Roles.Administrators) && !roles.Contains(Roles.WebAdmins) &&
                 !roles.Contains(Roles.CmsAdmins))
             {
@@ -502,12 +500,5 @@ namespace AdvancedTaskManager.Features.AdvancedTask
 
             return toReturn;
         }
-    }
-
-    public class ApprovalData
-    {
-        public string TaskValues { get; set; }
-        public string ApprovalComment { get; set; }
-        public bool PublishContent { get; set; }
     }
 }
