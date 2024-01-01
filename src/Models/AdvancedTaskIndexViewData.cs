@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using AdvancedTask.Business.AdvancedTask;
 
 namespace AdvancedTask.Models
 {
@@ -29,13 +28,13 @@ namespace AdvancedTask.Models
         {
             get
             {
-                List<int> list2 = new List<int> { 1 };
-                List<int> list = list2;
+                var list2 = new List<int> { 1 };
+                var list = list2;
                 if (PageNumber - PagerSize - 1 > 1)
                 {
                     list.Add(0);
                 }
-                for (int i = PageNumber - PagerSize; i <= PageNumber + PagerSize; i++)
+                for (var i = PageNumber - PagerSize; i <= PageNumber + PagerSize; i++)
                 {
                     if (i > 1 && i < TotalPagesCount)
                     {

@@ -12,7 +12,7 @@ namespace AdvancedTask.Business.AdvancedTask.Command
     [EPiServerDataStore(AutomaticallyRemapStore = true)]
     internal class MovingContentCommand : ApprovalCommandBase
     {
-        private static readonly ILogger _logger = LogManager.GetLogger(typeof(MovingContentCommand));
+        private static readonly ILogger Logger = LogManager.GetLogger(typeof(MovingContentCommand));
         private Injected<IContentLoader> _contentLoader;
 
         public override bool IsValid()
@@ -23,7 +23,7 @@ namespace AdvancedTask.Business.AdvancedTask.Command
             }
             catch (Exception ex)
             {
-                _logger.Error(ex.Message);
+                Logger.Error(ex.Message,ex);
                 return false;
             }
         }

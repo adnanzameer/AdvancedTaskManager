@@ -17,13 +17,16 @@ namespace AdvancedTask.Business
             if (enableContentApprovalDeadline)
                 return;
 
-            foreach (ExtendedMetadata property in metadata.Properties)
+            foreach (var modelMetadata in metadata.Properties)
+            {
+                var property = (ExtendedMetadata)modelMetadata;
                 if (property.GroupSettings != null && string.Equals(property.GroupSettings.Name, "Content Approval", StringComparison.OrdinalIgnoreCase))
                 {
                     property.GroupSettings.DisplayUI = false;
                     return;
 
                 }
+            }
         }
     }
 }

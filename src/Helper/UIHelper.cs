@@ -1,16 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Principal;
-using System.Threading.Tasks;
-using EPiServer.Cms.UI.AspNetIdentity;
 using EPiServer.Core;
 using EPiServer.Framework.Localization;
 using EPiServer.Notification;
 using EPiServer.Security;
 using EPiServer.Shell.Profile.Internal;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace AdvancedTask.Helper
 {
@@ -19,15 +14,17 @@ namespace AdvancedTask.Helper
         private readonly QueryableNotificationUserService _queryableNotificationUserService;
         private readonly ICurrentUiCulture _currentUiCulture;
         private readonly LocalizationService _localizationService;
+        private readonly SecurityEntityProvider _securityEntityProvider;
 
         public UIHelper(
           QueryableNotificationUserService queryableNotificationUserService,
           ICurrentUiCulture currentUiCulture,
-          LocalizationService localizationService)
+          LocalizationService localizationService, SecurityEntityProvider securityEntityProvider)
         {
             _queryableNotificationUserService = queryableNotificationUserService;
             _currentUiCulture = currentUiCulture;
             _localizationService = localizationService;
+            _securityEntityProvider = securityEntityProvider;
         }
 
         public string GetDisplayNameForUser(string senderUsername)
@@ -44,37 +41,29 @@ namespace AdvancedTask.Helper
             return !string.IsNullOrEmpty(result.DisplayName) ? result.DisplayName : result.UserName;
         }
 
-        public async Task<bool> CanUserPublish<T>(T content) where T : IContent
+        public List<string> GetUserRoles()
         {
-            IList<string> roles;
-            using (var store = new UserStore<ApplicationUser>(new ApplicationDbContext<ApplicationUser>("EPiServerDB")))
+            if (PrincipalAccessor.Current.Identity != null)
             {
-                var user = await store.FindByNameAsync(PrincipalInfo.CurrentPrincipal.Identity.Name);
-                roles = await GetUserToRoles(store, user);
+                var name = PrincipalAccessor.Current.Identity.Name;
+                var roles = _securityEntityProvider.GetRolesForUser(name);
+                return roles.ToList();
             }
-            return RoleHasAccess(content, roles.ToArray(), AccessLevel.Publish);
+
+            return new List<string>();
         }
 
-        private bool RoleHasAccess<T>(T content, string[] roles, AccessLevel accessLevel) where T : IContent
+
+        public bool CanUserPublish<T>(T content) where T : IContent
         {
             var securedContent = content as ISecurable;
             if (securedContent != null)
             {
                 var descriptor = securedContent.GetSecurityDescriptor();
-                var identity = new GenericIdentity("doesn't matter");
-                var principal = new GenericPrincipal(identity, roles);
-                return descriptor.HasAccess(principal, accessLevel);
+
+                return descriptor.HasAccess(PrincipalAccessor.Current, AccessLevel.Publish);
             }
             return false;
-        }
-
-        private async Task<IList<string>> GetUserToRoles(UserStore<ApplicationUser> store, ApplicationUser user)
-        {
-            IUserRoleStore<ApplicationUser, string> userRoleStore = store;
-            using (new RoleStore<IdentityRole>(new ApplicationDbContext<ApplicationUser>("EPiServerDB")))
-            {
-                return await userRoleStore.GetRolesAsync(user);
-            }
         }
     }
 }

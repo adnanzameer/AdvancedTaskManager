@@ -1,5 +1,19 @@
-# Advanced Task Manager
- 
+# Advanced Task Manager for EPiServer CMS
+
+While Advanced Task Manager for EpiServeris a freely available module, if you'd like to express your support, consider treating me to a coffee on Ko-fi:
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/U7U2STV29)
+
+## Description
+[![Platform](https://img.shields.io/badge/Platform-.NET%204.7.1-blue.svg?style=flat)](https://msdn.microsoft.com/en-us/library/w0x726c2%28v=vs.110%29.aspx)
+[![Platform](https://img.shields.io/badge/Episerver%20-%2011-orange.svg?style=flat)](https://world.episerver.com/cms/)
+
+## Optimizely CMS 12?
+**For ASP.NET 5+ and Episerver/Optimizely 12+ see: https://github.com/adnanzameer/optimizely-advancedtaskmanager**
+
+Advanced Task Management for EpiServer, providing enhanced oversight of the administration for Awaiting Review tasks in Content Approval and Change Approval processes.
+
+ ## Overview
 Currently, the User notification and Tasks (Awaiting Review) are disconnected and provide very basic information to the editors.
 
 ![Tasks pane](assets/docsimages/image001.png)

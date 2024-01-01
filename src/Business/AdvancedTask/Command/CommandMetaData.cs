@@ -34,13 +34,8 @@ namespace AdvancedTask.Business.AdvancedTask.Command
 
         public bool IsReadOnly
         {
-            get
-            {
-                return _isReadOnly;
-            }
-            protected set
-            {
-            }
+            get => _isReadOnly;
+            protected set => _isReadOnly = value;
         }
 
         public void MakeReadOnly()
@@ -50,7 +45,7 @@ namespace AdvancedTask.Business.AdvancedTask.Command
 
         public object CreateWritableClone()
         {
-            CommandMetaData commandMetaData = (CommandMetaData)this.MemberwiseClone();
+            var commandMetaData = (CommandMetaData)this.MemberwiseClone();
             commandMetaData._isReadOnly = false;
             return (object)commandMetaData;
         }
