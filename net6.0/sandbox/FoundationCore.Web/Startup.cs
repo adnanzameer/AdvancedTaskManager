@@ -1,5 +1,5 @@
 using System.Net;
-using Advanced.Task.Manager.Infrastructure.Configuration;
+using AdvancedTaskManager.Infrastructure.Configuration;
 using EPiServer.Authorization;
 using EPiServer.Cms.Shell;
 using EPiServer.Cms.UI.AspNetIdentity;
@@ -57,13 +57,16 @@ public class Startup
             o.LowercaseUrls = true;
         });
 
+        services.AddRazorPages();
+
         services.AddCmsAspNetIdentity<ApplicationUser>();
 
-        services.AddAdvancedTask(o =>
+        //services.AddAdvancedTaskManager();
+        services.AddAdvancedTaskManager(o =>
         {
             o.DeleteChangeApprovalTasks = true;
-            o.AddContentApprovalDeadlineProperty = true;
-            //o.DeleteContentApprovalDeadlineProperty = true;
+            //o.AddContentApprovalDeadlineProperty = true;
+            o.DeleteContentApprovalDeadlineProperty = true;
         });
 
         services.AddMvc(options =>

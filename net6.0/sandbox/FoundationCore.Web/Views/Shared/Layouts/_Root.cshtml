@@ -19,11 +19,6 @@
         <meta name="description" content="@Model.MetaData.MetaDescription" />
     }
 
-    @if (!string.IsNullOrEmpty(Model.SettingsPage.GoogleTagManagerId))
-    {
-        @await Component.InvokeAsync(nameof(GoogleTagManagerHeadComponent))
-    }
-
     @if (Model.MetaData.NoIndex)
     {
         <meta name="robots" content="noindex" />
@@ -44,11 +39,6 @@
 </head>
 
 <body>
-
-    @if (!string.IsNullOrEmpty(Model.SettingsPage.GoogleTagManagerId))
-    {
-        @await Component.InvokeAsync(nameof(GoogleTagManagerBodyComponent))
-    }
 
     @if (Model.Layout.IsInReadonlyMode)
     {

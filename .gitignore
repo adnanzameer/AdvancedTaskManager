@@ -261,3 +261,4 @@ __pycache__/
 *.pyc
 /Package
 /net6.0/.sonarqube
+/net6.0/sandbox/FoundationCore.Web/App_Data/log20240101.txt

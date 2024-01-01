@@ -3,7 +3,6 @@ using EPiServer.Framework.Initialization;
 using EPiServer.ServiceLocation;
 using EPiServer.Web;
 using EPiServer.Web.Mvc.Html;
-using FoundationCore.Web.Business.Caching;
 using FoundationCore.Web.Business.Rendering;
 using FoundationCore.Web.Helpers;
 using FoundationCore.Web.Models.Interface;
@@ -16,7 +15,6 @@ namespace FoundationCore.Web.Business
         public void ConfigureContainer(ServiceConfigurationContext context)
         {
             context.Services.AddScoped<IUrlHelpers, UrlHelpers>();
-            context.Services.AddSingleton(typeof(ICacheManager<>), typeof(CacheManager<>));
 
             context.ConfigurationComplete += (_, _) =>
             {

@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using EPiServer.Shell;
+using AdvancedTaskManager.Infrastructure.Helpers;
 using EPiServer.Shell.Navigation;
 
 namespace AdvancedTaskManager.Infrastructure.Cms
@@ -9,7 +9,7 @@ namespace AdvancedTaskManager.Infrastructure.Cms
     {
         public IEnumerable<MenuItem> GetMenuItems()
         {
-            var url = Paths.ToResource(GetType(), "container");
+            var url = Extensions.PathsToResource("container");
 
             var link = new UrlMenuItem(
                 "Adv. Task Manager",

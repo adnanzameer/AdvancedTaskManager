@@ -1,10 +1,10 @@
-﻿@using EPiServer.Core
-@using EPiServer.Shell
+﻿@using AdvancedTaskManager.Infrastructure.Helpers
+@using EPiServer.Core
 @model AdvancedTaskManager.Features.AdvancedTask.AdvancedTaskIndexViewData
 @{
     ViewBag.Title = "Advanced Task Manager";
     ViewBag.Info = "Administration of Awaiting Review Tasks of Content Approval and Change Approval.";
-    var url = Paths.ToResource(GetType(), "AdvancedTask");
+    var url = Extensions.PathsToResource("AdvancedTask");
 }
 <div class="content-approval">
     <div class="col-sm-12">

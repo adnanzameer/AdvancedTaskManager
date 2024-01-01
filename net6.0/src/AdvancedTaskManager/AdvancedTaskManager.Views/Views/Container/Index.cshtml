@@ -1,8 +1,8 @@
-﻿@using EPiServer.Shell
+﻿@using AdvancedTaskManager.Infrastructure.Helpers
 @model dynamic
 
 @{
-    var url = Paths.ToResource(GetType(), "AdvancedTask");
+    var url = Extensions.PathsToResource("AdvancedTask");
 }
 
 <iframe src="@url" width="100%" height="500" style="border:none;" onload="resizeIframe(this)" title="Advanced Task Manager" id="advanced-task">

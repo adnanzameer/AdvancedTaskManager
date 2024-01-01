@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using EPiServer.Core;
 using EPiServer.Framework.Modules.Internal;
+using EPiServer.Shell;
 using Newtonsoft.Json;
 
 namespace AdvancedTaskManager.Infrastructure.Helpers
@@ -71,6 +72,12 @@ namespace AdvancedTaskManager.Infrastructure.Helpers
             var version = $"{assemblyName?.Version}";
 
             return !string.IsNullOrEmpty(version) ? "v" + version : string.Empty;
+        }
+
+        public static string PathsToResource(string moduleRelativeResourcePath)
+        {
+            var assembly = Assembly.GetAssembly(typeof(Extensions));
+            return Paths.ToResource(assembly, moduleRelativeResourcePath);
         }
     }
 }

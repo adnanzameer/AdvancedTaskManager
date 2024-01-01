@@ -1,7 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using EPiServer.Cms.Shell.UI.ObjectEditing.EditorDescriptors;
-using EPiServer.Shell.ObjectEditing;
-using FoundationCore.Web.Business.Attributes;
 using FoundationCore.Web.Models.Interface;
 
 namespace FoundationCore.Web.Models.Pages;
