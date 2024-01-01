@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using EPiServer.Core;
 using EPiServer.Framework.Modules.Internal;
@@ -45,6 +46,20 @@ namespace AdvancedTaskManager.Infrastructure.Helpers
         public static string GetEditUrl(this ContentReference contentLink, string language)
         {
             return $"{ModuleResourceResolver.Instance.ResolvePath("CMS", null).TrimEnd('/')}/?language={language}#context=epi.cms.contentdata:///{contentLink}";
+        }
+
+        public static string TryGetValidDateFormat(string customFormat)
+        {
+            if (string.IsNullOrEmpty(customFormat))
+                return null;
+
+            var currentUtcDateTimeString = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture);
+
+            return !string.IsNullOrEmpty(customFormat) &&
+                   DateTime.TryParseExact(currentUtcDateTimeString, customFormat,
+                       CultureInfo.InvariantCulture, DateTimeStyles.None, out _)
+                ? customFormat
+                : null;
         }
     }
 }

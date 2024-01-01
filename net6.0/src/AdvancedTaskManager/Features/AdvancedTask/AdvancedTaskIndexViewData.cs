@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using AdvancedTaskManager.Infrastructure.Configuration;
+using AdvancedTaskManager.Infrastructure.Helpers;
 using EPiServer.DataAbstraction;
 
 namespace AdvancedTaskManager.Features.AdvancedTask
@@ -13,6 +12,7 @@ namespace AdvancedTaskManager.Features.AdvancedTask
         public AdvancedTaskIndexViewData(List<LanguageBranchOption> languageBranchList, AdvancedTaskManagerOptions configuration)
         {
             LanguageBranchList = languageBranchList;
+            
             SelectedLanguageText = "Select";
 
             if (languageBranchList != null && languageBranchList.Any())
@@ -26,25 +26,18 @@ namespace AdvancedTaskManager.Features.AdvancedTask
             }
 
             HasPublishAccess = false;
+            
             ContentTaskList = new List<ContentTask>();
+            
             PageNumber = 1;
 
             AddContentApprovalDeadlineProperty = !configuration.DeleteContentApprovalDeadlineProperty && configuration.AddContentApprovalDeadlineProperty;
 
             PageSize = configuration.PageSize is > 1 and <= 200 ? configuration.PageSize : 30;
+            
+            DateTimeFormat = Extensions.TryGetValidDateFormat(configuration.DateTimeFormat) ?? "yyyy-MM-dd HH:mm";
 
-                DateTimeFormat = !string.IsNullOrEmpty(configuration.DateTimeFormat) && DateTime.TryParseExact(
-                DateTime.UtcNow.ToString(CultureInfo.InvariantCulture), configuration.DateTimeFormat,
-                CultureInfo.InvariantCulture, DateTimeStyles.None, out _)
-                ? configuration.DateTimeFormat
-                : "yyyy-MM-dd HH:mm";
-
-            DateTimeFormatUserFriendly = !string.IsNullOrEmpty(configuration.DateTimeFormatUserFriendly) &&
-                                         DateTime.TryParseExact(DateTime.UtcNow.ToString(CultureInfo.InvariantCulture),
-                                             configuration.DateTimeFormatUserFriendly, CultureInfo.InvariantCulture,
-                                             DateTimeStyles.None, out _)
-                ? configuration.DateTimeFormatUserFriendly
-                : "MMM dd, yyyy, h:mm:ss tt";
+            DateTimeFormatUserFriendly = Extensions.TryGetValidDateFormat(configuration.DateTimeFormatUserFriendly) ?? "MMM dd, yyyy, h:mm:ss tt";
         }
 
         public string DateTimeFormat { get; set; }
