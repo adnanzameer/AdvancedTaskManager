@@ -203,9 +203,8 @@ namespace AdvancedTask.Controllers
                 Reference = new Uri("content:")
             };
 
-            var roles = _helper.GetUserRoles();
-            if (!roles.Contains("Administrators") && !roles.Contains("WebAdmins") &&
-                !roles.Contains("CmsAdmins"))
+            var isAdminUser = _helper.IsAdminUser();
+            if (!isAdminUser)
             {
                 query.Username = PrincipalInfo.CurrentPrincipal.Identity.Name;
             }
@@ -322,9 +321,8 @@ namespace AdvancedTask.Controllers
                 Reference = new Uri("changeapproval:")
             };
 
-            var roles = _helper.GetUserRoles();
-            if (!roles.Contains("Administrators") && !roles.Contains("WebAdmins") &&
-                !roles.Contains("CmsAdmins"))
+            var isAdminUser = _helper.IsAdminUser();
+            if (!isAdminUser)
             {
                 query.Username = PrincipalInfo.CurrentPrincipal.Identity.Name;
             }

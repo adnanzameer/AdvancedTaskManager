@@ -53,17 +53,18 @@ namespace AdvancedTask.Helper
             return new List<string>();
         }
 
-
         public bool CanUserPublish<T>(T content) where T : IContent
         {
-            var securedContent = content as ISecurable;
-            if (securedContent != null)
+            if (content is ISecurable securedContent)
             {
                 var descriptor = securedContent.GetSecurityDescriptor();
 
                 return descriptor.HasAccess(PrincipalAccessor.Current, AccessLevel.Publish);
             }
+
             return false;
         }
+
+        public bool IsAdminUser() => PrincipalAccessor.Current.IsInRole("Administrators") || PrincipalAccessor.Current.IsInRole("WebAdmins") || PrincipalAccessor.Current.IsInRole("CmsAdmins");
     }
 }
