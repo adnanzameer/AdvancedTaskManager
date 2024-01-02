@@ -14,11 +14,16 @@ While Advanced Task Manager for EpiServer is a freely available module, if you'd
 Advanced Task Management for EpiServer, providing enhanced oversight of the administration for Awaiting Review tasks in Content Approval and Change Approval processes.
 
 ## Installation
-Install-Package AdvancedTaskManager
 
-The package can be found in the [EPiServer Nuget Feed](https://nuget.optimizely.com/package/?id=AdvancedTaskManager).
+```Install-Package AdvancedTaskManager```
 
- ## Overview
+https://nuget.episerver.com/package/?id=AdvancedTaskManager
+
+Add the ```Advanced Task Manager``` gadget in the dashboard
+
+![Advanced task manager gadet](assets/docsimages/image028.png)
+
+## Overview
 Currently, the User notification and Tasks (Awaiting Review) are disconnected and provide very basic information to the editors.
 
 ![Tasks pane](assets/docsimages/image001.png)
@@ -163,16 +168,6 @@ If the editor has published rights for some of the content after approving all c
 To turn on or off one or more features, use the following **<appSettings>** elements of **Web.config**. By way of an example set false on the feature that should not be available.
 
 ![Configuring features](assets/docsimages/image026.png)
-
-## Install 
-
-```Install-Package AdvancedTaskManager```
-
-https://nuget.episerver.com/package/?id=AdvancedTaskManager
-
-Add the ```Advanced Task Manager``` gadget in the dashboard
-
-![Advanced task manager gadet](assets/docsimages/image028.png)
 
 ## Contributing
 
