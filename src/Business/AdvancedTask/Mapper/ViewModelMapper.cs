@@ -6,13 +6,13 @@ namespace AdvancedTask.Business.AdvancedTask.Mapper
 {
     internal class ViewModelMapper
     {
-        private readonly IDictionary<Type, Mapping> _typeMappings = (IDictionary<Type, ViewModelMapper.Mapping>)new Dictionary<Type, ViewModelMapper.Mapping>();
+        private readonly IDictionary<Type, Mapping> _typeMappings = new Dictionary<Type, Mapping>();
 
         public ViewModelMapper Add<TSource, TModel>()
           where TSource : class
           where TModel : class, new()
         {
-            return this.Add<TSource, TModel>((Action<TSource, TModel>)null);
+            return this.Add((Action<TSource, TModel>)null);
         }
 
         public ViewModelMapper Add<TSource, TModel>(
@@ -20,7 +20,7 @@ namespace AdvancedTask.Business.AdvancedTask.Mapper
           where TSource : class
           where TModel : class, new()
         {
-            _typeMappings.Add(typeof(TSource), (ViewModelMapper.Mapping)new ViewModelMapper.Mapping<TSource, TModel>()
+            _typeMappings.Add(typeof(TSource), new Mapping<TSource, TModel>()
             {
                 AfterMapAction = afterMapAction
             });
@@ -35,7 +35,7 @@ namespace AdvancedTask.Business.AdvancedTask.Mapper
                 return null;
 
             var instance = mapping.CreateInstance();
-            var dictionary = instance.GetType().GetProperties().ToDictionary(p => p.Name, (IEqualityComparer<string>)StringComparer.OrdinalIgnoreCase);
+            var dictionary = instance.GetType().GetProperties().ToDictionary(p => p.Name, StringComparer.OrdinalIgnoreCase);
             foreach (var property in type.GetProperties())
                 if (dictionary.TryGetValue(property.Name, out var propertyInfo) && propertyInfo.CanWrite && property.PropertyType == propertyInfo.PropertyType)
                     propertyInfo.SetValue(instance, property.GetValue(source));
@@ -45,7 +45,7 @@ namespace AdvancedTask.Business.AdvancedTask.Mapper
 
         private Mapping GetMapping(Type sourceType)
         {
-            return !_typeMappings.TryGetValue(sourceType, out var mapping) ? (ViewModelMapper.Mapping)null : mapping;
+            return !_typeMappings.TryGetValue(sourceType, out var mapping) ? null : mapping;
         }
 
         private abstract class Mapping

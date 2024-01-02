@@ -1,4 +1,13 @@
-﻿using AdvancedTask.Business;
+﻿using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.Linq;
+using System.Security;
+using System.Threading.Tasks;
+using System.Web.Mvc;
+using AdvancedTask.Business;
+using AdvancedTask.Helper;
 using AdvancedTask.Models;
 using EPiServer;
 using EPiServer.Approvals;
@@ -7,23 +16,13 @@ using EPiServer.Core;
 using EPiServer.Data;
 using EPiServer.DataAbstraction;
 using EPiServer.DataAccess;
+using EPiServer.Editor;
 using EPiServer.Framework.Localization;
 using EPiServer.Notification;
 using EPiServer.Notification.Internal;
 using EPiServer.Security;
 using EPiServer.ServiceLocation;
 using EPiServer.Shell.Gadgets;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Security;
-using System.Threading.Tasks;
-using System.Web.Mvc;
-using AdvancedTask.Helper;
-using EPiServer.Editor;
-using Task = System.Threading.Tasks.Task;
 
 namespace AdvancedTask.Controllers
 {
@@ -45,7 +44,7 @@ namespace AdvancedTask.Controllers
 
         private const string ContentApprovalDeadlinePropertyName = "ATM_ContentApprovalDeadline";
 
-        public AdvancedTaskController(IApprovalRepository approvalRepository, IContentRepository contentRepository, IContentTypeRepository contentTypeRepository, IUserNotificationRepository userNotificationRepository, IApprovalEngine approvalEngine, LocalizationService localizationService, IAsyncDatabaseExecutor asyncDatabaseExecutor, ChangeTaskHelper changeTaskHelper, UIHelper helper)
+        public AdvancedTaskController(IApprovalRepository approvalRepository, IContentRepository contentRepository, IContentTypeRepository contentTypeRepository, IUserNotificationRepository userNotificationRepository, IApprovalEngine approvalEngine, LocalizationService localizationService, ChangeTaskHelper changeTaskHelper, UIHelper helper)
         {
             _approvalRepository = approvalRepository;
             _contentRepository = contentRepository;
@@ -115,7 +114,7 @@ namespace AdvancedTask.Controllers
                 }
             }
 
-            var task = Task.Run(async () => await ProcessContentData(pageNr, pageSz, sorting, viewModel, taskValues, approvalComment));
+            var task = Task.Run(async () => await ProcessContentData(pageNr, pageSz, sorting, viewModel, taskValues, approvalComment, publishContent));
             {
                 var contentTaskList = task.Result;
                 viewModel.ContentTaskList = contentTaskList;
@@ -130,7 +129,7 @@ namespace AdvancedTask.Controllers
             return View("Index", viewModel);
         }
 
-        private async Task ApproveContent(string values, string approvalComment)
+        private async Task ApproveContent(string values, string approvalComment, string publishContent)
         {
             if (!string.IsNullOrEmpty(values))
             {
@@ -147,7 +146,9 @@ namespace AdvancedTask.Controllers
                         {
                             _contentRepository.TryGet(contentApproval.ContentLink, out IContent content);
 
-                            var canUserPublish = await _helper.CanUserPublish(content);
+                            bool.TryParse(publishContent, out var publish);
+
+                            var canUserPublish = publish && _helper.CanUserPublish(content);
                             if (content != null && canUserPublish)
                             {
                                 switch (content)
@@ -188,20 +189,25 @@ namespace AdvancedTask.Controllers
             await _approvalEngine.AbortAsync(ids, PrincipalInfo.CurrentPrincipal.Identity.Name);
         }
 
-        private async Task<List<ContentTask>> ProcessContentData(int pageNumber, int pageSize, string sorting, AdvancedTaskIndexViewData model, string taskValues, string approvalComment)
+        private async Task<List<ContentTask>> ProcessContentData(int pageNumber, int pageSize, string sorting, AdvancedTaskIndexViewData model, string taskValues, string approvalComment, string publishContent)
         {
             if (!string.IsNullOrEmpty(taskValues))
             {
-                await ApproveContent(taskValues, approvalComment);
+                await ApproveContent(taskValues, approvalComment, publishContent);
             }
 
             //List of All task for the user 
             var query = new ApprovalQuery
             {
                 Status = ApprovalStatus.InReview,
-                Username = PrincipalInfo.CurrentPrincipal.Identity.Name,
                 Reference = new Uri("content:")
             };
+
+            var isAdminUser = _helper.IsAdminUser();
+            if (!isAdminUser)
+            {
+                query.Username = PrincipalInfo.CurrentPrincipal.Identity.Name;
+            }
 
             var list = await _approvalRepository.ListAsync(query, (pageNumber - 1) * pageSize, pageSize);
             model.TotalItemsCount = Convert.ToInt32(list.TotalCount);
@@ -227,7 +233,7 @@ namespace AdvancedTask.Controllers
                     {
                         customTask.URL = PageEditing.GetEditUrl(approval.ContentLink);
                         id = content.ContentLink.ID.ToString();
-                        var canUserPublish = await _helper.CanUserPublish(content);
+                        var canUserPublish = _helper.CanUserPublish(content);
 
                         customTask.CanUserPublish = canUserPublish;
                         customTask.ContentReference = content.ContentLink;
@@ -268,7 +274,7 @@ namespace AdvancedTask.Controllers
                             var propertyData = content.Property.Get(ContentApprovalDeadlinePropertyName) ?? content.Property[ContentApprovalDeadlinePropertyName];
                             if (propertyData != null)
                             {
-                                DateTime.TryParse(propertyData.ToString(), out DateTime dateValue);
+                                DateTime.TryParse(propertyData.ToString(), out var dateValue);
                                 if (dateValue != DateTime.MinValue)
                                 {
                                     if (!string.IsNullOrEmpty(customTask.Type))
@@ -312,9 +318,14 @@ namespace AdvancedTask.Controllers
             var query = new ApprovalQuery
             {
                 Status = ApprovalStatus.InReview,
-                Username = PrincipalInfo.CurrentPrincipal.Identity.Name,
                 Reference = new Uri("changeapproval:")
             };
+
+            var isAdminUser = _helper.IsAdminUser();
+            if (!isAdminUser)
+            {
+                query.Username = PrincipalInfo.CurrentPrincipal.Identity.Name;
+            }
 
             var list = await _approvalRepository.ListAsync(query, (pageNumber - 1) * pageSize, pageSize);
             model.TotalItemsCount = Convert.ToInt32(list.TotalCount);
@@ -515,7 +526,7 @@ namespace AdvancedTask.Controllers
 
                 using (var reader = await command.ExecuteReaderAsync().ConfigureAwait(false))
                 {
-                    while (reader.Read())
+                    while (await reader.ReadAsync())
                     {
                         entries.Add(NotificationMessageFromReader.Create(reader));
                     }

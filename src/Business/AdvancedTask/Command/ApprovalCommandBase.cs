@@ -19,14 +19,8 @@ namespace AdvancedTask.Business.AdvancedTask.Command
         [Ignore]
         public ContentReference AppliedOnContentLink
         {
-            get
-            {
-                return ContentReference.TryParse(this.AppliedOnContent, out var result) ? result : ContentReference.EmptyReference;
-            }
-            set
-            {
-                this.AppliedOnContent = ContentReference.IsNullOrEmpty(value) ? string.Empty : value.ToReferenceWithoutVersion().ToString();
-            }
+            get => ContentReference.TryParse(this.AppliedOnContent, out var result) ? result : ContentReference.EmptyReference;
+            set => AppliedOnContent = ContentReference.IsNullOrEmpty(value) ? string.Empty : value.ToReferenceWithoutVersion().ToString();
         }
 
         public virtual string AppliedOnContent { get; set; }
@@ -47,13 +41,8 @@ namespace AdvancedTask.Business.AdvancedTask.Command
 
         public virtual bool IsReadOnly
         {
-            get
-            {
-                return this._isReadOnly;
-            }
-            protected set
-            {
-            }
+            get => this._isReadOnly;
+            protected set => _isReadOnly = value;
         }
 
         public virtual bool IsValid()
@@ -63,10 +52,9 @@ namespace AdvancedTask.Business.AdvancedTask.Command
 
         public virtual object CreateWritableClone()
         {
-            ApprovalCommandBase approvalCommandBase = (ApprovalCommandBase)this.MemberwiseClone();
+            var approvalCommandBase = (ApprovalCommandBase)this.MemberwiseClone();
             approvalCommandBase._isReadOnly = false;
             return approvalCommandBase;
         }
-
     }
 }

@@ -1,12 +1,12 @@
-﻿using EPiServer.Core;
+﻿using System;
+using System.Configuration;
+using System.Linq;
+using EPiServer.Core;
 using EPiServer.DataAbstraction;
 using EPiServer.Framework;
 using EPiServer.Framework.Initialization;
 using EPiServer.Security;
 using EPiServer.ServiceLocation;
-using System;
-using System.Configuration;
-using System.Linq;
 
 namespace AdvancedTask.Business
 {
@@ -16,7 +16,7 @@ namespace AdvancedTask.Business
     {
         private const string ContentApprovalDeadlinePropertyName = "ATM_ContentApprovalDeadline";
 
-        private static readonly object _lock = new object();
+        private static readonly object Lock = new object();
         private Injected<IContentTypeRepository> _contentTypeRepository;
         private Injected<ITabDefinitionRepository> _tabDefinitionRepository;
         private Injected<IPropertyDefinitionRepository> _propertyDefinitionRepository;
@@ -62,7 +62,7 @@ namespace AdvancedTask.Business
 
         private void CreateOrDeleteTab(string tabName, bool createNew)
         {
-            var obj2 = _lock;
+            var obj2 = Lock;
             lock (obj2)
             {
                 var tabDefinition = this._tabDefinitionRepository.Service.Load(tabName);
@@ -111,7 +111,7 @@ namespace AdvancedTask.Business
                 propertyDefinition.Type = this._propertyDefinitionTypeRepository.Service.Load(propertyDefinitionType);
             if (tabName != null)
             {
-                var obj2 = _lock;
+                var obj2 = Lock;
                 lock (obj2)
                 {
                     propertyDefinition.Tab = _tabDefinitionRepository.Service.Load(tabName);
