@@ -45,6 +45,11 @@
     .errorMessage {
         padding-bottom: 15px;
     }
+
+    .disabled {
+        pointer-events: none;
+        opacity: 0.5;
+    }
 </style>
 <%  bool enableContentApprovalDeadline = bool.Parse(ConfigurationManager.AppSettings["ATM:EnableContentApprovalDeadline"] ?? "false"); %>
 <% if (Model.ShowChangeApprovalTab)
@@ -221,7 +226,7 @@
         <% Html.BeginGadgetForm("Index"); %>
             <p>Approve Entire Approval Sequence</p>
 
-            <textarea autocomplete="off" cols="70" id="approvalComment" name="approvalComment" class="epi-textarea--max-height--500 dijitTextBox dijitTextArea dijitExpandingTextArea dijitTextBoxError dijitTextAreaError dijitExpandingTextAreaError dijitError" tabindex="0" placeholder="Please specify why you are forcing approval of the content…" rows="1" style="overflow: auto hidden; box-sizing: border-box; height: 29px;" spellcheck="false"></textarea>
+            <textarea autocomplete="off" cols="70" id="approvalComment" name="approvalComment" class="epi-textarea--max-height--500 dijitTextBox dijitTextArea dijitExpandingTextArea dijitTextBoxError dijitTextAreaError dijitExpandingTextAreaError dijitError" tabindex="0" placeholder="Please specify why you are forcing approval of the content…" rows="1" style="overflow: auto hidden; box-sizing: border-box; height: 29px;" spellcheck="false">Approved Through Advanced Task Manager</textarea>
             <input type="hidden" name="pageSize" value="<%=Model.PageSize %>" />
             <input id="taskValues" type="hidden" name="taskValues" value="<%=Model.TaskValues%>" />
             <% if (Model.HasPublishAccess)
@@ -322,14 +327,16 @@
     function Submit() {
         var comment = document.getElementById("approvalComment").value;
         if (comment === "" || comment.length === 0) {
-            alert("Add comment.");
+            alert("Provide additional details in the comments");
             return false;
         } else {
-            var message = "Are you sure that you want to approve the entire approval sequence? This will approve all remaining steps. This action cannot be undone.";
+            var message = "Are you certain you wish to endorse the entire approval sequence? Doing so will confirm all remaining steps, and this action is irreversible";
             if (document.getElementById("publishContent") && document.getElementById("publishContent").value === "true") {
-                message = "Are you sure that you want to approve the entire approval sequence and publish content? This will approve all remaining steps and publish selected content. This action cannot be undone.";
+                message = "Are you certain you wish to endorse the entire approval sequence and publish content? This will confirm all remaining steps and publish the selected content. Please note that this action is irreversible";
             }
-            if (confirm(message)) {
+            if (confirm(message)) {                
+                document.getElementById('button').innerHTML = 'Processing...';
+                document.getElementById('adv-task-manager').classList.add('disabled');
                 return true;
             } else {
                 return false;

@@ -1,5 +1,5 @@
 ﻿<%@ Control Language="C#" Inherits="System.Web.Mvc.ViewUserControl<AdvancedTask.Models.AdvancedTaskIndexViewData>" %>
-<div class="task">
+<div class="task" id="adv-task-manager">
     <%
         if(Model.ChangeApproval)
             Html.RenderPartial("ChangeApproval", Model);
