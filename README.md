@@ -1,9 +1,5 @@
 # Advanced Task Manager for EPiServer CMS
 
-While Advanced Task Manager for EpiServer is a freely available module, if you'd like to express your support, consider treating me to a coffee on Ko-fi:
-
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/U7U2STV29)
-
 ## Description
 [![Platform](https://img.shields.io/badge/Platform-.NET%204.7.1-blue.svg?style=flat)](https://msdn.microsoft.com/en-us/library/w0x726c2%28v=vs.110%29.aspx)
 [![Platform](https://img.shields.io/badge/Episerver%20-%2011-orange.svg?style=flat)](https://world.episerver.com/cms/)
@@ -55,7 +51,7 @@ The gadget provides the following information about the task to the Editor:
 * Submitted Date/Time
 * Started By
 
-The list of current features are as follow:
+The list of current features is as follows:
 * [Task ordering](#task-ordering)
 * [Deadline field for the content approval](#deadline-field-for-the-content-approval-optional)
 * [User notifications associated with the task](#user-notifications-associated-with-the-task)
@@ -73,7 +69,7 @@ The gadget gives editors an option to sort through all the tasks with status Awa
 * Order tasks by type
 * Order tasks by time/date
 * Order tasks by a user who submitted the request
-* Order task by the deadline
+* Order tasks by the deadline
 
 ![Advanced Task Manager](assets/docsimages/image007.gif)
 
@@ -95,7 +91,7 @@ The deadline property has three states in the gadget:
 
 * **Warning**
 
-The ```Warning``` state, highlighted in green informs approvers of the task that needs attention to be approved. The duration of the ```Warning``` state is 4 days by default. It means if the content deadline is within 4 days ```deadline row``` will be highlighted in green.
+The ```Warning``` state, highlighted in green informs approvers of the task that needs attention to be approved. The duration of the ```Warning``` state is 4 days by default. It means if the content deadline is within 4 days ``` deadline row``` will be highlighted in green.
 
 You can set the duration of the ```Warning``` state by adding the **<appSettings>** element of the **Web.config**.
 
@@ -107,7 +103,7 @@ The ```Danger``` state highlighted in red indicates the deadline date/time has p
 
 * **Normal**
 
-The ```Normal``` state is not represented by any color as it shows there is still time for Approvers to prioritize the task.
+The ```Normal``` state is not represented by any colour as it shows there is still time for Approvers to prioritize the task.
 
 Setting the **<appSettings> ATM:EnableContentApprovalDeadline** element of the **Web.config** to **false** will hide the property and Tab from CMS editor UI.
  
@@ -121,21 +117,21 @@ Please note that the **ATM:DeleteContentApprovalDeadlineProperty** will only tri
  
 ![User notification with task](assets/docsimages/image018.png)
  
-The gadget allows user notifications associated with the task to be ‘read’ and enable the notification icon to be more useful as opposed to accumulating notifications.
+The gadget allows user notifications associated with the task to be ‘read’ and enables the notification icon to be more useful as opposed to accumulating notifications.
 
 When the editors open or refresh the gadget, all user tasks with unread notifications are highlighted and the notifications then are marked as read automatically.  It means in the editor notification section the notifications will be marked as read. 
  
 ![User notification](assets/docsimages/image020.png)
  
-## Approve entire approval sequence (only for Content Approval)
+## Approve the entire approval sequence (only for Content Approval)
  
-The gadget informs the editor to approve the entire Content Approval Sequence of single or multiple contents. Comment field is required.
+The gadget informs the editor to approve the entire Content Approval Sequence of single or multiple contents. A comment field is required.
  
 ![Approve entire approval sequence](assets/docsimages/image022.png)
  
 ## Publish content after approval
  
-If the editor has published rights for the content approval, the option for ```Publish selected content after approval``` will be enabled that allows the editor to publish the content after approval.
+If the editor has published rights for the content approval, the option for ```Publish selected content after approval``` will be enabled which allows the editor to publish the content after approval.
 
 If the editor has published rights for some of the content after approving all content then only content the editor can publish will be published. The warning messages will appear against the content which the editor cannot publish.
 
@@ -147,7 +143,7 @@ If the editor has published rights for some of the content after approving all c
 
  There are four types of Change approval tasks.
 
- * Securty setting change
+ * Security setting change
 
  ![Securty setting change](assets/docsimages/ca-security.png)
 
@@ -184,5 +180,5 @@ If you can help please do so by contributing to the package! Reach out package m
 # Update 2.0.0
 
 * Change Approval tasks will show along with the Content Approval tasks.
-* Support for all content type tasks in CMS. Now editors can view, approve and publish, Episerver Forms, ImageData & MediaData. 
+* Support for all content-type tasks in CMS. Now editors can view, approve and publish, Episerver Forms, ImageData & MediaData. 
 * Bug fixes for pagination and performance improvements.
